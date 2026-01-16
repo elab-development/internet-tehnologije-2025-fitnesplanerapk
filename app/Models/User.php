@@ -18,9 +18,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'ime',
+        'prezime',
+        'mail',
+        'username',
         'password',
+        'pol',
+        'datumRodjenja'
     ];
 
     /**
@@ -44,5 +48,19 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function cilj()
+    {
+        return $this->hasMany(Cilj::class); 
+    }
+
+    public function parametri()
+    {
+        return $this->hasMany(Parametri::class); 
+    }
+
+    public function uloga()
+    {
+        return $this->belongsTo(Uloge::class);
     }
 }
