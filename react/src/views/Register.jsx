@@ -13,7 +13,7 @@ export default function Register() {
      <div>
             <div>
                 <form onSubmit={onSubmit}>
-                    <h1>Ulogujte se u svoj nalog!</h1>
+                    <h1>Napravite svoj nalog!</h1>
                     <input type="ime" placeholder="Ime" />
                     <input type="prezime" placeholder="Prezime" />
                     <input type="mail" placeholder="Mail adresa" />

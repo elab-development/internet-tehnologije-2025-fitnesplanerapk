@@ -7,6 +7,7 @@ import React from 'react'
 import DefaultLayout from "./components/DefaultLayout.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
 import Dashboard from "./views/Dashboard.jsx";
+import AdminDashboard from "./views/AdminDashboard.jsx";
 
 const router=createBrowserRouter([
 
@@ -23,7 +24,13 @@ const router=createBrowserRouter([
         {
             path:'/dashboard',
             element: <Dashboard />
+        },
+
+        {
+            path:'/admin_dashboard',
+            element: <AdminDashboard />
         }
+
 
         ]
     },
