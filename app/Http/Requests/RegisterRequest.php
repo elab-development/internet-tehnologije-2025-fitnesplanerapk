@@ -4,7 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class RegisterRequest extends FormRequest
 {
     /**
@@ -33,8 +34,15 @@ class RegisterRequest extends FormRequest
                 ->letters()
                 ->symbols()
             ],
-            'pol' => 'required|in:musko,zensko',
+            'pol' => 'required|in:muski,zenski',
             'datumRodjenja' => 'required|date'
         ];
     }
+
+    protected function failedValidation(Validator $validator)
+{
+    throw new HttpResponseException(
+        response()->json(['errors' => $validator->errors()], 422)
+    );
+}
 }

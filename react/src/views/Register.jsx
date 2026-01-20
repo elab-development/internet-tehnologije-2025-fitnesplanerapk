@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
 import axiosClient from "./axios-client.js";
@@ -14,8 +13,8 @@ export default function Register() {
   const datumRodjenjaRef = useRef();
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState(null);
-
-
+  const [message, setMessage] = useState(null); // za popup poruku
+  const [messageType, setMessageType] = useState(""); // "success" ili "error"
 
   const onSubmit = (ev) => {
     ev.preventDefault();
@@ -35,17 +34,25 @@ export default function Register() {
         setUser(data.user);
         setToken(data.token);
         setErrors(null);
+        setMessage("Uspešno ste registrovani!"); // poruka za uspeh
+        setMessageType("success");
       })
       .catch((err) => {
         if (err.response) {
           if (err.response.status === 422) {
             setErrors(err.response.data.errors);
+            setMessage("Registracija nije uspela! Proverite podatke."); // poruka za neuspeh
+            setMessageType("error");
           } else {
             console.log(err.response.status);
             console.log(err.response.data);
+            setMessage("Došlo je do greške. Pokušajte kasnije.");
+            setMessageType("error");
           }
         } else {
           console.log("Network / CORS error");
+          setMessage("Network / CORS error. Pokušajte kasnije.");
+          setMessageType("error");
         }
       });
   };
@@ -53,6 +60,23 @@ export default function Register() {
   return (
     <div>
       <h1>Napravite svoj nalog!</h1>
+
+      {/* Popup poruka */}
+      {message && (
+        <div
+          style={{
+            padding: "10px",
+            marginBottom: "10px",
+            borderRadius: "5px",
+            color: "#fff",
+            backgroundColor: messageType === "success" ? "green" : "red",
+          }}
+        >
+          {message}
+        </div>
+      )}
+
+      {/* Validation errors */}
       {errors && (
         <div className="alert">
           {Object.keys(errors).map((key) => (
@@ -60,6 +84,7 @@ export default function Register() {
           ))}
         </div>
       )}
+
       <form onSubmit={onSubmit}>
         <input ref={imeRef} type="text" placeholder="Ime" />
         <input ref={prezimeRef} type="text" placeholder="Prezime" />
@@ -70,6 +95,7 @@ export default function Register() {
         <input ref={datumRodjenjaRef} type="date" placeholder="Datum rodjenja" />
         <button type="submit">Register</button>
       </form>
+
       <p>
         Imate nalog? <Link to="/login">Ulogujte se u svoj nalog!</Link>
       </p>

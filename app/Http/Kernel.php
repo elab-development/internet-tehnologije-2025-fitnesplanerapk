@@ -17,7 +17,7 @@ class Kernel extends HttpKernel
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\Cors::class,
         \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\HandleCors::class, // <--- ovo je CORS
+        \Illuminate\Http\Middleware\HandleCors::class, 
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -54,7 +54,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
    protected $routeMiddleware = [
-    'cors' => \App\Http\Middleware\Cors::class,
+    'cors' => \App\Http\Middleware\HandleCors::class,
 ];
 
 }

@@ -9,7 +9,7 @@ class Uloge extends Model
 {
     
     use HasFactory;
-
+    protected $table = 'uloge';
     protected $fillable = [
         'ime'
     

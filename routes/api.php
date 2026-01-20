@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('cors')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::middleware('cors')->group(function () {
-    Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-});
+// Route::middleware('cors')->group(function () {
+//     Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
+// });
 
 
 Route::post('/register', [AuthController::class, 'register']);

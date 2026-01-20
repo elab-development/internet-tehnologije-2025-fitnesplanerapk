@@ -1,11 +1,18 @@
 import axios from "axios";
 
+// const axiosClient = axios.create({
+//     baseURL: 'http://127.0.0.1:8000/api',
+   
+// });
+
 const axiosClient = axios.create({
     baseURL: 'http://127.0.0.1:8000/api',
-   
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    },
 });
-
-
 axiosClient.interceptors.request.use((config)=>{
     const token=localStorage.getItem("ACCESS_TOKEN")
     //config.headers.Authorization='Bearer ${token}'
@@ -32,33 +39,3 @@ axiosClient.interceptors.response.use((response)=>{
 })
 
 export default axiosClient;
-// import axios from "axios";
-
-// const axiosClient = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api", // Laravel backend
-//   // važno ako koristimo cookies ili token u budućnosti
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-// });
-
-// axiosClient.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("ACCESS_TOKEN"); // obrati pažnju na getItem, ne get
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`;
-//   }
-//   return config;
-// });
-
-// axiosClient.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     const response = error.response;
-//     if (response && response.status === 403) {
-//       localStorage.removeItem("ACCESS_TOKEN");
-//     }
-//     throw error;
-//   }
-// );
-
-// export default axiosClient;
