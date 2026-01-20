@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('uloga_id')->constrained('uloge')->onDelete('restrict');
             $table->string('ime');
             $table->string('prezime');
-            $table->string('mail')->unique();
+            $table->string('email')->unique();
             $table->string('username')->unique();
             $table->string('password');
             $table->enum('pol', ['muski', 'zenski']); 
