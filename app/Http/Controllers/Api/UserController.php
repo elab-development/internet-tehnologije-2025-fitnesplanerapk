@@ -12,9 +12,31 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function allUsers()
+    {
+        return response()->json(
+            User::whereIn('uloga_id', [1, 3])
+                ->select(
+                'id',
+                'ime',
+                'prezime',
+                'email',
+                'username',
+                'created_at'
+            )->get()
+        );
+    }
     public function index()
     {
-        //
+        $user = auth()->user();
+
+        if ($user->uloga_id !== 2) { 
+            return response()->json(['message' => 'Nije admin'], 403);
+        }
+
+        $users = User::all();
+        return response()->json($users);
     }
 
     

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
 import axiosClient from "./axios-client.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const imeRef = useRef();
@@ -15,6 +16,7 @@ export default function Register() {
   const [errors, setErrors] = useState(null);
   const [message, setMessage] = useState(null); // za popup poruku
   const [messageType, setMessageType] = useState(""); // "success" ili "error"
+  const navigate = useNavigate();
 
   const onSubmit = (ev) => {
     ev.preventDefault();
@@ -36,6 +38,7 @@ export default function Register() {
         setErrors(null);
         setMessage("Uspešno ste registrovani!"); // poruka za uspeh
         setMessageType("success");
+        navigate("/userSetup");
       })
       .catch((err) => {
         if (err.response) {

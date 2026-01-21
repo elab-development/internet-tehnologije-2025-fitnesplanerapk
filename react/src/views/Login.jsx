@@ -1,25 +1,97 @@
-import {Link} from "react-router-dom";
 
-export default function Login(){
+import { Link } from "react-router-dom";
+import { useRef, useState } from "react";
+import axiosClient from "./axios-client.js";
+import { useStateContext } from "../contexts/ContextProvider.jsx";
+import { useNavigate } from "react-router-dom";
+import Button from "../components/Button.jsx";
 
-    const onSubmit =(ev)=>{
-        ev.preventDefault()
-    }
+export default function Login() {
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+  const { setUser, setToken } = useStateContext();
+  const [errors, setErrors] = useState(null);
+  const [message, setMessage] = useState(null); 
+  const [messageType, setMessageType] = useState(""); 
+  const navigate = useNavigate();  
+  const onSubmit = (ev) => {
+    ev.preventDefault();
 
-    return (
-        <div>
-            <div>
-                <form onSubmit={onSubmit}>
-                    <h1>Ulogujte se u svoj nalog!</h1>
-                    <input type="username" placeholder="Korisničko ime" />
-                    <input type="password" placeholder="Šifra" />
-                    <button>Login</button>
-                    <p>
-                        Nemate nalog? <Link to="/register">Napravite svoj nalog!</Link>
-                    </p>
-                </form>
-            </div>
-        </div>
-    )
+    const loginData = {
+      username: usernameRef.current.value,
+      password: passwordRef.current.value,
+    };
 
+    axiosClient
+      .post("/login", loginData)
+      .then(({ data }) => {
+        console.log("LOGIN RESPONSE:", data);
+        setUser(data.user);
+        setToken(data.token);
+        localStorage.setItem("ACCESS_TOKEN", data.token);
+        setErrors(null);
+        setMessage("Uspešno ste ulogovani!");
+        setMessageType("success");
+        if (data.user.uloga_id === 2) {
+          navigate("/admin_dashboard");
+        } else {
+          navigate("/dashboard");
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          if (err.response.status === 422 || err.response.status === 401) {
+            setErrors(err.response.data.errors || { login: [err.response.data.message] });
+            setMessage("Login neuspešan. Proverite podatke.");
+            setMessageType("error");
+          } else {
+            console.log(err.response.status);
+            console.log(err.response.data);
+            setMessage("Došlo je do greške. Pokušajte kasnije.");
+            setMessageType("error");
+          }
+        } else {
+          console.log("Network / CORS error");
+          setMessage("Network / CORS error. Pokušajte kasnije.");
+          setMessageType("error");
+        }
+      });
+  };
+
+  return (
+    <div>
+      <form onSubmit={onSubmit}>
+        <h1>Ulogujte se u svoj nalog!</h1>
+
+        {/* Popup poruka */}
+        {message && (
+          <div
+            style={{
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "5px",
+              color: "#fff",
+              backgroundColor: messageType === "success" ? "green" : "red",
+            }}
+          >
+            {message}
+          </div>
+        )}
+
+        {errors &&
+          Object.keys(errors).map((key) => (
+            <p key={key} style={{ color: "red" }}>
+              {errors[key][0]}
+            </p>
+          ))}
+
+        <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
+        <input ref={passwordRef} type="password" placeholder="Šifra" />
+        <Button type="submit">Login</Button>
+        <p>
+          Nemate nalog? <Link to="/register">Napravite svoj nalog!</Link>
+        </p>
+      </form>
+    </div>
+  );
 }

@@ -106,7 +106,7 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        // Dohvati default ulogu "korisnik"
+       
         $defaultUloga = Uloge::where('ime', 'korisnik')->first();
 
         if (!$defaultUloga) {

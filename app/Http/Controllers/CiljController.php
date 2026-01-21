@@ -5,9 +5,31 @@ namespace App\Http\Controllers;
 use App\Models\Cilj;
 use App\Http\Requests\StoreCiljRequest;
 use App\Http\Requests\UpdateCiljRequest;
-
+use Illuminate\Http\Request;
 class CiljController extends Controller
 {
+    public function store(Request $request)
+    {
+        $request->validate([
+            'hidriranost' => 'required|numeric',
+            'tezina' => 'required|numeric',
+            'kalorije' => 'required|integer',
+        ]);
+
+        $user = $request->user();
+
+         $cilj = Cilj::create([
+            'user_id' => auth()->id(), 
+            'hidriranost' => $request->hidriranost,
+            'tezina' => $request->tezina,
+            'kalorije' => $request->kalorije,
+        ]);
+
+        return response()->json([
+            'message' => 'Ciljevi uspešno sačuvani!',
+            'cilj' => $cilj
+        ]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,13 +46,7 @@ class CiljController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreCiljRequest $request)
-    {
-        //
-    }
+     
 
     /**
      * Display the specified resource.

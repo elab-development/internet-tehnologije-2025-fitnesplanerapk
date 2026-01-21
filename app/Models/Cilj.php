@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Cilj extends Model
 {
     use HasFactory;
+    protected $table = 'cilj';
     protected $fillable = [
+        'user_id',
         'hidriranost',
         'tezina',
-        'dnevne_kalorije',
+        'kalorije',
         
     ];
 
