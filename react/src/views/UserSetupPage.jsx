@@ -36,19 +36,22 @@ export default function UserSetupPage() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-
         const parametriSaDatumom = {
-        ...parametri,
-        date: new Date().toISOString().split('T')[0] 
+            ...parametri,
+            date: new Date().toISOString().split('T')[0],
         };
 
-        console.log('Ciljevi:', ciljevi);
-        console.log('Parametri:', parametriSaDatumom);
-
-        // axios.post("/api/user-setup", { ciljevi, parametri: parametriSaDatumom }) ...
+        try {
+            const response = await axiosClient.post("/parametri", parametriSaDatumom);
+            console.log("Parametri sačuvani:", response.data);
+            alert("Parametri su uspešno sačuvani!");
+        } catch (error) {
+            console.error(error);
+            alert("Greška pri čuvanju parametara");
+        }
     };
 
     const handleCiljeviSubmit = async (e) => {
@@ -101,7 +104,7 @@ export default function UserSetupPage() {
                 type="number"
                 name="kalorije"
                 value={ciljevi.kalorije}
-                onChange={handleCiljeviChange}
+                onChange={handleCiljeviChange}  
                 />
             </div>
             <Button type="button" onClick={handleCiljeviSubmit}>Sačuvaj ciljeve</Button>

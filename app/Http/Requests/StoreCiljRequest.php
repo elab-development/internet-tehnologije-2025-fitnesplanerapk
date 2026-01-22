@@ -13,7 +13,6 @@ class StoreCiljRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *

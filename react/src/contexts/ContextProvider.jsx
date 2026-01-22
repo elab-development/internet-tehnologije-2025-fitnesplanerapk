@@ -41,7 +41,7 @@ export const ContextProvider = ({ children }) => {
       .finally(() => {
         setLoading(false);
       });
-    }, []);
+    }, [token]);
 
     if (loading) {
         return <p>Učitavanje...</p>;

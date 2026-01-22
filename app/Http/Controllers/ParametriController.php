@@ -13,8 +13,19 @@ class ParametriController extends Controller
      */
     public function index()
     {
-        //
+        $parametri = Parametri::where('user_id', $request->user()->id)
+                        ->orderBy('date', 'desc')
+                        ->get();
+
+        return response()->json($parametri);
     }
+
+    public function allParametri()
+    {
+        $parametri = auth()->user()->parametri()->orderByDesc('date')->get();
+        return response()->json($parametri);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -29,7 +40,34 @@ class ParametriController extends Controller
      */
     public function store(StoreParametriRequest $request)
     {
-        //
+        $validated = $request->validate([
+            'date' => 'required|date',
+            'tezina' => 'required|numeric',
+            'visina' => 'required|numeric',
+            'masti' => 'required|numeric',
+            'misici' => 'required|numeric',
+            'obim_struka' => 'required|numeric',
+        ]);
+
+        // BMI računamo na backendu (preporuka)
+        $visinaUMetrima = $validated['visina'] / 100;
+        $bmi = $validated['tezina'] / ($visinaUMetrima * $visinaUMetrima);
+
+        $parametri = Parametri::create([
+            'user_id' => auth()->id(),
+            'date' => $validated['date'],
+            'tezina' => $validated['tezina'],
+            'visina' => $validated['visina'],
+            'bmi' => round($bmi, 2),
+            'masti' => $validated['masti'],
+            'misici' => $validated['misici'],
+            'obim_struka' => $validated['obim_struka'],
+        ]);
+
+        return response()->json([
+            'message' => 'Parametri uspešno sačuvani',
+            'parametri' => $parametri
+        ], 201);
     }
 
     /**

@@ -33,11 +33,20 @@ class CiljController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $ciljevi = Cilj::where('user_id', $request->user()->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
+        return response()->json($ciljevi);
+    }
+    
+    public function allCilj()
+    {
+        $ciljevi = auth()->user()->ciljevi()->orderByDesc('created_at')->get();
+        return response()->json($ciljevi);
+    }
     /**
      * Show the form for creating a new resource.
      */

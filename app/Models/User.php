@@ -103,7 +103,7 @@ class User extends Authenticatable
     }
 
     // Relacije
-    public function cilj()
+    public function ciljevi()
     {
         return $this->hasMany(Cilj::class);
     }
@@ -115,6 +115,6 @@ class User extends Authenticatable
 
     public function uloga()
     {
-        return $this->belongsTo(Uloge::class, 'uloga_id'); // povezujemo sa uloga_id
+        return $this->belongsTo(Uloge::class, 'uloga_id'); 
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Parametri extends Model
 {
     use HasFactory;
+    protected $table = 'parametri';
     protected $fillable = [
         'user_id',
         'date',
