@@ -12,6 +12,18 @@ use App\Http\Controllers\CiljController;
 // Route::middleware('cors')->group(function () {
 //     Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 // });
+use App\Http\Controllers\Api\FoodController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Dobavljanje obroka za trenutnog korisnika za danas
+    Route::get('/obroci', [FoodController::class, 'index']);
+
+    // Dodavanje novog obroka
+    Route::post('/obroci', [FoodController::class, 'store']);
+
+    // Brisanje obroka
+    Route::delete('/obroci/{id}', [FoodController::class, 'destroy']);
+});
 
 
 Route::post('/register', [AuthController::class, 'register']);

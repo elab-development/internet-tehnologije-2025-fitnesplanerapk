@@ -15,6 +15,13 @@ export default defineConfig({
     server: {
         host: '127.0.0.1',
         port: 3000, // default port za vite
+        proxy: {
+      // proxy za OpenFoodFacts
+      '/api/namirnice': {
+        target: 'https://world.openfoodfacts.org',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/namirnice/, '')
+      }
     },
-})
+}})
 

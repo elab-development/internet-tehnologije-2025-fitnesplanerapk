@@ -1,14 +1,12 @@
-import { useState } from 'react'
-
+import React from 'react'
+import FoodPage from './components/food/FoodPage'
 import './App.css'
 
 function App() {
-  //const [count, setCount] = useState(0)
-
   return (
-    <>
+    <div>
      
-    </>
+    </div>
   )
 }
 
