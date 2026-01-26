@@ -1,7 +1,20 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
+  plugins: [
+    laravel({
+      input: ['react/src/main.jsx'], // putanja do tvog main.jsx
+      refresh: true, // omogućava React Fast Refresh
+    }),
+    react(),
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'react/src'), // opcionalno za lakše importovanje
+    },
+  },
+});
+
