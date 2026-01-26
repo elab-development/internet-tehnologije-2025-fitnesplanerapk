@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\CiljController;
 use App\Http\Controllers\ParametriController;
-use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\VezbaController;
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\PodaciController;
 // Route::middleware('cors')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
@@ -43,14 +44,17 @@ Route::middleware('auth:sanctum')->get('/all-ciljevi', [CiljController::class, '
 Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::class, 'allParametri']);
 
 
-Route::middleware('auth:sanctum')->group(function () {
+// Vežbe
+Route::get('/vezbe', [VezbaController::class, 'index']);
 
-    Route::get('/programi', [ProgramController::class, 'index']);
-    Route::post('/program', [ProgramController::class, 'store']);
-    Route::delete('/program/{id}', [ProgramController::class, 'destroy']);
+// Programi
+Route::get('/programi', [ProgramController::class, 'index']);
+Route::post('/programi', [ProgramController::class, 'store']);
+Route::put('/programi/{id}', [ProgramController::class, 'update']);
+Route::delete('/programi/{id}', [ProgramController::class, 'destroy']);
 
-    Route::get('/vezbe', [VezbaController::class, 'index']);
-
-});
+// Podaci o vežbi
+Route::post('/podaci', [PodaciController::class, 'store']);
+Route::put('/podaci/{id}', [PodaciController::class, 'update']);
 
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);

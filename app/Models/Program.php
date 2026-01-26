@@ -9,19 +9,27 @@ class Program extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
-    'naziv',
-    'datum',
-    'trajanje',
-    'potrosene_kalorije',
-    'intenzitet',
-    'korisnik_id'
-];
-     public function vezbe()
+        'naziv',
+        'datum',
+        'trajanje',
+        'potrosene_kalorije',
+        'intenzitet',
+        'korisnik_id'
+    ];
+
+    public function vezbe()
     {
-        return $this->belongsToMany(Vezba::class, 'program_vezba');
+        // Dodali smo pivot kolonu 'dan'
+        return $this->belongsToMany(Vezba::class, 'program_vezba')
+                    ->withPivot('dan')
+                    ->withTimestamps();
     }
 
-
+    public function podaci()
+    {
+        // Veza na detalje izvođenja vežbi
+        return $this->hasMany(Podaci::class);
+    }
 }
+
