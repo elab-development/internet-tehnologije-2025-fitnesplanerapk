@@ -33,9 +33,9 @@ Route::middleware('auth:sanctum')->post('/cilj', [CiljController::class, 'store'
 Route::middleware('auth:sanctum')->post('/parametri', [ParametriController::class, 'store']);
 
 
-Route::middleware('auth:sanctum')->post('/cilj', [CiljController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/cilj', [CiljController::class, 'index']);
 
-Route::middleware('auth:sanctum')->post('/parametri', [ParametriController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/parametri', [ParametriController::class, 'index']);
 
 Route::middleware('auth:sanctum')->get('/all-ciljevi', [CiljController::class, 'allCilj']);
 Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::class, 'allParametri']);
