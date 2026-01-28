@@ -5,7 +5,7 @@ import axiosClient from "./axios-client.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button.jsx";
-
+import "../styles/Login.css";
 export default function Login() {
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -59,11 +59,11 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <form onSubmit={onSubmit}>
+    <div className="login-container">
+      <form onSubmit={onSubmit} className="login-form">
         <h1>Ulogujte se u svoj nalog!</h1>
 
-        {/* Popup poruka */}
+       
         {message && (
           <div
             style={{
@@ -87,7 +87,7 @@ export default function Login() {
 
         <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
         <input ref={passwordRef} type="password" placeholder="Šifra" />
-        <Button type="submit">Login</Button>
+        <Button type="submit" className="w-full">Login</Button>
         <p>
           Nemate nalog? <Link to="/register">Napravite svoj nalog!</Link>
         </p>

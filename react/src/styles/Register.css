@@ -1,0 +1,125 @@
+/* src/styles/Register.css */
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* visina ekrana */
+  width: 100vw;       /* širina ekrana */
+  background: linear-gradient(135deg, #667eea, #515bff);
+  font-family: 'Raleway', sans-serif;
+}
+
+.register-form {
+  background-color: #1a1a1a;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 450px;
+  color: #fff;
+}
+
+.register-form h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  color: #fff;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"],
+.register-form input[type="date"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.register-form input::placeholder {
+  color: #aaa;
+}
+
+.register-form button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #eda336;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.register-form button:hover {
+  background-color: #eb8d00;
+}
+
+.register-form p {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.register-form p a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.register-form p a:hover {
+  text-decoration: underline;
+}
+
+/* Popup poruke */
+.register-form .message {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  color: #fff;
+  text-align: center;
+}
+
+.register-form .message.success {
+  background-color: #38a169; 
+}
+
+.register-form .message.error {
+  background-color: #e53e3e; 
+}
+
+/* Validation errors */
+.register-form p.error-text {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin: -10px 0 10px 0;
+}
+.register-form select {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  appearance: none; /* uklanja default strelicu na browserima */
+}
+
+.register-form select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.register-form select option {
+  background-color: #2a2a2a;
+  color: #fff;
+}

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useStateContext } from '../contexts/ContextProvider.jsx';
 import Button from "../components/Button.jsx";
 import axiosClient from "./axios-client.js";
-
+import Header from '../components/Header.jsx';
+import Footer from "../components/Footer.jsx";
 export default function UserSetupPage() {
     const { user } = useStateContext();
     const [ciljevi, setCiljevi] = useState({
@@ -67,102 +68,125 @@ export default function UserSetupPage() {
     };
 
     return (
-        <div>
-        <div style={{ padding: '20px' }}>
-     
-            <h1>
-                Zdravo {user?.ime || 'korisniče'}, hajde da unesemo tvoje ciljeve i parametre koje ćeš pratiti tokom vremena!
-            </h1>
-        </div>
-        <div style={{ padding: '20px' }}>
-        <h1>User Setup</h1>
-        <form onSubmit={handleSubmit}>
-        
-            <section style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
-            <h2>Ciljevi</h2>
-            <div>
-                <label>Hidriranost:</label>
-                <input
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
+
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+        <h1 className="text-3xl font-bold mb-4 text-textPrimary text-center">
+          Zdravo {user?.ime || 'korisniče'}! Unesi svoje ciljeve i parametre
+        </h1>
+
+        <form className="w-full max-w-md" onSubmit={handleSubmit}>
+
+   
+          <section className="bg-surface rounded-xl shadow p-6 mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Ciljevi</h2>
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Hidriranost:</label>
+              <input
                 type="text"
                 name="hidriranost"
                 value={ciljevi.hidriranost}
                 onChange={handleCiljeviChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <div>
-                <label>Težina:</label>
-                <input
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Težina:</label>
+              <input
                 type="number"
                 name="tezina"
                 value={ciljevi.tezina}
                 onChange={handleCiljeviChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <div>
-                <label>Dnevne kalorije:</label>
-                <input
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Dnevne kalorije:</label>
+              <input
                 type="number"
                 name="kalorije"
                 value={ciljevi.kalorije}
                 onChange={handleCiljeviChange}  
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <Button type="button" onClick={handleCiljeviSubmit}>Sačuvaj ciljeve</Button>
-            </section>
 
-            <section style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
-            <h2>Parametri</h2>
-            <div>
-                <label>Težina:</label>
-                <input
+            <Button type="button" onClick={handleCiljeviSubmit} className="mt-2 w-full">
+              Sačuvaj ciljeve
+            </Button>
+          </section>
+
+          <section className="bg-surface rounded-xl shadow p-6 mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Parametri</h2>
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Težina:</label>
+              <input
                 type="number"
                 name="tezina"
                 value={parametri.tezina}
                 onChange={handleParametriChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <div>
-                <label>Visina:</label>
-                <input
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Visina:</label>
+              <input
                 type="number"
                 name="visina"
                 value={parametri.visina}
                 onChange={handleParametriChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <div>
-                <label>Masti (%):</label>
-                <input
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Masti (%):</label>
+              <input
                 type="number"
                 name="masti"
                 value={parametri.masti}
                 onChange={handleParametriChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <div>
-                <label>Mišići (%):</label>
-                <input
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Mišići (%):</label>
+              <input
                 type="number"
                 name="misici"
                 value={parametri.misici}
                 onChange={handleParametriChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <div>
-                <label>Obim struka (cm):</label>
-                <input
+
+            <div className="mb-3">
+              <label className="block mb-1 font-medium">Obim struka (cm):</label>
+              <input
                 type="number"
                 name="obim_struka"
                 value={parametri.obim_struka}
                 onChange={handleParametriChange}
-                />
+                className="w-full border border-black rounded px-3 py-2"
+              />
             </div>
-            <Button type="submit">Sačuvaj parametre</Button>
-            </section>
 
-            
+            <Button type="submit" className="mt-2 w-full">
+              Sačuvaj parametre
+            </Button>
+          </section>
+
         </form>
-        </div>
-        </div>
-    );
+      </main>
+      <Footer></Footer>
+    </div>
+  );
+
 }

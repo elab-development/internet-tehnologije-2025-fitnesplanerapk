@@ -1,129 +1,10 @@
-// import React from 'react'
 
-// export default function Dashboard() {
-//   return (
-//     <div class="dashboard">
-//       {/* header aplikacije ubacujem kao reusable komponentu posle */}
-//       <header className="dashboard-header">
-//         <h1>Moj fitness dashboard</h1>
-//         <p>Pregled tvog napretka i plana</p>
-//       </header>
-//     <section className="card user-info">
-//         <h2>Moji podaci</h2>
-//         <ul>
-//           <li>Ime: <strong>Ime Prezime</strong></li>
-//           <li>Prezme: <strong>Ime Prezime</strong></li>
-//           <li>Pol: <strong>Ženski</strong></li>
-//           <li>Datum rodjenja: <strong>25</strong></li>
-//         </ul>
-//       </section>
-
-//       <section className="card parametri">
-//         <h2>Trenutni parametri</h2>
-//         <ul>
-//           <li>Datum unosa: <strong>...</strong></li>
-//           <li>Težina: <strong>...</strong></li>
-//           <li>Visina: <strong>...</strong></li>
-//           <li>BMI: <strong>...</strong></li>
-//           <li>Procenat masti: <strong>...</strong></li>
-//           <li>Procenat mišića: <strong>...</strong></li>
-//           <li>Obim struka: <strong>...</strong></li>
-//         </ul>
-//         <h2>Prethodno uneti parametri</h2>
-//         <tbody>
-//           {/* {parametri.map(p => (
-//             <tr key={p.id}>
-//               <td>{p.naziv}</td>
-//               <td>{p.vrednost}</td>
-//               <td>{p.jedinica}</td>
-//               <td>{p.datumUnosa}</td>
-//             </tr>
-//           ))} */}
-//         </tbody>
-//       </section>
-      
-
-//       <section className="card goal">
-//         <h2>Moji cilj</h2>
-//         <p>
-//           Hidriranost
-//         </p>
-//         <p>
-//           Težina
-//         </p>
-//         <p>
-//           Dnevne kalorije
-//         </p>
-//       </section>
-
-      
-//     <section>
-//        <h2>Planovi ishrane</h2>
-//         <table className="nutrition-plan-table">
-//           <thead>
-//             <tr>
-//               <th>Naziv obroka</th>
-              
-//               <th>Kalorije</th>
-//               <th>Proteini (g)</th>
-//               <th>UH</th>
-//               <th>Masti (g)</th>
-//               <th>Datum</th>
-//             </tr>
-//           </thead>
-
-//           <tbody>
-//             {/* {planIshrane.map(obrok => (
-//               <tr key={obrok.id}>
-//                 <td>{obrok.nazivObroka}</td>
-                
-//                 <td>{obrok.kalorije}</td>
-//                 <td>{obrok.proteini}</td>
-//                 <td>{obrok.ugljeniHidrati}</td>
-//                 <td>{obrok.masti}</td>
-//                 <td>{obrok.datun}</td>
-//               </tr>
-//             ))} */}
-//           </tbody>
-//         </table>
-//     </section>
-
-//     <section>
-//       <h2>Planovi treninga</h2>
-//          <table className="training-plan-table">
-//             <thead>
-//               <tr>
-//                 <th>Naziv treninga</th>
-//                 <th>Tip</th>
-//                 <th>Trajanje (min)</th>
-//                 <th>Intenzitet</th>
-//                 <th>Datum</th>
-//                 <th>Vreme</th>
-//                 <th>Potrosene kalorije</th>
-//               </tr>
-//             </thead>
-
-//             <tbody>
-//               {/* {planTreninga.map(trening => (
-//                 <tr key={trening.id}>
-//                   <td>{trening.naziv}</td>
-//                   <td>{trening.tip}</td>
-//                   <td>{trening.trajanje}</td>
-//                   <td>{trening.intenzitet}</td>
-//                   <td>{trening.datum}</td>
-//                   <td>{trening.vreme}</td>
-//                 </tr>
-//               ))} */}
-//             </tbody>
-//           </table>    
-//     </section>
-   
-//     </div>
-//   )
-// }
-import React, { useEffect, useState } from 'react';
-import { useStateContext } from '../contexts/ContextProvider.jsx';
-import axiosClient from './axios-client.js';
+import React, { useEffect, useState } from "react";
+import { useStateContext } from "../contexts/ContextProvider.jsx";
+import axiosClient from "./axios-client.js";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
+import Button from "../components/Button.jsx";
 
 export default function Dashboard() {
   const { user } = useStateContext();
@@ -131,156 +12,220 @@ export default function Dashboard() {
   const [parametri, setParametri] = useState([]);
   const [ciljevi, setCiljevi] = useState([]);
 
-  // useEffect(() => {
-  //   if (!user) return;
+  const [showParametri, setShowParametri] = useState(false);
+  const [showCiljevi, setShowCiljevi] = useState(false);
 
-  //   axiosClient.get('/parametri')
-  //     .then(res => {
-        
-  //       const sorted = res.data.sort((a, b) => new Date(b.date) - new Date(a.date));
-  //       setParametri(sorted);
-  //     })
-  //     .catch(err => console.log(err));
-
-    
-  //   axiosClient.get('/cilj')
-  //     .then(res => {
-  //       const sorted = res.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-  //       setCiljevi(sorted);
-  //     })
-  //     .catch(err => console.log(err));
-
-  // }, [user]);
   useEffect(() => {
     if (!user) return;
 
-    axiosClient.get('/all-parametri')
+    axiosClient.get("/all-parametri")
       .then(res => setParametri(res.data))
       .catch(err => console.log(err));
 
-    axiosClient.get('/all-ciljevi')
+    axiosClient.get("/all-ciljevi")
       .then(res => setCiljevi(res.data))
       .catch(err => console.log(err));
   }, [user]);
 
-
-  // Helper za prikaz poslednjeg unosa ili "–"
   const lastParam = parametri[0] || {};
   const lastCilj = ciljevi[0] || {};
-
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("sr-RS");
+  };
   return (
-    <div className="dashboard">
+    <div className="min-h-screen bg-background flex flex-col">
+      <Header />
 
-      <header className="dashboard-header">
-        <h1>Moj fitness dashboard</h1>
-        <p>Pregled tvog napretka i plana</p>
-      </header>
+      <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
 
-      <section className="card user-info">
-        <h2>Moji podaci</h2>
-        <table>
-          <tbody>
-            <tr><td>Ime</td><td>{user?.ime || '-'}</td></tr>
-            <tr><td>Prezime</td><td>{user?.prezime || '-'}</td></tr>
-            <tr><td>Pol</td><td>{user?.pol || '-'}</td></tr>
-            <tr><td>Datum rođenja</td><td>{user?.datumRodjenja || '-'}</td></tr>
-          </tbody>
-        </table>
-      </section>
+       
+        <section className="mb-10">
+          <h1 className="text-3xl font-bold text-textPrimary mb-2">
+            Moj fitness dashboard
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Pregled tvog napretka, ciljeva i planova
+          </p>
 
-      <section className="card parametri">
-        <h2>Trenutni parametri</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Datum unosa</th>
-              <th>Težina</th>
-              <th>Visina</th>
-              <th>BMI</th>
-              <th>Masti (%)</th>
-              <th>Mišići (%)</th>
-              <th>Obim struka (cm)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {parametri.map(p => (
-              <tr key={p.id}>
-                <td>{p.date}</td>
-                <td>{p.tezina}</td>
-                <td>{p.visina}</td>
-                <td>{p.bmi}</td>
-                <td>{p.masti}</td>
-                <td>{p.misici}</td>
-                <td>{p.obim_struka}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+          <div className="bg-surface rounded-xl p-6 shadow space-y-1">
+            <p><strong>Ime:</strong> {user?.ime || "-"}</p>
+            <p><strong>Prezime:</strong> {user?.prezime || "-"}</p>
+            <p><strong>Pol:</strong> {user?.pol || "-"}</p>
+            <p><strong>Datum rođenja:</strong> {formatDate(user?.datumRodjenja)|| "-"}</p>
+          </div>
+        </section>
 
-      <section className="card ciljevi">
-        <h2>Moji ciljevi</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Hidriranost</th>
-              <th>Težina</th>
-              <th>Dnevne kalorije</th>
-              <th>Datum unosa</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ciljevi.map(c => (
-              <tr key={c.id}>
-                <td>{c.hidriranost}</td>
-                <td>{c.tezina}</td>
-                <td>{c.kalorije}</td>
-                <td>{c.created_at}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
+   
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      <section className="card nutrition-plan">
-        <h2>Planovi ishrane</h2>
-        <table className="nutrition-plan-table">
-          <thead>
-            <tr>
-              <th>Naziv obroka</th>
-              <th>Kalorije</th>
-              <th>Proteini (g)</th>
-              <th>UH</th>
-              <th>Masti (g)</th>
-              <th>Datum</th>
-            </tr>
-          </thead>
-          <tbody>
+      
+          <div className="bg-surface rounded-xl p-6 shadow">
+            <h2 className="text-xl font-semibold mb-4">Ciljevi</h2>
+
+            {ciljevi.length === 0 ? (
+              <p className="text-gray-500">Nema unetih ciljeva</p>
+            ) : (
+              <>
+                <ul className="space-y-2 mb-3">
+                  <li><strong>Hidriranost:</strong> {lastCilj.hidriranost}</li>
+                  <li><strong>Težina:</strong> {lastCilj.tezina}</li>
+                  <li><strong>Kalorije:</strong> {lastCilj.kalorije}</li>
+                  <li><strong>Datum:</strong> {formatDate(lastCilj.created_at)}</li>
+                </ul>
+
+                <Button
+                  onClick={() => setShowCiljevi(true)}
+                  className="text-textSecondary underline hover:opacity-80"
+                >
+                  Prikaži sve ciljeve 
+                </Button>
+              </>
+            )}
+          </div>
+
+
+          <div className="bg-surface rounded-xl p-6 shadow">
+            <h2 className="text-xl font-semibold mb-4">Parametri</h2>
+
+            {parametri.length === 0 ? (
+              <p className="text-gray-500">Nema unetih parametara</p>
+            ) : (
+              <>
+                <ul className="space-y-2 mb-3">
+                  <li><strong>Težina:</strong> {lastParam.tezina}</li>
+                  <li><strong>Visina:</strong> {lastParam.visina}</li>
+                  <li><strong>BMI:</strong> {lastParam.bmi}</li>
+                  <li><strong>Masti:</strong> {lastParam.masti}</li>
+                  <li><strong>Mišići:</strong> {lastParam.misici}</li>
+                </ul>
+
+                <Button
+                  onClick={() => setShowParametri(true)}
+                  className="text-textSecondary underline hover:opacity-80"
+                >
+                  Prikaži sve parametre
+                </Button>
+              </>
+            )}
+          </div>
+
+
+          <div className="bg-surface rounded-xl p-6 shadow">
+            <h2 className="text-xl font-semibold mb-4">Plan ishrane</h2>
+            <p className="text-gray-500 mb-3">
+              Trenutno nema unetih planova ishrane.
+            </p>
+            <span className="text-sm text-textSecondary">
+              (Ovde kasnije ide tabela ili modal)
+            </span>
+          </div>
+
          
-          </tbody>
-        </table>
-      </section>
+          <div className="bg-surface rounded-xl p-6 shadow">
+            <h2 className="text-xl font-semibold mb-4">Plan treninga</h2>
+            <p className="text-gray-500 mb-3">
+              Trenutno nema unetih planova treninga.
+            </p>
+            <span className="text-sm text-textSecondary">
+              (Ovde kasnije ide tabela ili modal)
+            </span>
+          </div>
 
-      <section className="card training-plan">
-        <h2>Planovi treninga</h2>
-        <table className="training-plan-table">
-          <thead>
-            <tr>
-              <th>Naziv treninga</th>
-              <th>Tip</th>
-              <th>Trajanje (min)</th>
-              <th>Intenzitet</th>
-              <th>Datum</th>
-              <th>Vreme</th>
-              <th>Potrosene kalorije</th>
-            </tr>
-          </thead>
-          <tbody>
-            
-          </tbody>
-        </table>
-      </section>
+        </section>
+      </main>
 
+      <Footer />
+
+ 
+      {showCiljevi && (
+        <Modal title="Svi ciljevi" onClose={() => setShowCiljevi(false)}>
+          <table className="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
+            <thead className="bg-gray-100 text-black">
+              <tr>
+                <th className="px-3 py-2 text-left">Hidriranost</th>
+                <th className="px-3 py-2 text-center">Ciljna težina</th>
+                <th className="px-3 py-2 text-center">Kalorije</th>
+                <th className="px-3 py-2 text-center">Datum</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {ciljevi.map((c) => (
+                <tr key={c.id} className="border-t hover:bg-gray-50">
+                  <td className="px-3 py-2">{c.hidriranost}</td>
+                  <td className="px-3 py-2 text-center">{c.tezina}</td>
+                  <td className="px-3 py-2 text-center">{c.kalorije}</td>
+                  <td className="px-3 py-2 text-center">
+                    {formatDate(c.created_at)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+        </Modal>
+      )}
+
+    
+      {showParametri && (
+        <Modal title="Svi parametri" onClose={() => setShowParametri(false)}>
+          <table className="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
+            <thead className="bg-gray-100 text-black">
+              <tr>
+                <th className="px-3 py-2 text-left">Datum</th>
+                <th className="px-3 py-2 text-center">Težina (kg)</th>
+                <th className="px-3 py-2 text-center">Visina (cm)</th>
+                <th className="px-3 py-2 text-center">BMI</th>
+                <th className="px-3 py-2 text-center">Masti (%)</th>
+                <th className="px-3 py-2 text-center">Mišići (%)</th>
+                <th className="px-3 py-2 text-center">Struk (cm)</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {parametri.map((p) => (
+                <tr key={p.id} className="border-t hover:bg-gray-50">
+                  <td className="px-3 py-2">{formatDate(p.date)}</td>
+                  <td className="px-3 py-2 text-center">{p.tezina}</td>
+                  <td className="px-3 py-2 text-center">{p.visina}</td>
+                  <td className="px-3 py-2 text-center">{p.bmi}</td>
+                  <td className="px-3 py-2 text-center">{p.masti}</td>
+                  <td className="px-3 py-2 text-center">{p.misici}</td>
+                  <td className="px-3 py-2 text-center">{p.obim_struka}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Modal>
+      )}
     </div>
-  )
+  );
 }
+
+
+    function Modal({ title, children, onClose }) {
+      return (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white text-black rounded-xl p-6 w-[95%] max-w-6xl shadow-2xl">
+            
+            <div className="flex justify-between items-center mb-6 border-b pb-3">
+              <h3 className="text-xl font-semibold">{title}</h3>
+              <button
+                onClick={onClose}
+                className="text-gray-600 hover:text-red-500 text-2xl font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="overflow-x-auto">
+              {children}
+            </div>
+
+          </div>
+        </div>
+      );
+    }
+

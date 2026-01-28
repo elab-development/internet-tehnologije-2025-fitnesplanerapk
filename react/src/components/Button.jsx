@@ -1,6 +1,6 @@
 // src/components/Button.jsx
 import React from "react";
-
+import "../index.css";
 export default function Button({
   children,
   onClick,
@@ -13,12 +13,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`
-        px-4 py-2 rounded-lg font-medium transition
-        bg-blue-600 text-white hover:bg-blue-700
-        disabled:bg-gray-400 disabled:cursor-not-allowed
-        ${className}
-      `}
+       className={`button ${className}`}
     >
       {children}
     </button>

@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import axiosClient from "./axios-client.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { useNavigate } from "react-router-dom";
-
+import "../styles/Register.css"
 export default function Register() {
   const imeRef = useRef();
   const prezimeRef = useRef();
@@ -61,47 +61,53 @@ export default function Register() {
   };
 
   return (
-    <div>
+  <div className="register-container">
+    <form className="register-form" onSubmit={onSubmit}>
       <h1>Napravite svoj nalog!</h1>
 
       {/* Popup poruka */}
       {message && (
-        <div
-          style={{
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "5px",
-            color: "#fff",
-            backgroundColor: messageType === "success" ? "green" : "red",
-          }}
-        >
+        <div className={`message ${messageType}`}>
           {message}
         </div>
       )}
 
       {/* Validation errors */}
       {errors && (
-        <div className="alert">
+        <div>
           {Object.keys(errors).map((key) => (
-            <p key={key}>{errors[key][0]}</p>
+            <p key={key} className="error-text">
+              {errors[key][0]}
+            </p>
           ))}
         </div>
       )}
 
-      <form onSubmit={onSubmit}>
-        <input ref={imeRef} type="text" placeholder="Ime" />
-        <input ref={prezimeRef} type="text" placeholder="Prezime" />
-        <input ref={emailRef} type="email" placeholder="Email adresa" />
-        <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
-        <input ref={passwordRef} type="password" placeholder="Lozinka" />
-        <input ref={polRef} type="text" placeholder="Pol" />
-        <input ref={datumRodjenjaRef} type="date" placeholder="Datum rodjenja" />
-        <button type="submit">Register</button>
-      </form>
+      {/* Input polja */}
+      <input ref={imeRef} type="text" placeholder="Ime" />
+      <input ref={prezimeRef} type="text" placeholder="Prezime" />
+      <input ref={emailRef} type="email" placeholder="Email adresa" />
+      <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
+      <input ref={passwordRef} type="password" placeholder="Lozinka" />
 
+      {/* Combo box za pol */}
+      <select ref={polRef} name="pol" defaultValue="">
+        <option value="" disabled>Izaberite pol</option>
+        <option value="muski">Muški</option>
+        <option value="zenski">Ženski</option>
+      </select>
+
+      <input ref={datumRodjenjaRef} type="date" placeholder="Datum rođenja" />
+
+      {/* Dugme */}
+      <button type="submit">Register</button>
+
+      {/* Link za login */}
       <p>
         Imate nalog? <Link to="/login">Ulogujte se u svoj nalog!</Link>
       </p>
-    </div>
-  );
+    </form>
+  </div>
+);
+
 }
