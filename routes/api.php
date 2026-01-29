@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\CiljController;
 use App\Http\Controllers\ParametriController;
+use App\Http\Controllers\VezbaController;
 // Route::middleware('cors')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
@@ -39,5 +40,8 @@ Route::middleware('auth:sanctum')->get('/parametri', [ParametriController::class
 
 Route::middleware('auth:sanctum')->get('/all-ciljevi', [CiljController::class, 'allCilj']);
 Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::class, 'allParametri']);
+
+Route::middleware('auth:sanctum')->get('/vezbe', [VezbaController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/vezbe', [VezbaController::class, 'store']);
 
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);
