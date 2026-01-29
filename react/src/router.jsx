@@ -1,66 +1,4 @@
-// import { createBrowserRouter } from "react-router-dom";
-// import Login from "./views/Login.jsx";
-// import Register from "./views/Register.jsx";
-// import Users from "./views/Users.jsx";
-// import NotFound from "./views/NotFound.jsx";
-// import React from 'react'
-// import DefaultLayout from "./components/DefaultLayout.jsx";
-// import GuestLayout from "./components/GuestLayout.jsx";
-// import Dashboard from "./views/Dashboard.jsx";
-// import AdminDashboard from "./views/AdminDashboard.jsx";
 
-// const router=createBrowserRouter([
-
-//     {
-//         path:'/',
-//         element: <DefaultLayout />,
-//         children:[
-            
-//         {
-//             path:'/users',
-//             element: <Users />
-//         },
-
-//         {
-//             path:'/dashboard',
-//             element: <Dashboard />
-//         },
-
-//         {
-//             path:'/admin_dashboard',
-//             element: <AdminDashboard />
-//         }
-
-
-//         ]
-//     },
-
-//     {
-//         path:'/',
-//         element: <GuestLayout />,
-//         children:[
-//             {
-//                 path:'/login',
-//                 element: <Login />
-//             },
-
-//             {
-//                 path:'/register',
-//                 element: <Register />
-//             }
-//         ]
-//     },
-
-    
-
-
-//     {
-//         path:'*',
-//         element: <NotFound />
-//     }
-// ])
-
-// export default router;
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "./views/Login.jsx";
 import Register from "./views/Register.jsx";
@@ -72,6 +10,8 @@ import Dashboard from "./views/Dashboard.jsx";
 import AdminDashboard from "./views/AdminDashboard.jsx";
 import AdminRoute from "./AdminRoute.jsx";
 import UserSetupPage from "./views/UserSetupPage.jsx";
+import DodajObrok from "./views/Ishrana.jsx";
+import ObrociPregled from "./views/ObrociPregled.jsx";
 
 
 const router = createBrowserRouter([
@@ -98,7 +38,16 @@ const router = createBrowserRouter([
       {
         path: '/userSetup',
         element: <UserSetupPage />
-      }
+      },
+      {
+          path: '/dodajObrok',
+          element: <DodajObrok />
+},
+     {
+          path: '/obrociPregled',
+          element: <ObrociPregled />
+}
+
     ]
   },
 

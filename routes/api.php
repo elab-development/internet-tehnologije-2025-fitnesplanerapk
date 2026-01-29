@@ -6,12 +6,29 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\CiljController;
 use App\Http\Controllers\ParametriController;
+use App\Http\Controllers\ObrokController;
+use App\Http\Controllers\HranaController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/obroci', [ObrokController::class, 'store']);
+    Route::get('/obroci', [ObrokController::class, 'index']);
+    Route::get('/hrana', [HranaController::class, 'index']);
+});
+
+
 // Route::middleware('cors')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
 // Route::middleware('cors')->group(function () {
 //     Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 // });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/obrociPregled', [ObrokController::class, 'pregled']);
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/obrociPregled', [ObrokController::class, 'obrociPregled']);
+});
+
 
 
 Route::post('/register', [AuthController::class, 'register']);

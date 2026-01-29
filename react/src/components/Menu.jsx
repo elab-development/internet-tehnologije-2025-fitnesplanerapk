@@ -1,65 +1,22 @@
-// import { NavLink } from "react-router-dom";
-// import "../index.css";
-// export default function Menu() {
-//     const menuItems = [
-//         { label: "Dashboard", to: "/dashboard" },
-        
-//         { label: "User setup", to: "/userSetup" },
-        
-//     ];
-
-//     return (
-//         <nav style={styles.nav} >
-//             {menuItems.map((item) => (
-//                 <NavLink
-//                     key={item.to}
-//                     to={item.to}
-//                     style={({ isActive }) => ({
-//                         ...styles.link,
-//                         ...(isActive ? styles.active : {}),
-//                     })}
-//                 >
-//                     {item.label}
-//                 </NavLink>
-//             ))}
-//         </nav>
-//     );
-// }
-
-// const styles = {
-//     nav: {
-//         display: "flex",
-//         gap: "20px",
-//         alignItems: "center",
-//         padding: "16px", 
-//         backgroundColor: "var(--color-textSecondary)",
-//     },
-//     link: {
-//         textDecoration: "none",
-//         color: "#fff",
-//         fontWeight: "500",
-//         paddingBottom: "2px",
-//     },
-//     active: {
-//         borderBottom: "2px solid #fff",
-//     },
-// };
 import { NavLink } from "react-router-dom";
 
 export default function Menu() {
   const menuItems = [
     { label: "Dashboard", to: "/dashboard" },
     { label: "User setup", to: "/userSetup" },
+    { label: "Obroci", to: "/obrociPregled" },
+    { label: "Dodaj Obrok", to: "/dodajObrok" },
   ];
 
   return (
-    <nav className="bg-textSecondary flex gap-5 items-center p-4">
+    <nav className="flex flex-col gap-2">
       {menuItems.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
           className={({ isActive }) =>
-            `text-white font-medium pb-1 ${isActive ? "border-b-2 border-white" : ""}`
+            `block px-3 py-2 rounded-md font-medium transition
+             ${isActive ? "bg-blue-600 text-white shadow-md" : "hover:bg-blue-100 hover:text-blue-800"}`
           }
         >
           {item.label}
