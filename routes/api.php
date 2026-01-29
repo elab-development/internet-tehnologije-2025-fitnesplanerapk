@@ -8,12 +8,13 @@ use App\Http\Controllers\CiljController;
 use App\Http\Controllers\ParametriController;
 use App\Http\Controllers\ObrokController;
 use App\Http\Controllers\HranaController;
-
+use App\Http\Controllers\VezbaController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/obroci', [ObrokController::class, 'store']);
     Route::get('/obroci', [ObrokController::class, 'index']);
     Route::get('/hrana', [HranaController::class, 'index']);
 });
+
 
 
 // Route::middleware('cors')->get('/user', function (Request $request) {
@@ -56,5 +57,8 @@ Route::middleware('auth:sanctum')->get('/parametri', [ParametriController::class
 
 Route::middleware('auth:sanctum')->get('/all-ciljevi', [CiljController::class, 'allCilj']);
 Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::class, 'allParametri']);
+
+Route::middleware('auth:sanctum')->get('/vezbe', [VezbaController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/vezbe', [VezbaController::class, 'store']);
 
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);
