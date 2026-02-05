@@ -23,10 +23,10 @@ import { ContextProvider } from './contexts/ContextProvider.jsx';
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ContextProvider>
-      {/* Wrapper div za pozadinske slike */}
+     
       <div className="relative min-h-screen bg-background">
 
-        {/* ===== Pozadinske slike sa public foldera ===== */}
+      
         <img
           src="/zenaNova-removebg-preview.png"
           alt="Leva osoba"
@@ -40,7 +40,7 @@ createRoot(document.getElementById('root')).render(
           className="fixed right-0 top-[55%] transform -translate-y-1/2 h-4/5 object-contain z-0"
         />
 
-        {/* ===== RouterProvider sa svim stranicama ===== */}
+ 
         <div className="relative z-10">
           <RouterProvider router={router} />
         </div>
@@ -48,3 +48,6 @@ createRoot(document.getElementById('root')).render(
     </ContextProvider>
   </StrictMode>
 );
+
+
+

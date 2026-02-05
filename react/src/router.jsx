@@ -23,10 +23,12 @@ const router = createBrowserRouter([
         path: '/users',
         element: <Users />
       },
+      
       {
         path: '/dashboard',
         element: <Dashboard />
       },
+
       {
         path: '/admin_dashboard',
         element: (
@@ -35,18 +37,21 @@ const router = createBrowserRouter([
           </AdminRoute>
         )
       },
+
       {
         path: '/userSetup',
         element: <UserSetupPage />
       },
+
       {
           path: '/dodajObrok',
           element: <DodajObrok />
-},
-     {
+      },
+
+      {
           path: '/obrociPregled',
           element: <ObrociPregled />
-}
+      }
 
     ]
   },

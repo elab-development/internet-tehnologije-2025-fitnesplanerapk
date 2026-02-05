@@ -8,7 +8,7 @@ function Obroci() {
   useEffect(() => {
     fetch(`http://localhost:8000/api/obroci?datum=${datum}`, {
       headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem('token') // ako koristiš auth
+        'Authorization': 'Bearer ' + localStorage.getItem('token') 
       }
     })
       .then(res => res.json())

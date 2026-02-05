@@ -5,13 +5,14 @@ import axiosClient from "./axios-client.js";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Button from "../components/Button.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const { user } = useStateContext();
 
   const [parametri, setParametri] = useState([]);
   const [ciljevi, setCiljevi] = useState([]);
-
+  const navigate = useNavigate();
   const [showParametri, setShowParametri] = useState(false);
   const [showCiljevi, setShowCiljevi] = useState(false);
 
@@ -114,23 +115,26 @@ export default function Dashboard() {
 
           <div className="bg-surface rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4">Plan ishrane</h2>
-            <p className="text-gray-500 mb-3">
+            {/* <p className="text-gray-500 mb-3">
               Trenutno nema unetih planova ishrane.
             </p>
             <span className="text-sm text-textSecondary">
               (Ovde kasnije ide tabela ili modal)
-            </span>
+            </span> */}
+            <Button onClick={() => navigate("/obrociPregled")}>
+                 Ishrana
+            </Button>
           </div>
 
          
           <div className="bg-surface rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4">Plan treninga</h2>
-            <p className="text-gray-500 mb-3">
+            {/* <p className="text-gray-500 mb-3">
               Trenutno nema unetih planova treninga.
             </p>
             <span className="text-sm text-textSecondary">
               (Ovde kasnije ide tabela ili modal)
-            </span>
+            </span> */}
           </div>
 
         </section>

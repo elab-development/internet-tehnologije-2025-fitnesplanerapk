@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from './Button';
 
 function DodajObrok() {
   const [naziv, setNaziv] = useState('');
@@ -44,8 +45,8 @@ function DodajObrok() {
           <input type="number" placeholder="Kalorije" value={n.kalorije} onChange={e => handleChange(i, 'kalorije', e.target.value)} />
         </div>
       ))}
-      <button onClick={dodajNamirnicu}>Dodaj još namirnicu</button>
-      <button onClick={submitObrok}>Sačuvaj obrok</button>
+      <Button onClick={dodajNamirnicu}>Dodaj još namirnicu</Button>
+      <Button onClick={submitObrok}>Sačuvaj obrok</Button>
     </div>
   );
 }

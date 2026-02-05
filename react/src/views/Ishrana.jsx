@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import Button from "../components/Button.jsx";
 
 export default function Ishrana() {
   const [hrana, setHrana] = useState([]);
@@ -229,33 +230,30 @@ export default function Ishrana() {
 
             <div className="flex justify-between items-center">
               <span className="font-medium">Kalorije: {n.kalorije}</span>
-              <button
+              <Button
                 type="button"
                 onClick={() => obrisiNamirnicu(i)}
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
               >
                 Obriši
-              </button>
+              </Button>
             </div>
           </div>
         ))}
 
         <div className="flex gap-3 mb-6">
-          <button
+          <Button
             type="button"
             onClick={dodajNamirnicu}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
           >
             Dodaj namirnicu
-          </button>
+          </Button>
 
-          <button
+          <Button
             type="button"
             onClick={sacuvajObrok}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
           >
             Sačuvaj obrok
-          </button>
+          </Button>
         </div>
       </main>
 

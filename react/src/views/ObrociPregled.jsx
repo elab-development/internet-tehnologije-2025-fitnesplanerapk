@@ -3,6 +3,7 @@ import axiosClient from "./axios-client";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
+import Button from "../components/Button.jsx";
 import {
   ResponsiveContainer,
   BarChart,
@@ -55,6 +56,12 @@ export default function ObrociPregled() {
     kalorije: d.ukupno_kalorija,
   }));
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("sr-RS");
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Sticky Header */}
@@ -62,7 +69,7 @@ export default function ObrociPregled() {
         <Header />
       </div>
 
-      {/* Glavni sadržaj */}
+     
       <main className="flex-1 p-6 max-w-6xl mx-auto mt-6">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">
           Pregled unetih obroka
@@ -77,7 +84,7 @@ export default function ObrociPregled() {
           </div>
         )}
 
-        {/* Filter po datumima */}
+        
         <div className="flex flex-wrap gap-4 mb-6 items-end">
           <div>
             <label className="block text-gray-700 mb-1 font-medium">Od:</label>
@@ -97,12 +104,12 @@ export default function ObrociPregled() {
               className="border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400"
             />
           </div>
-          <button
+          <Button
             onClick={handleFilter}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            
           >
             Filtriraj
-          </button>
+          </Button>
         </div>
 
         {/* Grafikon */}
@@ -144,7 +151,7 @@ export default function ObrociPregled() {
                 className="bg-white rounded-lg shadow p-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
               >
                 <div className="flex justify-between items-center mb-3">
-                  <h2 className="text-xl font-semibold text-gray-800">{d.datum}</h2>
+                  <h2 className="text-xl font-semibold text-gray-800">{formatDate(d.datum)}</h2>
                   <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
                     {d.ukupno_kalorija} kcal
                   </span>

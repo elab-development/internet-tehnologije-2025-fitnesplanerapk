@@ -9,7 +9,7 @@ export default function Header() {
   const { user, setUser, setToken } = useStateContext();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const isAdmin = user?.uloga_id === 2;
   const handleLogout = () => {
     setToken(null);
     setUser(null);
@@ -21,9 +21,23 @@ export default function Header() {
   };
 
   return (
-    <header className="app-header flex justify-between items-center p-4 bg-blue-600 text-white shadow-md sticky top-0 z-50">
+   <header className="app-header flex justify-between items-center p-4 text-white">
+
       <div className="flex items-center relative">
-        <MenuIcon onClick={handleMenuClick} className="cursor-pointer hover:text-yellow-300 transition-colors"/>
+        {!isAdmin && (
+          <>
+            <MenuIcon
+              onClick={handleMenuClick}
+              className="cursor-pointer hover:text-yellow-300 transition-colors"
+            />
+
+            {menuOpen && (
+              <div className="absolute top-12 left-0 bg-white text-gray-800 p-3 rounded-lg shadow-lg z-50 w-48">
+                <Menu />
+              </div>
+            )}
+          </>
+        )}
         <h1 className="ml-3 text-lg font-semibold select-none">Fitness Aplikacija</h1>
 
         {menuOpen && (
@@ -38,7 +52,7 @@ export default function Header() {
           <span className="font-medium">Zdravo, {user.ime}</span>
           <Button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition"
+            
           >
             Logout
           </Button>

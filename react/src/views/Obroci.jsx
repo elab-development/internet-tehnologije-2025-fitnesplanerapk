@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
-
+import Button from "../components/Button.jsx";
 export default function Obroci() {
   const [datum, setDatum] = useState("");
   const [naziv, setNaziv] = useState("");
@@ -101,13 +101,13 @@ export default function Obroci() {
           </div>
         ))}
 
-        <button type="button" onClick={addRow}>
+        <Button type="button" onClick={addRow}>
           + Dodaj hranu
-        </button>
+        </Button>
 
         <br /><br />
 
-        <button type="submit">Sačuvaj obrok</button>
+        <Button type="submit">Sačuvaj obrok</Button>
       </form>
     </div>
   );
