@@ -24,7 +24,7 @@ class Program extends Model
     {
         
         return $this->belongsToMany(Vezba::class, 'program_vezba')
-                    ->withPivot('dan')
+                    ->withPivot('dan', 'serija', 'ponavljanja', 'tezina', 'trajanje', 'bpm')    
                     ->withTimestamps();
     }
 

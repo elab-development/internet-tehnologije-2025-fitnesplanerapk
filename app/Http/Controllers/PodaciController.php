@@ -9,43 +9,45 @@ class PodaciController extends Controller
 {
     // Unos podataka za vežbu
     public function store(Request $request)
-    {
-        $request->validate([
-            'vezba_id' => 'required|integer|exists:vezbas,id',
-            'trajanje' => 'nullable|integer',
-            'serija' => 'nullable|integer',
-            'ponavljanja' => 'nullable|integer',
-            'tezina' => 'nullable|numeric',
-            'bpm' => 'nullable|integer'
-        ]);
+{
+    $request->validate([
+        'vezba_id' => 'required|integer|exists:vezbas,id',
+        'trajanje' => 'nullable|integer|min:0',
+        'serija' => 'nullable|integer|min:0',
+        'ponavljanja' => 'nullable|integer|min:0',
+        'tezina' => 'nullable|numeric|min:0',
+        'bpm' => 'nullable|integer|min:0',
+    ]);
 
-        $podaci = Podaci::create([
-            'vezba_id' => $request->vezba_id,
-            'trajanje' => $request->trajanje,
-            'serija' => $request->serija,
-            'ponavljanja' => $request->ponavljanja,
-            'tezina' => $request->tezina,
-            'bpm' => $request->bpm
-        ]);
+    $podaci = Podaci::create([
+        'vezba_id' => $request->vezba_id,
+        'trajanje' => $request->trajanje,
+        'serija' => $request->serija,
+        'ponavljanja' => $request->ponavljanja,
+        'tezina' => $request->tezina,
+        'bpm' => $request->bpm
+    ]);
 
-        return response()->json($podaci, 201);
-    }
+    return response()->json($podaci, 201);
+}
+
 
     // Update podataka o vežbi
     public function update(Request $request, $id)
-    {
-        $podaci = Podaci::findOrFail($id);
+{
+    $podaci = Podaci::findOrFail($id);
 
-        $request->validate([
-            'trajanje' => 'nullable|integer',
-            'serija' => 'nullable|integer',
-            'ponavljanja' => 'nullable|integer',
-            'tezina' => 'nullable|numeric',
-            'bpm' => 'nullable|integer'
-        ]);
+    $request->validate([
+        'trajanje' => 'nullable|integer|min:0',
+        'serija' => 'nullable|integer|min:0',
+        'ponavljanja' => 'nullable|integer|min:0',
+        'tezina' => 'nullable|numeric|min:0',
+        'bpm' => 'nullable|integer|min:0',
+    ]);
 
-        $podaci->update($request->only(['trajanje','serija','ponavljanja','tezina','bpm']));
+    $podaci->update($request->only(['trajanje','serija','ponavljanja','tezina','bpm']));
 
-        return response()->json($podaci);
-    }
+    return response()->json($podaci);
+}
+
 }

@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import axiosClient from "./axios-client.js";
 import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
-import { useNavigate } from "react-router-dom";
 
 export default function PregledPrograma() {
   const [programi, setProgrami] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const [otvorenProgram, setOtvorenProgram] = useState(null);
 
   useEffect(() => {
@@ -26,10 +24,7 @@ export default function PregledPrograma() {
   };
 
   const obrisiProgram = async (id) => {
-    if (!window.confirm("Da li ste sigurni da želite da obrišete program?")) {
-      return;
-    }
-
+    if (!window.confirm("Da li ste sigurni da želite da obrišete program?")) return;
     try {
       await axiosClient.delete(`/programi/${id}`);
       fetchProgrami();
@@ -38,9 +33,7 @@ export default function PregledPrograma() {
     }
   };
 
-  if (loading) {
-    return <p className="text-center mt-10">Učitavanje programa...</p>;
-  }
+  if (loading) return <p className="text-center mt-10">Učitavanje programa...</p>;
 
   return (
     <div className="min-h-screen bg-background">
@@ -58,18 +51,15 @@ export default function PregledPrograma() {
                 key={program.id}
                 className="bg-surface rounded-xl shadow p-6 cursor-pointer"
                 onClick={() =>
-                  setOtvorenProgram(
-                    otvorenProgram === program.id ? null : program.id
-                  )
+                  setOtvorenProgram(otvorenProgram === program.id ? null : program.id)
                 }
               >
-                {/* Naziv i dugme za brisanje */}
-                <div className="flex justify-between items-center mb-4">
+                {/* Naziv programa i dugme za brisanje */}
+                <div className="flex justify-between items-center mb-2">
                   <h2 className="text-xl font-semibold">{program.naziv}</h2>
-
                   <Button
                     onClick={(e) => {
-                      e.stopPropagation(); // da klik na obriši ne otvori program
+                      e.stopPropagation();
                       obrisiProgram(program.id);
                     }}
                     variant="danger"
@@ -78,7 +68,14 @@ export default function PregledPrograma() {
                   </Button>
                 </div>
 
-                {/* VEŽBE PO DANIMA */}
+                {/* Div ispod naziva za trajanje, kalorije i intenzitet */}
+                <div className="text-sm text-gray-600 mb-4">
+                  {program.trajanje && <span>Trajanje: {program.trajanje} min | </span>}
+                  {program.kalorije && <span>Kalorije: {program.kalorije.toFixed(0)} kcal | </span>}
+                  {program.intenzitet && <span>Intenzitet: {program.intenzitet}</span>}
+                </div>
+
+                {/* VEŽBE PO DANIMA sa serijama, ponavljanjima, težinom, trajanjem i bpm */}
                 {otvorenProgram === program.id && program.vezbe?.length > 0 && (
                   <div className="mt-4 pl-4 border-l space-y-4">
                     {Object.entries(
@@ -94,7 +91,12 @@ export default function PregledPrograma() {
                         <ul className="list-disc pl-6 space-y-1">
                           {vezbe.map((v) => (
                             <li key={v.id}>
-                              {v.ime}{" "}
+                              <span className="font-medium">{v.ime}</span>{" "}
+                              {v.pivot?.serija && `| Serije: ${v.pivot.serija}`}{" "}
+                              {v.pivot?.ponavljanja && `| Ponavljanja: ${v.pivot.ponavljanja}`}{" "}
+                              {v.pivot?.tezina && `| Težina: ${v.pivot.tezina} kg`}{" "}
+                              {v.pivot?.trajanje && `| Trajanje: ${v.pivot.trajanje} min`}{" "}
+                              {v.pivot?.bpm && `| BPM: ${v.pivot.bpm}`}
                               <a
                                 href={v.snimak}
                                 target="_blank"
