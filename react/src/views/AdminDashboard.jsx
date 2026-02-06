@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import axiosClient from "./axios-client.js";
 import Header from '../components/Header.jsx';
 import Button from "../components/Button.jsx";
-
+import Footer from "../components/Footer.jsx";
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -240,6 +240,7 @@ return (
         )}
 
     </main>
+    <Footer />
   </div>
 );
 

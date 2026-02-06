@@ -15,7 +15,9 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [showParametri, setShowParametri] = useState(false);
   const [showCiljevi, setShowCiljevi] = useState(false);
-
+  const [hidriranost, setHidriranost] = useState(null);
+  const [showHidriranostModal, setShowHidriranostModal] = useState(false);
+  const [voda, setVoda] = useState("");
   useEffect(() => {
     if (!user) return;
 
@@ -26,6 +28,18 @@ export default function Dashboard() {
     axiosClient.get("/all-ciljevi")
       .then(res => setCiljevi(res.data))
       .catch(err => console.log(err));
+
+    axiosClient.get("/hidriranost-danas")
+      .then(res => {
+        if (res.data.exists) {
+          setHidriranost(res.data.data);
+        } else {
+          setHidriranost(null);
+        }
+      })
+      .catch(() => {
+        setHidriranost(null);
+      });
   }, [user]);
 
   const lastParam = parametri[0] || {};
@@ -34,6 +48,19 @@ export default function Dashboard() {
     if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString("sr-RS");
+  };
+
+    const sacuvajHidriranost = () => {
+      const unosVode = parseFloat(voda);
+    const request = hidriranost
+      ? axiosClient.put(`/hidriranost/${hidriranost.id}`, { ukupno: parseFloat(unosVode) })
+      : axiosClient.post("/hidriranost", { ukupno: unosVode });
+
+    request.then(res => {
+      setHidriranost(res.data);
+      setVoda("");
+      setShowHidriranostModal(false);
+    });
   };
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -57,7 +84,21 @@ export default function Dashboard() {
             <p><strong>Datum rođenja:</strong> {formatDate(user?.datumRodjenja)|| "-"}</p>
           </div>
         </section>
+        <section className="mb-10">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow">
+             <h2 className="text-xl font-semibold mb-2">
+               Hidriranost za dan ({new Date().toLocaleDateString("sr-RS")})
+             </h2>
 
+            <p className="text-lg mb-4">
+               Popijeno: <strong>{hidriranost?.ukupno ?? 0} L</strong>
+             </p>
+
+             <Button onClick={() => setShowHidriranostModal(true)}>
+               {hidriranost ? "Izmeni" : "Započni merenje hidriranosti"}
+            </Button>
+          </div>
+         </section>
    
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -142,7 +183,7 @@ export default function Dashboard() {
 
       <Footer />
 
- 
+              
       {showCiljevi && (
         <Modal title="Svi ciljevi" onClose={() => setShowCiljevi(false)}>
           <table className="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
@@ -204,6 +245,25 @@ export default function Dashboard() {
           </table>
         </Modal>
       )}
+
+      {showHidriranostModal && (
+      <Modal
+        title={hidriranost ? "Izmeni hidriranost" : "Započni merenje"}
+        onClose={() => setShowHidriranostModal(false)}
+      >
+        <div className="space-y-4">
+          <input
+            type="number"
+            step="0.1"
+            value={voda}
+            onChange={(e) => setVoda(e.target.value)}
+            placeholder="Unesi količinu (L)"
+            className="w-full border rounded-lg px-3 py-2"
+          />
+          <Button onClick={sacuvajHidriranost}>Sačuvaj</Button>
+        </div>
+      </Modal>
+    )}
     </div>
   );
 }
@@ -232,4 +292,5 @@ export default function Dashboard() {
         </div>
       );
     }
+
 

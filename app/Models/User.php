@@ -86,7 +86,7 @@ class User extends Authenticatable
         'password',
         'pol',
         'datumRodjenja',
-        'uloga_id' // dodajemo da može masovno da se popuni
+        'uloga_id' 
     ];
 
     protected $hidden = [
@@ -102,7 +102,7 @@ class User extends Authenticatable
         ];
     }
 
-    // Relacije
+    
     public function ciljevi()
     {
         return $this->hasMany(Cilj::class);
@@ -116,5 +116,10 @@ class User extends Authenticatable
     public function uloga()
     {
         return $this->belongsTo(Uloge::class, 'uloga_id'); 
+    }
+
+    public function hidriranost()
+    {
+        return $this->belongsTo(Hidriranost::class, 'hidriranost_id'); 
     }
 }

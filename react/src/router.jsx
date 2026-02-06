@@ -12,6 +12,7 @@ import AdminRoute from "./AdminRoute.jsx";
 import UserSetupPage from "./views/UserSetupPage.jsx";
 import DodajObrok from "./views/Ishrana.jsx";
 import ObrociPregled from "./views/ObrociPregled.jsx";
+import TrenerStranica from "./views/TrenerStranica.jsx";
 
 
 const router = createBrowserRouter([
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
       {
         path: '/userSetup',
         element: <UserSetupPage />
+      },
+
+      {
+        path: '/trenerStranica',
+        element: <TrenerStranica />
       },
 
       {
