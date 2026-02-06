@@ -153,4 +153,32 @@ class ProgramController extends Controller
 
         return response()->json(['poruka' => 'Program obrisan']);
     }
+public function treneriProgrami()
+{
+    $programi = Program::whereHas('korisnik', function($query) {
+        $query->whereHas('uloga', function($q) {
+            $q->where('naziv', 'trener');
+        });
+    })->with(['korisnik', 'vezbe'])->get();
+
+    return response()->json($programi);
+}
+public function programiTrenera()
+{
+    return Program::whereHas('korisnik', function ($q) {
+        $q->where('uloga', 'trener');
+    })
+    ->with([
+        'vezbe',
+        'korisnik:id,name'
+    ])
+    ->get();
+}
+public function sviProgramiTrenera()
+    {
+        $programi = Program::with('trener')->get();
+
+        return response()->json($programi, 200);
+    }
+
 }

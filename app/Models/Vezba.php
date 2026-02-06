@@ -19,4 +19,5 @@ class Vezba extends Model
     {
         return $this->belongsToMany(Program::class, 'program_vezba');
     }
+    
 }

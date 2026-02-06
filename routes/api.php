@@ -92,4 +92,10 @@ Route::get('/test/programi', function () {
 });
 
 
+Route::get('/programi/treneri', [ProgramController::class, 'treneriProgrami']);
+
+
+
+
+
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);

@@ -33,6 +33,16 @@ class Program extends Model
     return $this->hasMany(Podaci::class);
 }
 
+ public function korisnik()
+    {
+        return $this->belongsTo(User::class, 'korisnik_id');
+    }
+
+    public function trener()
+    {
+        return $this->belongsTo(User::class, 'trener_id');
+    }
+
 
 
 }

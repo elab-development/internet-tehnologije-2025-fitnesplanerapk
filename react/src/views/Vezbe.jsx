@@ -12,6 +12,9 @@ export default function TrenerStranica() {
   const [nazivPrograma, setNazivPrograma] = useState("");
   const [dan, setDan] = useState(1);
 
+  const [showModal, setShowModal] = useState(false);
+  const [programiTrenera, setProgramiTrenera] = useState([]);
+
   // Funkcija za YouTube thumbnail
   const getYoutubeThumbnail = (url) => {
     if (!url) return null;
@@ -48,7 +51,7 @@ export default function TrenerStranica() {
       }
       return {
         ...prev,
-        [id]: { serija: "", ponavljanja: "", tezina: "" },
+        [id]: { serija: "", ponavljanja: "", tezina: "", trajanje: "", bpm: "" },
       };
     });
   };
@@ -65,18 +68,17 @@ export default function TrenerStranica() {
     }
 
     const payload = {
-  naziv: nazivPrograma,
-  vezbe: Object.entries(selectedVezbe).map(([id, podaci]) => ({
-    id: Number(id),
-    dan: dan,
-    serija: podaci.serija,
-    ponavljanja: podaci.ponavljanja,
-    tezina: podaci.tezina,
-    trajanje: podaci.trajanje,
-    bpm: podaci.bpm
-  }))
-};
-
+      naziv: nazivPrograma,
+      vezbe: Object.entries(selectedVezbe).map(([id, podaci]) => ({
+        id: Number(id),
+        dan: dan,
+        serija: podaci.serija,
+        ponavljanja: podaci.ponavljanja,
+        tezina: podaci.tezina,
+        trajanje: podaci.trajanje,
+        bpm: podaci.bpm,
+      })),
+    };
 
     try {
       await axiosClient.post("/programi", payload);
@@ -92,6 +94,40 @@ export default function TrenerStranica() {
     }
   };
 
+  // ======================
+  // Fetch programi trenera
+  // ======================
+  const fetchProgramiTrenera = async () => {
+    try {
+      const res = await axiosClient.get("/programi/treneri");
+      setProgramiTrenera(res.data);
+      setShowModal(true);
+    } catch (err) {
+      console.error(err);
+      alert("Greška pri učitavanju programa trenera");
+    }
+  };
+
+  const izaberiProgram = (program) => {
+    setNazivPrograma(program.naziv + " (preuzet)");
+    setSelectedVezbe({});
+
+    const noveVezbe = {};
+    program.vezbe.forEach((v) => {
+      noveVezbe[v.id] = {
+        serija: v.pivot.serija || "",
+        ponavljanja: v.pivot.ponavljanja || "",
+        tezina: v.pivot.tezina || "",
+        trajanje: v.pivot.trajanje || "",
+        bpm: v.pivot.bpm || "",
+      };
+      setDan(v.pivot.dan);
+    });
+
+    setSelectedVezbe(noveVezbe);
+    setShowModal(false);
+  };
+
   if (loading)
     return <p className="text-center mt-10">Učitavanje vežbi...</p>;
 
@@ -103,17 +139,23 @@ export default function TrenerStranica() {
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
-        <h1 className="text-3xl font-bold text-textPrimary mb-6">
-          Prikaz vežbi za kreiranje treninga
-        </h1>
+        {/* NASLOV + DUGME */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-textPrimary">
+            Prikaz vežbi za kreiranje treninga
+          </h1>
+          <Button onClick={fetchProgramiTrenera}>
+            Izaberi trening trenera
+          </Button>
+        </div>
 
+        {/* FORMA ZA KREIRANJE TRENINGA */}
         <div className="bg-surface rounded-xl shadow p-6 mb-8 max-w-3xl">
           <h2 className="text-xl font-semibold mb-4">Kreiranje treninga</h2>
 
           <div className="flex flex-col gap-4">
-            {/* Naziv programa */}
             <div>
-              <label className="block text-sm mb-1">Naziv programa</label>
+              <label className="block text-sm mb-1">Naziv treninga</label>
               <input
                 type="text"
                 value={nazivPrograma}
@@ -123,7 +165,6 @@ export default function TrenerStranica() {
               />
             </div>
 
-            {/* Dan */}
             <div>
               <label className="block text-sm mb-1">Dan izvođenja</label>
               <input
@@ -137,6 +178,7 @@ export default function TrenerStranica() {
           </div>
         </div>
 
+        {/* LISTA VEŽBI */}
         {vezbe.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {vezbe.map((v) => {
@@ -174,7 +216,6 @@ export default function TrenerStranica() {
                       Dodaj u trening
                     </label>
 
-                    {/* Input polja za serije/ponavljanja/tezinu */}
                     {selectedVezbe[v.id] && (
                       <div className="mt-2 space-y-1 text-sm">
                         <input
@@ -222,20 +263,36 @@ export default function TrenerStranica() {
                             }))
                           }
                         />
-                         <input
-      type="number"
-      placeholder="Trajanje (min)"
-      value={selectedVezbe[v.id].trajanje}
-      onChange={e => setSelectedVezbe(prev => ({ ...prev, [v.id]: { ...prev[v.id], trajanje: e.target.value } }))}
-      className="border rounded px-2 py-1 w-full"
-    />
-    <input
-      type="number"
-      placeholder="BPM"
-      value={selectedVezbe[v.id].bpm}
-      onChange={e => setSelectedVezbe(prev => ({ ...prev, [v.id]: { ...prev[v.id], bpm: e.target.value } }))}
-      className="border rounded px-2 py-1 w-full"
-    />
+                        <input
+                          type="number"
+                          placeholder="Trajanje (min)"
+                          value={selectedVezbe[v.id].trajanje}
+                          onChange={(e) =>
+                            setSelectedVezbe((prev) => ({
+                              ...prev,
+                              [v.id]: {
+                                ...prev[v.id],
+                                trajanje: e.target.value,
+                              },
+                            }))
+                          }
+                          className="border rounded px-2 py-1 w-full"
+                        />
+                        <input
+                          type="number"
+                          placeholder="BPM"
+                          value={selectedVezbe[v.id].bpm}
+                          onChange={(e) =>
+                            setSelectedVezbe((prev) => ({
+                              ...prev,
+                              [v.id]: {
+                                ...prev[v.id],
+                                bpm: e.target.value,
+                              },
+                            }))
+                          }
+                          className="border rounded px-2 py-1 w-full"
+                        />
                       </div>
                     )}
 
@@ -256,6 +313,32 @@ export default function TrenerStranica() {
         ) : (
           <div className="bg-surface rounded-xl p-6 shadow text-center text-gray-500">
             Trenutno nema dostupnih vežbi
+          </div>
+        )}
+
+        {/* MODAL ZA IZBOR PROGRAMA TRENERA */}
+        {showModal && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-xl w-full max-w-lg">
+              <h2 className="text-xl font-semibold mb-4">Programi trenera</h2>
+              <div className="space-y-3 max-h-80 overflow-auto">
+                {programiTrenera.map((p) => (
+                  <div
+                    key={p.id}
+                    className="border p-3 rounded cursor-pointer hover:bg-blue-100"
+                    onClick={() => izaberiProgram(p)}
+                  >
+                    <h3 className="font-semibold">{p.naziv}</h3>
+                    <p className="text-sm text-gray-500">
+                      Trener: {p.korisnik.ime} {p.korisnik.prezime}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 text-right">
+                <Button onClick={() => setShowModal(false)}>Zatvori</Button>
+              </div>
+            </div>
           </div>
         )}
       </main>
