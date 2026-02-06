@@ -8,16 +8,22 @@ class Podaci extends Model
 {
     protected $fillable = [
         'trajanje',
-        'broj',
         'serija',
         'ponavljanja',
         'tezina',
         'bpm',
-        'vezba_id'
+        'vezba_id',
+        'program_id'
     ];
 
     public function vezba()
     {
-        return $this->belongsTo(\App\Models\Vezba::class);
+        return $this->belongsTo(Vezba::class);
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
     }
 }
+

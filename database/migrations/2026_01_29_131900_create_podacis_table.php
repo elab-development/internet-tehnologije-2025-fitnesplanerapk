@@ -12,16 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('podaci', function (Blueprint $table) {
-        $table->id();
-        $table->integer('trajanje')->nullable();
-        $table->integer('broj')->nullable();
-        $table->integer('serija')->nullable();
-        $table->integer('ponavljanja')->nullable();
-        $table->integer('tezina')->nullable();
-        $table->integer('bpm')->nullable();
-        $table->foreignId('vezba_id')->constrained('vezbe')->onDelete('cascade');
-        $table->timestamps();
-    });
+    $table->id();
+    $table->integer('trajanje')->nullable();
+    $table->integer('serija')->nullable();
+    $table->integer('ponavljanja')->nullable();
+    $table->integer('tezina')->nullable();
+    $table->integer('bpm')->nullable();
+
+    $table->foreignId('program_id')->constrained('programi')->onDelete('cascade');
+
+    $table->foreignId('vezba_id')->constrained('vezbe')->onDelete('cascade');
+
+    $table->timestamps();
+});
+
 
     }
 
@@ -30,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('podacis');
+        Schema::dropIfExists('podaci');
     }
 };

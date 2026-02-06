@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import axiosClient from "./axios-client.js";
@@ -6,6 +5,9 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import Button from "../components/Button.jsx";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+
 
 export default function Dashboard() {
   const { user } = useStateContext();
@@ -135,6 +137,10 @@ export default function Dashboard() {
             <span className="text-sm text-textSecondary">
               (Ovde kasnije ide tabela ili modal)
             </span> */}
+            <Link to="/programi">
+  <Button>Pregled mojih treninga</Button>
+</Link>
+
           </div>
 
         </section>

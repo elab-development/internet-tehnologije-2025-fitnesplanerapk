@@ -6,6 +6,7 @@ export default function Menu() {
     { label: "User setup", to: "/userSetup" },
     { label: "Obroci", to: "/obrociPregled" },
     { label: "Dodaj Obrok", to: "/dodajObrok" },
+    { label: "Vezbe", to: "/vezbe" },
   ];
 
   return (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
 import Button from "../components/Button.jsx";
+import Footer from "../components/Footer.jsx";
 export default function Obroci() {
   const [datum, setDatum] = useState("");
   const [naziv, setNaziv] = useState("");
@@ -109,6 +110,7 @@ export default function Obroci() {
 
         <Button type="submit">Sačuvaj obrok</Button>
       </form>
+       <Footer />
     </div>
   );
 }

@@ -9,6 +9,12 @@ use App\Http\Controllers\ParametriController;
 use App\Http\Controllers\ObrokController;
 use App\Http\Controllers\HranaController;
 use App\Http\Controllers\VezbaController;
+use App\Http\Controllers\ProgramController;
+use App\Models\Vezba;
+use App\Models\Program;
+
+
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/obroci', [ObrokController::class, 'store']);
     Route::get('/obroci', [ObrokController::class, 'index']);
@@ -60,5 +66,20 @@ Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::c
 
 Route::middleware('auth:sanctum')->get('/vezbe', [VezbaController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/vezbe', [VezbaController::class, 'store']);
+
+Route::middleware('auth:sanctum')->get('/programi', [ProgramController::class, 'index']);
+Route::middleware('auth:sanctum')->post('/programi', [ProgramController::class, 'store']);
+Route::middleware('auth:sanctum')->delete('/programi/{id}', [ProgramController::class, 'destroy']);
+
+
+//ovo je za proveru, posle brisem
+Route::get('/test/vezbe', function () {
+    return Vezba::all();
+});
+
+Route::get('/test/programi', function () {
+    return Program::with('vezbe')->get();
+});
+
 
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);

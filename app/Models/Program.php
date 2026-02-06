@@ -9,6 +9,8 @@ class Program extends Model
 {
     use HasFactory;
 
+    protected $table = 'programi'; 
+
     protected $fillable = [
         'naziv',
         'datum',
@@ -26,9 +28,11 @@ class Program extends Model
                     ->withTimestamps();
     }
 
-    public function podaci()
-    {
-       
-        return $this->hasMany(Podaci::class);
-    }
+   public function podaci()
+{
+    return $this->hasMany(Podaci::class);
+}
+
+
+
 }

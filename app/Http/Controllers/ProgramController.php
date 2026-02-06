@@ -10,11 +10,13 @@ class ProgramController extends Controller
 {
     
     public function index(Request $request)
-    {
-        return Program::where('korisnik_id', $request->user()->id)
-            ->with(['vezbe', 'podaci'])
-            ->get();
-    }
+{
+    return Program::where('korisnik_id', $request->user()->id)
+        ->with('vezbe') 
+        ->get();
+}
+
+
 
    
     public function store(Request $request)

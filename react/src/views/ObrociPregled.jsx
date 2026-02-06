@@ -182,7 +182,7 @@ export default function ObrociPregled() {
         </div>
       </main>
 
-      {/* Footer na dnu */}
+     
       <Footer />
     </div>
   );

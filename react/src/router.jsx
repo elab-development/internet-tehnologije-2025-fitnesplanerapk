@@ -12,6 +12,9 @@ import AdminRoute from "./AdminRoute.jsx";
 import UserSetupPage from "./views/UserSetupPage.jsx";
 import DodajObrok from "./views/Ishrana.jsx";
 import ObrociPregled from "./views/ObrociPregled.jsx";
+import Vezbe from "./views/Vezbe.jsx";
+import PregledPrograma from "./views/PregledPrograma.jsx";
+
 
 
 const router = createBrowserRouter([
@@ -28,6 +31,16 @@ const router = createBrowserRouter([
         path: '/dashboard',
         element: <Dashboard />
       },
+      {
+        path: '/vezbe',
+        element: <Vezbe />
+    },
+        {
+      path: '/programi',
+      element: <PregledPrograma />
+    },
+
+
 
       {
         path: '/admin_dashboard',
