@@ -33,7 +33,7 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
             'pol' => $data['pol'],
             'datumRodjenja' => $data['datumRodjenja'],
-            'uloga_id' => $defaultUloga->id, // automatski dodeljujemo
+            'uloga_id' => $defaultUloga->id, 
         ]);
 
         $token = $user->createToken('main')->plainTextToken;

@@ -34,7 +34,10 @@ export default function Login() {
         setMessageType("success");
         if (data.user.uloga_id === 2) {
           navigate("/admin_dashboard");
-        } else {
+        } 
+        else if(data.user.uloga_id === 3)
+          {navigate("/trenerStranica");}
+        else {
           navigate("/dashboard");
         }
       })

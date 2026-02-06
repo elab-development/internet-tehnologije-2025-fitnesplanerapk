@@ -83,7 +83,7 @@ export default function UserSetupPage() {
             <h2 className="text-2xl font-semibold mb-4">Ciljevi</h2>
 
             <div className="mb-3">
-              <label className="block mb-1 font-medium">Hidriranost:</label>
+              <label className="block mb-1 font-medium">Hidriranost u litrima:</label>
               <input
                 type="text"
                 name="hidriranost"
@@ -94,7 +94,7 @@ export default function UserSetupPage() {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1 font-medium">Težina:</label>
+              <label className="block mb-1 font-medium">Težina u kilogramima:</label>
               <input
                 type="number"
                 name="tezina"
@@ -124,7 +124,7 @@ export default function UserSetupPage() {
             <h2 className="text-2xl font-semibold mb-4">Parametri</h2>
 
             <div className="mb-3">
-              <label className="block mb-1 font-medium">Težina:</label>
+              <label className="block mb-1 font-medium">Težina u kilogramima:</label>
               <input
                 type="number"
                 name="tezina"
@@ -135,7 +135,7 @@ export default function UserSetupPage() {
             </div>
 
             <div className="mb-3">
-              <label className="block mb-1 font-medium">Visina:</label>
+              <label className="block mb-1 font-medium">Visina u centimetrima:</label>
               <input
                 type="number"
                 name="visina"

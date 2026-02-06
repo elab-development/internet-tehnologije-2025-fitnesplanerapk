@@ -15,6 +15,7 @@ use App\Models\Program;
 
 
 
+use App\Http\Controllers\HidriranostController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/obroci', [ObrokController::class, 'store']);
     Route::get('/obroci', [ObrokController::class, 'index']);
@@ -66,6 +67,15 @@ Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::c
 
 Route::middleware('auth:sanctum')->get('/vezbe', [VezbaController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/vezbe', [VezbaController::class, 'store']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/hidriranost-danas', [HidriranostController::class, 'danas']);
+    Route::post('/hidriranost', [HidriranostController::class, 'store']);
+    //Route::put('/hidriranost', [HidriranostController::class, 'update']);
+    Route::put('/hidriranost/{hidriranost}', [HidriranostController::class, 'update']);
+
+});
+
 
 Route::middleware('auth:sanctum')->get('/programi', [ProgramController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/programi', [ProgramController::class, 'store']);
