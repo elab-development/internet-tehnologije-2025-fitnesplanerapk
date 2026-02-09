@@ -15,7 +15,7 @@ export default function TrenerStranica() {
   const [showModal, setShowModal] = useState(false);
   const [programiTrenera, setProgramiTrenera] = useState([]);
 
-  // Funkcija za YouTube thumbnail
+  
   const getYoutubeThumbnail = (url) => {
     if (!url) return null;
     const regExp =
@@ -41,7 +41,7 @@ export default function TrenerStranica() {
     fetchVezbe();
   }, []);
 
-  // Toggle selekcije vežbe
+ 
   const toggleVezbaSelection = (id) => {
     setSelectedVezbe((prev) => {
       if (prev[id]) {
@@ -56,7 +56,7 @@ export default function TrenerStranica() {
     });
   };
 
-  // Kreiranje programa
+  
   const kreirajProgram = async () => {
     if (!nazivPrograma.trim()) {
       alert("Unesi naziv programa.");
@@ -84,7 +84,7 @@ export default function TrenerStranica() {
       await axiosClient.post("/programi", payload);
       alert("Program je uspešno kreiran!");
 
-      // reset
+      
       setNazivPrograma("");
       setSelectedVezbe({});
       setDan(1);
@@ -94,9 +94,7 @@ export default function TrenerStranica() {
     }
   };
 
-  // ======================
-  // Fetch programi trenera
-  // ======================
+  
   const fetchProgramiTrenera = async () => {
     try {
       const res = await axiosClient.get("/programi/treneri");
@@ -139,7 +137,7 @@ export default function TrenerStranica() {
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
-        {/* NASLOV + DUGME */}
+       
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-textPrimary">
             Prikaz vežbi za kreiranje treninga
@@ -149,7 +147,7 @@ export default function TrenerStranica() {
           </Button>
         </div>
 
-        {/* FORMA ZA KREIRANJE TRENINGA */}
+       
         <div className="bg-surface rounded-xl shadow p-6 mb-8 max-w-3xl">
           <h2 className="text-xl font-semibold mb-4">Kreiranje treninga</h2>
 
@@ -178,7 +176,7 @@ export default function TrenerStranica() {
           </div>
         </div>
 
-        {/* LISTA VEŽBI */}
+       
         {vezbe.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {vezbe.map((v) => {
@@ -316,7 +314,7 @@ export default function TrenerStranica() {
           </div>
         )}
 
-        {/* MODAL ZA IZBOR PROGRAMA TRENERA */}
+       
         {showModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-xl w-full max-w-lg">

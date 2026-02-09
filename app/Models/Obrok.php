@@ -17,7 +17,7 @@ class Obrok extends Model
         'naziv',
     ];
 
-    // Veza na ObrokHrana
+    
     public function hrana()
     {
         return $this->hasMany(ObrokHrana::class, 'obrok_id', 'id');

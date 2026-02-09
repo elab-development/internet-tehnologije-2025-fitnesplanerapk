@@ -64,7 +64,7 @@ export default function ObrociPregled() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Sticky Header */}
+      
       <div className="sticky top-0 z-50">
         <Header />
       </div>
@@ -112,7 +112,7 @@ export default function ObrociPregled() {
           </Button>
         </div>
 
-        {/* Grafikon */}
+       
         {dnevniObroci.length > 0 && (
           <div className="mb-8 bg-white rounded-lg shadow p-4">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -138,7 +138,7 @@ export default function ObrociPregled() {
           </div>
         )}
 
-        {/* Lista kartica */}
+        
         {dnevniObroci.length === 0 && (
           <div className="text-center text-gray-500 mt-10">Nema unetih obroka za prikaz.</div>
         )}

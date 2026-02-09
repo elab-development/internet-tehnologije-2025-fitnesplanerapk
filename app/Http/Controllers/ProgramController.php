@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
-    // Lista svih programa za korisnika
+    
     public function index(Request $request)
     {
         return Program::where('korisnik_id', $request->user()->id)
@@ -16,7 +16,7 @@ class ProgramController extends Controller
             ->get();
     }
 
-    // Kreiranje novog programa
+   
     public function store(Request $request)
     {
         $request->validate([
@@ -31,7 +31,7 @@ class ProgramController extends Controller
             'vezbe.*.bpm' => 'nullable|integer|min:0',
         ]);
 
-        // Kreiramo program sa osnovnim podacima
+      
         $program = Program::create([
             'naziv' => $request->naziv,
             'korisnik_id' => auth()->id(),
@@ -49,13 +49,13 @@ class ProgramController extends Controller
                 $tezina = (float)($vezba['tezina'] ?? 0);
                 $trajanje = (float)($vezba['trajanje'] ?? 0);
 
-                // Računanje kalorija po vežbi: serija * ponavljanja * tezina * faktor
+                
                 $kalorije_vezbe = $serija * $ponavljanja * $tezina * 0.1;
                 $ukupno_kalorije += $kalorije_vezbe;
 
                 $ukupno_trajanje += $trajanje;
 
-                // Pivot tabela program_vezba
+            
                 $program->vezbe()->attach($vezba['id'], [
                     'dan' => $vezba['dan'],
                     'serija' => $vezba['serija'] ?? null,
@@ -67,12 +67,11 @@ class ProgramController extends Controller
             }
         }
 
-        // Određivanje intenziteta programa
         $intenzitet = 'Nizak';
         if ($ukupno_kalorije > 300 || $ukupno_trajanje > 45) $intenzitet = 'Srednji';
         if ($ukupno_kalorije > 500 || $ukupno_trajanje > 60) $intenzitet = 'Visok';
 
-        // Ažuriramo program sa izračunatim vrednostima
+      
         $program->update([
             'trajanje' => $ukupno_trajanje,
             'kalorije' => $ukupno_kalorije,
@@ -82,7 +81,7 @@ class ProgramController extends Controller
         return response()->json($program->load('vezbe'), 201);
     }
 
-    // Ažuriranje programa
+
     public function update(Request $request, $id)
     {
         $program = Program::where('korisnik_id', $request->user()->id)->findOrFail($id);
@@ -99,7 +98,7 @@ class ProgramController extends Controller
             'vezbe.*.bpm' => 'nullable|integer|min:0',
         ]);
 
-        // Ažuriramo naziv ako postoji
+    
         if ($request->has('naziv')) {
             $program->naziv = $request->naziv;
             $program->save();
@@ -145,7 +144,7 @@ class ProgramController extends Controller
         return response()->json($program->load('vezbe'));
     }
 
-    // Brisanje programa
+   
     public function destroy(Request $request, $id)
     {
         $program = Program::where('korisnik_id', $request->user()->id)->findOrFail($id);

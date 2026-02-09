@@ -19,13 +19,13 @@ class ObrokHrana extends Model
         'kalorije',
     ];
 
-    // Veza ka Obroku
+   
     public function obrok()
     {
         return $this->belongsTo(Obrok::class, 'obrok_id', 'id');
     }
 
-    // Veza ka Hrani (može biti null za custom hranu)
+    
     public function hrana()
     {
         return $this->belongsTo(Hrana::class, 'hrana_id', 'id');

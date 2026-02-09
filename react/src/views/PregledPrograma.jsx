@@ -68,14 +68,14 @@ export default function PregledPrograma() {
                   </Button>
                 </div>
 
-                {/* Div ispod naziva za trajanje, kalorije i intenzitet */}
+                
                 <div className="text-sm text-gray-600 mb-4">
                   {program.trajanje && <span>Trajanje: {program.trajanje} min | </span>}
                   {program.kalorije && <span>Kalorije: {program.kalorije.toFixed(0)} kcal | </span>}
                   {program.intenzitet && <span>Intenzitet: {program.intenzitet}</span>}
                 </div>
 
-                {/* VEŽBE PO DANIMA sa serijama, ponavljanjima, težinom, trajanjem i bpm */}
+               
                 {otvorenProgram === program.id && program.vezbe?.length > 0 && (
                   <div className="mt-4 pl-4 border-l space-y-4">
                     {Object.entries(

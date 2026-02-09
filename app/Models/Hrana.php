@@ -16,7 +16,7 @@ class Hrana extends Model
         'kalorije',
     ];
 
-    // Veza na ObrokHrana
+   
     public function obrokHrana()
     {
         return $this->hasMany(ObrokHrana::class, 'hrana_id', 'id');

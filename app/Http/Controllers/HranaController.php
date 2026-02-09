@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class HranaController extends Controller
 {
-    // Vraća sve namirnice/hranу
+    
     public function index()
     {
-        $hrana = Hrana::all(); // uzima sve iz tabele 'hrana'
+        $hrana = Hrana::all();
         return response()->json($hrana);
     }
 }

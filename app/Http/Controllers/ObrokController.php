@@ -27,7 +27,6 @@ class ObrokController extends Controller
         return response()->json(['message' => 'Korisnik nije ulogovan'], 401);
     }
 
-    // Kreiranje obroka
     $obrok = Obrok::create([
         'user_id' => $userId,
         'datum' => $request->datum,
@@ -37,17 +36,17 @@ class ObrokController extends Controller
     foreach ($request->namirnice as $n) {
 
         if (!empty($n['hrana_id'])) {
-            // Izabrana hrana iz baze
+          
             $hrana = Hrana::findOrFail($n['hrana_id']);
             $kalorije = round(($hrana->kalorije / 100) * $n['kolicina']);
             $custom_naziv = null;
             $hrana_id = $hrana->id;
         } else {
-            // Nova/custom hrana koju korisnik unosi
+          
             $custom_naziv = $n['custom_naziv'] ?? 'Nepoznato';
             $kalorije_na_100g = $n['kalorije_na_100g'] ?? 0;
 
-            // Dodajemo u tabelu hrana
+         
             $newHrana = Hrana::create([
                 'naziv' => $custom_naziv,
                 'kalorije' => $kalorije_na_100g,
@@ -55,11 +54,10 @@ class ObrokController extends Controller
 
             $hrana_id = $newHrana->id;
 
-            // Računamo kalorije za unesenu količinu
             $kalorije = round(($kalorije_na_100g / 100) * $n['kolicina']);
         }
 
-        // Dodavanje u obrok_hrana
+      
         ObrokHrana::create([
             'obrok_id' => $obrok->id,
             'hrana_id' => $hrana_id,
@@ -102,16 +100,16 @@ class ObrokController extends Controller
             'obroci' => $obroci
         ]);
     }
-    // ObrokController.php
+   
 public function pregled() {
     $userId = auth()->id();
 
-    // grupisanje po datumima
+  
     $dnevniObroci = Obrok::with('hrana.hrana')
         ->where('user_id', $userId)
         ->orderBy('datum', 'desc')
         ->get()
-        ->groupBy('datum')   // vraća kolekciju po datumima
+        ->groupBy('datum')  
         ->map(function($obroci, $datum) {
             $ukupno = 0;
             $obrociData = $obroci->map(function($obrok) use (&$ukupno) {
@@ -129,16 +127,16 @@ public function pregled() {
                 'obroci' => $obrociData,
             ];
         })
-        ->values();  // ovo pretvara u niz, da map u React-u radi
+        ->values();  
 
     return response()->json($dnevniObroci);
 }
 public function obrociPregled(Request $request)
 {
-    $od = $request->query('od'); // opcionalno
-    $do = $request->query('do'); // opcionalno
+    $od = $request->query('od'); 
+    $do = $request->query('do'); 
 
-    $query = Obrok::with('hrana.hrana') // relacija obrok->hrana->hrana
+    $query = Obrok::with('hrana.hrana') 
         ->where('user_id', auth()->id());
 
     if ($od) {
@@ -150,7 +148,7 @@ public function obrociPregled(Request $request)
 
     $obroci = $query->orderBy('datum', 'desc')->get();
 
-    // grupisanje po datumu
+    
     $dnevniObroci = $obroci->groupBy('datum')->map(function ($obrociZaDatum, $datum) {
         $ukupnoKalorija = 0;
 
@@ -166,7 +164,7 @@ public function obrociPregled(Request $request)
                     return [
                         'custom_naziv' => $h->custom_naziv,
                         'kalorije' => $h->kalorije,
-                        'hrana' => $h->hrana, // ako postoji povezana hrana
+                        'hrana' => $h->hrana, 
                     ];
                 }),
             ];
