@@ -75,6 +75,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/hidriranost/{hidriranost}', [HidriranostController::class, 'update']);
 
 });
+Route::middleware('auth:sanctum')->delete('/cilj/{id}', [CiljController::class, 'destroy']);
+Route::middleware('auth:sanctum')->delete('/parametar/{id}', [ParametriController::class, 'destroy']);
 
 
 Route::middleware('auth:sanctum')->get('/programi', [ProgramController::class, 'index']);

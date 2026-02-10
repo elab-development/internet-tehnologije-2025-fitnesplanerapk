@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Button from './Button';
 
 function DodajObrok() {
+  
   const [naziv, setNaziv] = useState('');
   const [datum, setDatum] = useState(new Date().toISOString().split('T')[0]);
   const [namirnice, setNamirnice] = useState([{ custom_naziv: '', kolicina: '', kalorije: '' }]);

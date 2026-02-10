@@ -84,8 +84,16 @@ class CiljController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cilj $cilj)
+    public function destroy(Request $request, $id)
     {
-        //
+        $user = $request->user();
+        $cilj = Cilj::where('id', $id)->where('user_id', $user->id)->first();
+
+        if (!$cilj) {
+            return response()->json(['message' => 'Cilj nije pronađen'], 404);
+        }
+
+        $cilj->delete();
+        return response()->json(['message' => 'Cilj obrisan']);
     }
 }

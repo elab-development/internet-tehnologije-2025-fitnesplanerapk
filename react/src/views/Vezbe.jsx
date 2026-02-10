@@ -3,7 +3,7 @@ import axiosClient from "./axios-client.js";
 import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer.jsx";
-
+import { useStateContext } from "../contexts/ContextProvider.jsx";
 export default function TrenerStranica() {
   const [vezbe, setVezbe] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ export default function TrenerStranica() {
   const [selectedVezbe, setSelectedVezbe] = useState({});
   const [nazivPrograma, setNazivPrograma] = useState("");
   const [dan, setDan] = useState(1);
-
+  const { user } = useStateContext();
   const [showModal, setShowModal] = useState(false);
   const [programiTrenera, setProgramiTrenera] = useState([]);
 
@@ -142,9 +142,11 @@ export default function TrenerStranica() {
           <h1 className="text-3xl font-bold text-textPrimary">
             Prikaz vežbi za kreiranje treninga
           </h1>
-          <Button onClick={fetchProgramiTrenera}>
-            Izaberi trening trenera
-          </Button>
+          {user?.uloga_id === 1 && (
+            <Button onClick={fetchProgramiTrenera}>
+              Izaberi trening trenera
+            </Button>
+          )}
         </div>
 
        
@@ -339,7 +341,6 @@ export default function TrenerStranica() {
             </div>
           </div>
         )}
-        <Button onClick={kreirajProgram}>Kreiraj trening</Button>
       </main>
 
       <Footer />

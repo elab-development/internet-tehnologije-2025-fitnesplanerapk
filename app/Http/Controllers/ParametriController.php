@@ -49,7 +49,7 @@ class ParametriController extends Controller
             'obim_struka' => 'required|numeric',
         ]);
 
-        // BMI računamo na backendu (preporuka)
+        
         $visinaUMetrima = $validated['visina'] / 100;
         $bmi = $validated['tezina'] / ($visinaUMetrima * $visinaUMetrima);
 
@@ -97,8 +97,36 @@ class ParametriController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Parametri $parametri)
+    // public function destroy(Request $request, $id)
+    // {
+    //     $user = $request->user();
+    //     $parametar = Parametar::where('id', $id)->where('user_id', $user->id)->first();
+
+    //     if (!$parametar) {
+    //         return response()->json(['message' => 'Parametar nije pronađen'], 404);
+    //     }
+
+    //     $parametar->delete();
+    //     return response()->json(['message' => 'Parametar obrisan']);
+    // }
+    public function destroy($id)
     {
-        //
+        try {
+            $parametar = Parametri::findOrFail($id); 
+
+            
+            if ($parametar->user_id !== auth()->id()) {
+                return response()->json(['message' => 'Nije dozvoljeno brisanje ovog parametra'], 403);
+            }
+
+            $parametar->delete();
+
+            return response()->json(['message' => 'Parametar uspešno obrisan']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Greška pri brisanju parametra',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

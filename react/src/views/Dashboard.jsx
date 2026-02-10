@@ -6,6 +6,7 @@ import Footer from "../components/Footer.jsx";
 import Button from "../components/Button.jsx";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Modal from "../components/Modal.jsx";
 
 
 
@@ -42,7 +43,7 @@ export default function Dashboard() {
       .catch(() => {
         setHidriranost(null);
       });
-  }, [user]);
+    }, [user]);
 
   const lastParam = parametri[0] || {};
   const lastCilj = ciljevi[0] || {};
@@ -54,16 +55,37 @@ export default function Dashboard() {
 
     const sacuvajHidriranost = () => {
       const unosVode = parseFloat(voda);
-    const request = hidriranost
-      ? axiosClient.put(`/hidriranost/${hidriranost.id}`, { ukupno: parseFloat(unosVode) })
-      : axiosClient.post("/hidriranost", { ukupno: unosVode });
+      const request = hidriranost
+        ? axiosClient.put(`/hidriranost/${hidriranost.id}`, { ukupno: parseFloat(unosVode) })
+        : axiosClient.post("/hidriranost", { ukupno: unosVode });
 
-    request.then(res => {
-      setHidriranost(res.data);
-      setVoda("");
-      setShowHidriranostModal(false);
+      request.then(res => {
+        setHidriranost(res.data);
+        setVoda("");
+        setShowHidriranostModal(false);
     });
   };
+
+  const obrisiCilj = (id) => {
+    if (!window.confirm("Da li ste sigurni da želite da obrišete cilj?")) return;
+    axiosClient.delete(`/cilj/${id}`)
+      .then(() => {
+        setCiljevi(prev => prev.filter(c => c.id !== id));
+        window.alert("Cilj je uspešno obrisan!");
+      })
+      .catch(err => console.error(err));
+  };
+
+  const obrisiParametar = (id) => {
+    if (!window.confirm("Da li ste sigurni da želite da obrišete parametar?")) return;
+    axiosClient.delete(`/parametar/${id}`)
+      .then(() => {
+        setParametri(prev => prev.filter(p => p.id !== id));
+        window.alert("Parametar je uspešno obrisan!");
+      })
+      .catch(err => console.error(err));
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -179,8 +201,8 @@ export default function Dashboard() {
               (Ovde kasnije ide tabela ili modal)
             </span> */}
             <Link to="/programi">
-  <Button>Pregled mojih treninga</Button>
-</Link>
+              <Button>Pregled mojih treninga</Button>
+            </Link>
 
           </div>
 
@@ -210,6 +232,11 @@ export default function Dashboard() {
                   <td className="px-3 py-2 text-center">{c.kalorije}</td>
                   <td className="px-3 py-2 text-center">
                     {formatDate(c.created_at)}
+                  </td>
+                  <td className="px-3 py-2 text-center">
+                    <Button onClick={() => obrisiCilj(c.id)} className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+                      Obriši
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -245,6 +272,11 @@ export default function Dashboard() {
                   <td className="px-3 py-2 text-center">{p.masti}</td>
                   <td className="px-3 py-2 text-center">{p.misici}</td>
                   <td className="px-3 py-2 text-center">{p.obim_struka}</td>
+                  <td className="px-3 py-2 text-center">
+                    <Button onClick={() => obrisiParametar(p.id)} className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">
+                      Obriši
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -275,28 +307,6 @@ export default function Dashboard() {
 }
 
 
-    function Modal({ title, children, onClose }) {
-      return (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white text-black rounded-xl p-6 w-[95%] max-w-6xl shadow-2xl">
-            
-            <div className="flex justify-between items-center mb-6 border-b pb-3">
-              <h3 className="text-xl font-semibold">{title}</h3>
-              <button
-                onClick={onClose}
-                className="text-gray-600 hover:text-red-500 text-2xl font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="overflow-x-auto">
-              {children}
-            </div>
-
-          </div>
-        </div>
-      );
-    }
+   
 
 

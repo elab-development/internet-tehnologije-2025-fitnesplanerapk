@@ -4,6 +4,7 @@ import axiosClient from "./axios-client.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { useNavigate } from "react-router-dom";
 import "../styles/Register.css"
+import Button from "../components/Button.jsx";
 export default function Register() {
   const imeRef = useRef();
   const prezimeRef = useRef();
@@ -14,8 +15,8 @@ export default function Register() {
   const datumRodjenjaRef = useRef();
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState(null);
-  const [message, setMessage] = useState(null); // za popup poruku
-  const [messageType, setMessageType] = useState(""); // "success" ili "error"
+  const [message, setMessage] = useState(null); 
+  const [messageType, setMessageType] = useState(""); 
   const navigate = useNavigate();
 
   const onSubmit = (ev) => {
@@ -36,7 +37,7 @@ export default function Register() {
         setUser(data.user);
         setToken(data.token);
         setErrors(null);
-        setMessage("Uspešno ste registrovani!"); // poruka za uspeh
+        setMessage("Uspešno ste registrovani!"); 
         setMessageType("success");
         navigate("/userSetup");
       })
@@ -44,7 +45,7 @@ export default function Register() {
         if (err.response) {
           if (err.response.status === 422) {
             setErrors(err.response.data.errors);
-            setMessage("Registracija nije uspela! Proverite podatke."); // poruka za neuspeh
+            setMessage("Registracija nije uspela! Proverite podatke."); 
             setMessageType("error");
           } else {
             console.log(err.response.status);
@@ -65,14 +66,14 @@ export default function Register() {
     <form className="register-form" onSubmit={onSubmit}>
       <h1>Napravite svoj nalog!</h1>
 
-      {/* Popup poruka */}
+      
       {message && (
         <div className={`message ${messageType}`}>
           {message}
         </div>
       )}
 
-      {/* Validation errors */}
+      
       {errors && (
         <div>
           {Object.keys(errors).map((key) => (
@@ -83,14 +84,14 @@ export default function Register() {
         </div>
       )}
 
-      {/* Input polja */}
+    
       <input ref={imeRef} type="text" placeholder="Ime" />
       <input ref={prezimeRef} type="text" placeholder="Prezime" />
       <input ref={emailRef} type="email" placeholder="Email adresa" />
       <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
       <input ref={passwordRef} type="password" placeholder="Lozinka" />
 
-      {/* Combo box za pol */}
+      
       <select ref={polRef} name="pol" defaultValue="">
         <option value="" disabled>Izaberite pol</option>
         <option value="muski">Muški</option>
@@ -99,10 +100,10 @@ export default function Register() {
 
       <input ref={datumRodjenjaRef} type="date" placeholder="Datum rođenja" />
 
-      {/* Dugme */}
-      <button type="submit">Register</button>
+    
+      <Button type="submit">Register</Button>
 
-      {/* Link za login */}
+      
       <p>
         Imate nalog? <Link to="/login">Ulogujte se u svoj nalog!</Link>
       </p>
