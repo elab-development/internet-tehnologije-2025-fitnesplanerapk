@@ -306,7 +306,7 @@ export default function TrenerStranica() {
                 </div>
               );
             })}
-            <Button onClick={kreirajProgram}>Kreiraj trening</Button>
+            {/* <Button onClick={kreirajProgram}>Kreiraj trening</Button> */}
           </div>
         ) : (
           <div className="bg-surface rounded-xl p-6 shadow text-center text-gray-500">
@@ -339,6 +339,7 @@ export default function TrenerStranica() {
             </div>
           </div>
         )}
+        <Button onClick={kreirajProgram}>Kreiraj trening</Button>
       </main>
 
       <Footer />

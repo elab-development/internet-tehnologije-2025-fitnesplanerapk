@@ -97,7 +97,7 @@ export default function Dashboard() {
              </p>
 
              <Button onClick={() => setShowHidriranostModal(true)}>
-               {hidriranost ? "Izmeni" : "Započni merenje hidriranosti"}
+               {hidriranost ? "Dodaj" : "Započni merenje hidriranosti"}
             </Button>
           </div>
          </section>
