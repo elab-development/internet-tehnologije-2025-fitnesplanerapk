@@ -15,8 +15,8 @@ import ObrociPregled from "./views/ObrociPregled.jsx";
 import TrenerStranica from "./views/TrenerStranica.jsx";
 import Vezbe from "./views/Vezbe.jsx";
 import PregledPrograma from "./views/PregledPrograma.jsx";
-
-
+import ObrokEdit from "./views/ObrociEdit.jsx";
+import ObrociDan from "./views/ObrociDan.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,24 +40,30 @@ const router = createBrowserRouter([
       path: '/programi',
       element: <PregledPrograma />
     },
+    {
+  path: "/obroci/:datum",
+  element: <ObrociDan />
+},
+{
+  path: "/obroci/edit/:id",
+  element: <DodajObrok editMode />
+},
 
-
-
-      {
+{
         path: '/admin_dashboard',
         element: (
           <AdminRoute>
             <AdminDashboard />
           </AdminRoute>
         )
-      },
+},
 
-      {
+{
         path: '/userSetup',
         element: <UserSetupPage />
-      },
+},
 
-      {
+{
         path: '/trenerStranica',
         element: <TrenerStranica />
       },
@@ -70,7 +76,12 @@ const router = createBrowserRouter([
       {
           path: '/obrociPregled',
           element: <ObrociPregled />
+      },
+      {
+          path: '/obroci/:datum',
+          element: <ObrokEdit />
       }
+
 
     ]
   },

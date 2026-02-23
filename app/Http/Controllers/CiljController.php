@@ -6,6 +6,7 @@ use App\Models\Cilj;
 use App\Http\Requests\StoreCiljRequest;
 use App\Http\Requests\UpdateCiljRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 class CiljController extends Controller
 {
     public function store(Request $request)
@@ -96,4 +97,17 @@ class CiljController extends Controller
         $cilj->delete();
         return response()->json(['message' => 'Cilj obrisan']);
     }
+
+    public function getCilj()
+    {
+        // Uzima poslednji cilj korisnika 
+        $cilj = Cilj::where('user_id', Auth::id())->latest()->first();
+
+        return response()->json([
+            'cilj' => $cilj ? $cilj->kalorije : null
+        ]);
+    }
+
+
+
 }

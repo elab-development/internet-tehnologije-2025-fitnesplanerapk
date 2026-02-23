@@ -31,7 +31,7 @@ class ProgramController extends Controller
             'vezbe.*.bpm' => 'nullable|integer|min:0',
         ]);
 
-      
+        
         $program = Program::create([
             'naziv' => $request->naziv,
             'korisnik_id' => auth()->id(),
@@ -156,7 +156,7 @@ public function treneriProgrami()
 {
     $programi = Program::whereHas('korisnik', function($query) {
         $query->whereHas('uloga', function($q) {
-            $q->where('naziv', 'trener');
+            $q->where('ime', 'trener');
         });
     })->with(['korisnik', 'vezbe'])->get();
 

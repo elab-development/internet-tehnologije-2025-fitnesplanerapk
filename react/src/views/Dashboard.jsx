@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import Modal from "../components/Modal.jsx";
 
 
-
 export default function Dashboard() {
   const { user } = useStateContext();
 
@@ -92,7 +91,6 @@ export default function Dashboard() {
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
 
-       
         <section className="mb-10">
           <h1 className="text-3xl font-bold text-textPrimary mb-2">
             Moj fitness dashboard

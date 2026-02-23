@@ -4,6 +4,7 @@ import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer.jsx";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
+
 export default function TrenerStranica() {
   const [vezbe, setVezbe] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,10 @@ export default function TrenerStranica() {
   const [showModal, setShowModal] = useState(false);
   const [programiTrenera, setProgramiTrenera] = useState([]);
 
-  
+  // Nova stanja za popup vežbe
+  const [showVezbaModal, setShowVezbaModal] = useState(false);
+  const [trenutnaVezba, setTrenutnaVezba] = useState(null);
+
   const getYoutubeThumbnail = (url) => {
     if (!url) return null;
     const regExp =
@@ -24,6 +28,16 @@ export default function TrenerStranica() {
     return match
       ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`
       : null;
+  };
+
+  const openVezbaModal = (v) => {
+    setTrenutnaVezba(v);
+    setShowVezbaModal(true);
+  };
+
+  const closeVezbaModal = () => {
+    setTrenutnaVezba(null);
+    setShowVezbaModal(false);
   };
 
   useEffect(() => {
@@ -41,7 +55,6 @@ export default function TrenerStranica() {
     fetchVezbe();
   }, []);
 
- 
   const toggleVezbaSelection = (id) => {
     setSelectedVezbe((prev) => {
       if (prev[id]) {
@@ -56,7 +69,6 @@ export default function TrenerStranica() {
     });
   };
 
-  
   const kreirajProgram = async () => {
     if (!nazivPrograma.trim()) {
       alert("Unesi naziv programa.");
@@ -84,7 +96,6 @@ export default function TrenerStranica() {
       await axiosClient.post("/programi", payload);
       alert("Program je uspešno kreiran!");
 
-      
       setNazivPrograma("");
       setSelectedVezbe({});
       setDan(1);
@@ -94,7 +105,6 @@ export default function TrenerStranica() {
     }
   };
 
-  
   const fetchProgramiTrenera = async () => {
     try {
       const res = await axiosClient.get("/programi/treneri");
@@ -137,7 +147,6 @@ export default function TrenerStranica() {
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
-       
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-textPrimary">
             Prikaz vežbi za kreiranje treninga
@@ -149,10 +158,8 @@ export default function TrenerStranica() {
           )}
         </div>
 
-       
         <div className="bg-surface rounded-xl shadow p-6 mb-8 max-w-3xl">
           <h2 className="text-xl font-semibold mb-4">Kreiranje treninga</h2>
-
           <div className="flex flex-col gap-4">
             <div>
               <label className="block text-sm mb-1">Naziv treninga</label>
@@ -178,12 +185,10 @@ export default function TrenerStranica() {
           </div>
         </div>
 
-       
         {vezbe.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {vezbe.map((v) => {
               const thumbnail = getYoutubeThumbnail(v.snimak);
-
               return (
                 <div
                   key={v.id}
@@ -195,16 +200,25 @@ export default function TrenerStranica() {
                     <img
                       src={thumbnail}
                       alt={v.ime}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-48 object-cover cursor-pointer"
+                      onClick={() => openVezbaModal(v)}
                     />
                   ) : (
-                    <div className="h-48 flex items-center justify-center bg-gray-200 text-gray-500">
+                    <div
+                      className="h-48 flex items-center justify-center bg-gray-200 text-gray-500 cursor-pointer"
+                      onClick={() => openVezbaModal(v)}
+                    >
                       Nema preview
                     </div>
                   )}
 
                   <div className="p-4">
-                    <h2 className="text-lg font-semibold mb-2">{v.ime}</h2>
+                    <h2
+                      className="text-lg font-semibold mb-2 cursor-pointer"
+                      onClick={() => openVezbaModal(v)}
+                    >
+                      {v.ime}
+                    </h2>
 
                     <label className="flex items-center gap-2 mb-2">
                       <input
@@ -308,7 +322,6 @@ export default function TrenerStranica() {
                 </div>
               );
             })}
-            {/* <Button onClick={kreirajProgram}>Kreiraj trening</Button> */}
           </div>
         ) : (
           <div className="bg-surface rounded-xl p-6 shadow text-center text-gray-500">
@@ -316,7 +329,7 @@ export default function TrenerStranica() {
           </div>
         )}
 
-       
+        {/* Modal za izabrani trening */}
         {showModal && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-xl w-full max-w-lg">
@@ -341,6 +354,47 @@ export default function TrenerStranica() {
             </div>
           </div>
         )}
+
+        {/* Modal za popup vežbe */}
+        {showVezbaModal && trenutnaVezba && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-lg relative">
+              <button
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+                onClick={closeVezbaModal}
+              >
+                ✕
+              </button>
+
+              <h2 className="text-xl font-bold mb-4">{trenutnaVezba.ime}</h2>
+
+              {trenutnaVezba.snimak ? (
+                <iframe
+                  className="w-full h-56 mb-4"
+                  src={`https://www.youtube.com/embed/${
+                    trenutnaVezba.snimak.split("v=")[1]
+                  }`}
+                  title={trenutnaVezba.ime}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <p>Nema video zapisa za ovu vežbu.</p>
+              )}
+
+              <div className="text-sm space-y-1">
+                <p>Serije: {trenutnaVezba.serija || "nema podataka"}</p>
+                <p>Ponavljanja: {trenutnaVezba.ponavljanja || "nema podataka"}</p>
+                <p>Težina: {trenutnaVezba.tezina || "nema podataka"}</p>
+                <p>Trajanje: {trenutnaVezba.trajanje || "nema podataka"}</p>
+                <p>BPM: {trenutnaVezba.bpm || "nema podataka"}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Button onClick={kreirajProgram}>Kreiraj trening</Button>
       </main>
 
       <Footer />

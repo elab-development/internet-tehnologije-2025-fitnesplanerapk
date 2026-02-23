@@ -30,9 +30,9 @@ Route::middleware('auth:sanctum')->group(function () {
 // Route::middleware('cors')->group(function () {
 //     Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
 // });
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/obrociPregled', [ObrokController::class, 'pregled']);
-});
+//Route::middleware('auth:sanctum')->group(function () {
+ //   Route::get('/obrociPregled', [ObrokController::class, 'pregled']);
+//});
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/obrociPregled', [ObrokController::class, 'obrociPregled']);
 });
@@ -92,12 +92,15 @@ Route::get('/test/vezbe', function () {
 Route::get('/test/programi', function () {
     return Program::with('vezbe')->get();
 });
-
+Route::middleware('auth:sanctum')->put('/obroci/{obrok}', [ObrokController::class, 'update']);
 
 Route::get('/programi/treneri', [ProgramController::class, 'treneriProgrami']);
 
+Route::middleware('auth:sanctum')->get('/obroci/{id}', [ObrokController::class, 'show']);
 
-
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::delete('/obroci/{obrok}', [ObrokController::class, 'destroy']);
+});
+Route::middleware('auth:sanctum')->get('/cilj', [CiljController::class, 'getCilj']);
 
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);

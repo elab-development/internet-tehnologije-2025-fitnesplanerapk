@@ -10,6 +10,7 @@ export default function Header() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const isAdmin = user?.uloga_id === 2;
+  const isKorisnik=user?.uloga_id===1;
   const handleLogout = () => {
     setToken(null);
     setUser(null);
@@ -24,7 +25,7 @@ export default function Header() {
    <header className="app-header flex justify-between items-center p-4 text-white">
 
       <div className="flex items-center relative">
-        {!isAdmin && (
+        {isKorisnik && (
           <>
             <MenuIcon
               onClick={handleMenuClick}
