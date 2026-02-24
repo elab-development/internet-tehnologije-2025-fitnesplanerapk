@@ -17,6 +17,7 @@ import Vezbe from "./views/Vezbe.jsx";
 import PregledPrograma from "./views/PregledPrograma.jsx";
 import ObrokEdit from "./views/ObrociEdit.jsx";
 import ObrociDan from "./views/ObrociDan.jsx";
+import Landing from "./views/Landing.jsx";
 
 const router = createBrowserRouter([
   {
@@ -87,23 +88,23 @@ const router = createBrowserRouter([
   },
 
   {
-    path: '/',
-    element: <GuestLayout />,
-    children: [
-      {
-        index: true,
-        element: <Navigate to="/login" replace />
-      },
+  path: '/',
+  element: <GuestLayout />,
+  children: [
+    {
+      index: true,
+      element: <Landing />
+    },
+    {
+      path: '/login',
+      element: <Login />
+    },
+    {
+      path: '/register',
+      element: <Register />
+    }
+  ]
 
-      {
-        path: '/login',
-        element: <Login />
-      },
-      {
-        path: '/register',
-        element: <Register />
-      }
-    ]
   },
 
   {
