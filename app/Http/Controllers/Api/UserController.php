@@ -4,34 +4,142 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Prikazuje sve korisnike koji su vezbači ili admini
      */
+    public function vezbaciTrenera()
+{
+    $user = auth()->user();
 
+    if ($user->uloga_id !== 3) { // 3 = trener
+        return response()->json(['message' => 'Nije trener'], 403);
+    }
+
+    // Dohvat svih vezbača koji imaju ovog trenera
+    $vezbaci = User::where('trener_id', $user->id)
+        ->select('id', 'ime', 'prezime', 'email', 'username')
+        ->get();
+
+    return response()->json($vezbaci);
+}
+public function parametri(User $user) {
+    return response()->json($user->parametri);
+}
+
+public function ciljevi(User $user) {
+    return response()->json($user->ciljevi);
+}
+public function pretragaTrenera(Request $request)
+{
+    $query = $request->query('query');
+
+    if (!$query) {
+        return response()->json([]);
+    }
+
+    $treneri = User::whereHas('uloga', function($q) {
+                    $q->where('ime', 'trener');
+                })
+                ->where(function($q) use ($query) {
+                    $q->where('ime', 'like', "%{$query}%")
+                      ->orWhere('prezime', 'like', "%{$query}%")
+                      ->orWhere('email', 'like', "%{$query}%");
+                })
+                ->get(['id', 'ime', 'prezime', 'email']);
+
+    return response()->json($treneri);
+}
+public function postaviTrenera(Request $request)
+{
+    $request->validate([
+        'trener_id' => 'required|exists:users,id'
+    ]);
+
+    $korisnik = Auth::user();
+
+    $trener = User::where('id', $request->trener_id)
+                  ->whereHas('uloga', function($q){
+                      $q->where('ime', 'trener');
+                  })
+                  ->first();
+
+    if (!$trener) {
+        return response()->json(['message' => 'Izabrani korisnik nije trener'], 400);
+    }
+
+    $korisnik->trener_id = $trener->id;
+    $korisnik->save();
+
+    return response()->json([
+        'message' => 'Trener uspešno postavljen',
+        'trener' => $trener->only(['id','ime','prezime','email'])
+    ]);
+}
+public function ukloniTrenera()
+{
+    $korisnik = Auth::user();
+
+    $korisnik->trener_id = null;
+    $korisnik->save();
+
+    return response()->json([
+        'message' => 'Trener uklonjen'
+    ]);
+}
+public function storeParametar(Request $request, User $user)
+{
+
+    // Opcionalno: samo trener može dodati parametre
+    $authUser = auth()->user();
+    if ($authUser->uloga_id !== 3) {
+        return response()->json(['message' => 'Nije trener'], 403);
+    }
+
+    $request->validate([
+        'date' => 'required|date',
+        'tezina' => 'required|numeric',
+        'visina' => 'required|numeric',
+        'bmi' => 'required|numeric',
+        'masti' => 'required|numeric',
+        'misici' => 'required|numeric',
+        'obim_struka' => 'required|numeric',
+    ]);
+
+    $param = $user->parametri()->create($request->all());
+
+    return response()->json($param);
+}
+public function show(User $user) {
+    $user->load('parametri', 'ciljevi'); // eager load
+    return response()->json($user);
+}
     public function allUsers()
     {
         return response()->json(
-            User::whereIn('uloga_id', [1, 3])
+            User::whereIn('uloga_id', [1, 3]) // 1=korisnik, 3=trener
                 ->select(
-                'id',
-                'ime',
-                'prezime',
-                'email',
-                'username',
-                'created_at'
-            )->get()
+                    'id',
+                    'ime',
+                    'prezime',
+                    'email',
+                    'username',
+                    'created_at'
+                )->get()
         );
     }
+
+    /**
+     * Prikazuje sve korisnike (samo admin)
+     */
     public function index()
     {
         $user = auth()->user();
 
-        if ($user->uloga_id !== 2) { 
+        if ($user->uloga_id !== 2) { // 2 = admin
             return response()->json(['message' => 'Nije admin'], 403);
         }
 
@@ -39,39 +147,71 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    
-
     /**
-     * Store a newly created resource in storage.
+     * Povezivanje vezbača sa trenerom
+     * 
+     * @param Request $request
+     * $request->trener_id => ID trenera
+     * $request->vezbac_id => ID vezbača
      */
-    public function store(StoreUserRequest $request)
+    public function assignVezbacToTrener(Request $request)
     {
-        //
+        $request->validate([
+            'trener_id' => 'required|exists:users,id',
+            'vezbac_id' => 'required|exists:users,id',
+        ]);
+
+        $trener = User::find($request->trener_id);
+        $vezbac = User::find($request->vezbac_id);
+
+        // Proveravamo da li su uloge ispravne
+        if (!$trener->isTrener()) {
+            return response()->json(['message' => 'Odabrani korisnik nije trener'], 400);
+        }
+        if (!$vezbac->isVezbac()) {
+            return response()->json(['message' => 'Odabrani korisnik nije vezbač'], 400);
+        }
+
+        // Povezivanje vezbača sa trenerom
+        $vezbac->trener()->associate($trener);
+        $vezbac->save();
+
+        return response()->json([
+            'message' => 'Vezbač uspešno povezan sa trenerom',
+            'vezbac' => $vezbac,
+            'trener' => $trener
+        ]);
     }
 
     /**
-     * Display the specified resource.
+     * Dohvatanje svih vezbača određenog trenera
      */
-    public function show(User $user)
+    public function getVezbaciTrenera($trener_id)
     {
-        //
-    }
+        $trener = User::findOrFail($trener_id);
 
-   
+        if (!$trener->isTrener()) {
+            return response()->json(['message' => 'Korisnik nije trener'], 400);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
-    {
-        //
+        $vezbaci = $trener->vezbaci;
+
+        return response()->json($vezbaci);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Dohvatanje trenera određenog vezbača
      */
-    public function destroy(User $user)
+    public function getTrenerVezbaca($vezbac_id)
     {
-        //
+        $vezbac = User::findOrFail($vezbac_id);
+
+        if (!$vezbac->isVezbac()) {
+            return response()->json(['message' => 'Korisnik nije vezbač'], 400);
+        }
+
+        $trener = $vezbac->trener;
+
+        return response()->json($trener);
     }
 }

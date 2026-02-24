@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 namespace App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
@@ -22,7 +19,8 @@ class User extends Authenticatable
         'password',
         'pol',
         'datumRodjenja',
-        'uloga_id' 
+        'uloga_id',
+        'trener_id', // nova kolona
     ];
 
     protected $hidden = [
@@ -38,7 +36,7 @@ class User extends Authenticatable
         ];
     }
 
-    
+    // Relacije
     public function ciljevi()
     {
         return $this->hasMany(Cilj::class);
@@ -57,5 +55,28 @@ class User extends Authenticatable
     public function hidriranost()
     {
         return $this->belongsTo(Hidriranost::class, 'hidriranost_id'); 
+    }
+
+    // 🔹 RELACIJA SELF-REFERENCE: Vezbač -> Trener
+    public function trener()
+    {
+        return $this->belongsTo(User::class, 'trener_id');
+    }
+
+    // 🔹 RELACIJA SELF-REFERENCE: Trener -> Vezbači
+    public function vezbaci()
+    {
+        return $this->hasMany(User::class, 'trener_id');
+    }
+
+    // Helper funkcije za lakšu identifikaciju uloge
+    public function isTrener()
+    {
+        return $this->uloga->ime === 'trener';
+    }
+
+    public function isVezbac()
+    {
+        return $this->uloga->ime === 'korisnik';
     }
 }

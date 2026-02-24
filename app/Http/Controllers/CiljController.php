@@ -9,28 +9,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class CiljController extends Controller
 {
-    public function store(Request $request)
-    {
-        $request->validate([
-            'hidriranost' => 'required|numeric',
-            'tezina' => 'required|numeric',
-            'kalorije' => 'required|integer',
-        ]);
+   public function store(Request $request, $userId = null)
+{
+    $request->validate([
+        'hidriranost' => 'required|numeric',
+        'tezina' => 'required|numeric',
+        'kalorije' => 'required|integer',
+    ]);
 
-        $user = $request->user();
+    // Ako nema userId u ruti, koristi prijavljenog korisnika
+    $user_id = $userId ?? auth()->id();
 
-         $cilj = Cilj::create([
-            'user_id' => auth()->id(), 
-            'hidriranost' => $request->hidriranost,
-            'tezina' => $request->tezina,
-            'kalorije' => $request->kalorije,
-        ]);
+    $cilj = Cilj::create([
+        'user_id' => $user_id,
+        'hidriranost' => $request->hidriranost,
+        'tezina' => $request->tezina,
+        'kalorije' => $request->kalorije,
+    ]);
 
-        return response()->json([
-            'message' => 'Ciljevi uspešno sačuvani!',
-            'cilj' => $cilj
-        ]);
-    }
+    return response()->json($cilj, 201);
+}
     /**
      * Display a listing of the resource.
      */

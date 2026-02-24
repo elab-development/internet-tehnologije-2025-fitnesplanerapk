@@ -101,6 +101,26 @@ Route::middleware('auth:sanctum')->get('/obroci/{id}', [ObrokController::class, 
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/obroci/{obrok}', [ObrokController::class, 'destroy']);
 });
-Route::middleware('auth:sanctum')->get('/cilj', [CiljController::class, 'getCilj']);
+// Korisnik dodaje svoj cilj
+Route::middleware('auth:sanctum')->post('/cilj', [CiljController::class, 'store']);
 
+// Trener dodaje cilj za vežbača
+Route::middleware('auth:sanctum')->post('/users/{user}/ciljevi', [CiljController::class, 'store']);
+Route::middleware('auth:sanctum')->get('/cilj', [CiljController::class, 'getCilj']);
+Route::middleware('auth:sanctum')->get('/vezbaci', [UserController::class, 'vezbaciTrenera']);
+Route::middleware('auth:sanctum')->get('/users/{user}/parametri', [UserController::class, 'parametri']);
+Route::middleware('auth:sanctum')->get('/users/{user}/ciljevi', [UserController::class, 'ciljevi']);
+Route::middleware('auth:sanctum')->get('/users/{user}', [UserController::class, 'show']);
+Route::middleware('auth:sanctum')->get('/vezbac/{user}', [UserController::class, 'show']);
+Route::middleware('auth:sanctum')->post('/users/{user}/parametri', [UserController::class, 'storeParametar']);
 // Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);
+// Uz middleware auth:sanctum
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/trener/pretraga', [UserController::class, 'pretragaTrenera']);
+    Route::post('/trener/postavi', [UserController::class, 'postaviTrenera']);
+    Route::post('/trener/ukloni', [UserController::class, 'ukloniTrenera']);
+});
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    $user = \App\Models\User::with('trener')->find($request->user()->id);
+    return response()->json($user);
+});

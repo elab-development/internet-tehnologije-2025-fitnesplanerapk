@@ -9,8 +9,11 @@ export default function Header() {
   const { user, setUser, setToken } = useStateContext();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
   const isAdmin = user?.uloga_id === 2;
-  const isKorisnik=user?.uloga_id===1;
+  const isKorisnik = user?.uloga_id === 1; // vezbač
+  const isTrener = user?.uloga_id === 3;   // trener
+
   const handleLogout = () => {
     setToken(null);
     setUser(null);
@@ -22,41 +25,40 @@ export default function Header() {
   };
 
   return (
-   <header className="app-header flex justify-between items-center p-4 text-white">
-
+    <header className="app-header flex justify-between items-center p-4 text-white bg-blue-700">
       <div className="flex items-center relative">
-        {isKorisnik && (
+        {(isKorisnik || isTrener) && (
           <>
             <MenuIcon
               onClick={handleMenuClick}
               className="cursor-pointer hover:text-yellow-300 transition-colors"
             />
-
             {menuOpen && (
               <div className="absolute top-12 left-0 bg-white text-gray-800 p-3 rounded-lg shadow-lg z-50 w-48">
-                <Menu />
+                <Menu
+                  showDashboard={isKorisnik}
+                  showObroci={isKorisnik}
+                  showDodajObrok={isKorisnik}
+                  showVezbe={true}          // svi vide vežbe
+                  showVezbaci={isTrener}    // samo trener vidi
+                  showUserSetup={isAdmin}   // samo admin vidi
+                  showMojTrener={isKorisnik}
+                  showProgrami={true}
+                />
               </div>
             )}
           </>
         )}
         <h1 className="ml-3 text-lg font-semibold select-none">Fitness Aplikacija</h1>
-
-        {menuOpen && (
-          <div className="absolute top-12 left-0 bg-white text-gray-800 p-3 rounded-lg shadow-lg z-50 w-48">
-            <Menu />
-          </div>
-        )}
       </div>
 
       {user && (
         <div className="flex items-center gap-3">
-          <span className="font-medium">Zdravo, {user.ime}</span>
-          <Button
-            onClick={handleLogout}
-            
-          >
-            Logout
-          </Button>
+          {isKorisnik && <span className="font-medium">Zdravo, {user.ime}</span>}
+          {isTrener && <span className="font-medium">Trener: {user.ime}</span>}
+          {isAdmin && <span className="font-medium">Admin: {user.ime}</span>}
+
+          <Button onClick={handleLogout}>Logout</Button>
         </div>
       )}
     </header>

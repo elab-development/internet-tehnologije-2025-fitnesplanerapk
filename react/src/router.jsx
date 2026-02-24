@@ -18,7 +18,9 @@ import PregledPrograma from "./views/PregledPrograma.jsx";
 import ObrokEdit from "./views/ObrociEdit.jsx";
 import ObrociDan from "./views/ObrociDan.jsx";
 import Landing from "./views/Landing.jsx";
-
+import Vezbaci from "./views/Vezbaci.jsx";
+import VezbacDetalji from "./views/VezbacDetalji.jsx";
+import MojTrener from "./views/MojTrener.jsx";
 const router = createBrowserRouter([
   {
     path: '/',
@@ -81,7 +83,19 @@ const router = createBrowserRouter([
       {
           path: '/obroci/:datum',
           element: <ObrokEdit />
-      }
+      },
+       {
+          path: '/vezbaci',
+          element: <Vezbaci />
+      },
+       {
+          path: '/vezbac/:id',
+          element: <VezbacDetalji />
+      },
+      {
+          path: '/mojTrener',
+          element: <MojTrener />
+      },
 
 
     ]

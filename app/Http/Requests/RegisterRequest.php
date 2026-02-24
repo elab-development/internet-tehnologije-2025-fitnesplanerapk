@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+
 class RegisterRequest extends FormRequest
 {
     /**
@@ -17,32 +18,32 @@ class RegisterRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Validation rules
      */
     public function rules(): array
     {
         return [
-            'ime'=>'required|string|max:55',
-            'prezime'=>'required|string|max:55',
-            'email'=>'required|email|unique:users,email',
-            'username'=>'required|string|max:55',
-            'password'=>[
+            'ime' => 'required|string|max:55',
+            'prezime' => 'required|string|max:55',
+            'email' => 'required|email|unique:users,email',
+            'username' => 'required|string|max:55',
+            'password' => [
                 'required',
-                Password::min(8)
-                ->letters()
-                ->symbols()
+                Password::min(8)->letters()->symbols()
             ],
             'pol' => 'required|in:muski,zenski',
-            'datumRodjenja' => 'required|date'
+            'datumRodjenja' => 'required|date',
+            'uloga' => 'required|in:korisnik,trener' // ✅ Dodato pravilo za ulogu
         ];
     }
 
+    /**
+     * Custom response on failed validation
+     */
     protected function failedValidation(Validator $validator)
-{
-    throw new HttpResponseException(
-        response()->json(['errors' => $validator->errors()], 422)
-    );
-}
+    {
+        throw new HttpResponseException(
+            response()->json(['errors' => $validator->errors()], 422)
+        );
+    }
 }

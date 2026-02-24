@@ -7,17 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Uloge extends Model
 {
-    
     use HasFactory;
+
     protected $table = 'uloge';
     protected $fillable = [
         'ime'
-    
-        
     ];
 
     public function users()
     {
-        return $this->hasMany(User::class); 
+        return $this->hasMany(User::class);
     }
 }

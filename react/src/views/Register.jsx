@@ -3,8 +3,9 @@ import React, { useRef, useState } from "react";
 import axiosClient from "./axios-client.js";
 import { useStateContext } from "../contexts/ContextProvider.jsx";
 import { useNavigate } from "react-router-dom";
-import "../styles/Register.css"
+import "../styles/Register.css";
 import Button from "../components/Button.jsx";
+
 export default function Register() {
   const imeRef = useRef();
   const prezimeRef = useRef();
@@ -13,14 +14,23 @@ export default function Register() {
   const passwordRef = useRef();
   const polRef = useRef();
   const datumRodjenjaRef = useRef();
+  const ulogaRef = useRef(); // ✅ Ref za ulogu
   const { setUser, setToken } = useStateContext();
   const [errors, setErrors] = useState(null);
-  const [message, setMessage] = useState(null); 
-  const [messageType, setMessageType] = useState(""); 
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState("");
   const navigate = useNavigate();
 
   const onSubmit = (ev) => {
     ev.preventDefault();
+
+    // ⚠ Obavezno izaberite ulogu
+    if (!ulogaRef.current.value) {
+      setMessage("Molimo izaberite ulogu!");
+      setMessageType("error");
+      return;
+    }
+
     const information = {
       ime: imeRef.current.value,
       prezime: prezimeRef.current.value,
@@ -29,6 +39,7 @@ export default function Register() {
       password: passwordRef.current.value,
       pol: polRef.current.value,
       datumRodjenja: datumRodjenjaRef.current.value,
+      uloga: ulogaRef.current.value, // ✅ Posaljemo ime uloge ('korisnik' ili 'trener')
     };
 
     axiosClient
@@ -37,7 +48,7 @@ export default function Register() {
         setUser(data.user);
         setToken(data.token);
         setErrors(null);
-        setMessage("Uspešno ste registrovani!"); 
+        setMessage("Uspešno ste registrovani!");
         setMessageType("success");
         navigate("/userSetup");
       })
@@ -45,7 +56,7 @@ export default function Register() {
         if (err.response) {
           if (err.response.status === 422) {
             setErrors(err.response.data.errors);
-            setMessage("Registracija nije uspela! Proverite podatke."); 
+            setMessage("Registracija nije uspela! Proverite podatke.");
             setMessageType("error");
           } else {
             console.log(err.response.status);
@@ -62,53 +73,53 @@ export default function Register() {
   };
 
   return (
-  <div className="register-container">
-    <form className="register-form" onSubmit={onSubmit}>
-      <h1>Napravite svoj nalog!</h1>
+    <div className="register-container">
+      <form className="register-form" onSubmit={onSubmit}>
+        <h1>Napravite svoj nalog!</h1>
 
-      
-      {message && (
-        <div className={`message ${messageType}`}>
-          {message}
-        </div>
-      )}
+        {message && <div className={`message ${messageType}`}>{message}</div>}
 
-      
-      {errors && (
-        <div>
-          {Object.keys(errors).map((key) => (
-            <p key={key} className="error-text">
-              {errors[key][0]}
-            </p>
-          ))}
-        </div>
-      )}
+        {errors && (
+          <div>
+            {Object.keys(errors).map((key) => (
+              <p key={key} className="error-text">
+                {errors[key][0]}
+              </p>
+            ))}
+          </div>
+        )}
 
-    
-      <input ref={imeRef} type="text" placeholder="Ime" />
-      <input ref={prezimeRef} type="text" placeholder="Prezime" />
-      <input ref={emailRef} type="email" placeholder="Email adresa" />
-      <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
-      <input ref={passwordRef} type="password" placeholder="Lozinka" />
+        <input ref={imeRef} type="text" placeholder="Ime" />
+        <input ref={prezimeRef} type="text" placeholder="Prezime" />
+        <input ref={emailRef} type="email" placeholder="Email adresa" />
+        <input ref={usernameRef} type="text" placeholder="Korisničko ime" />
+        <input ref={passwordRef} type="password" placeholder="Lozinka" />
 
-      
-      <select ref={polRef} name="pol" defaultValue="">
-        <option value="" disabled>Izaberite pol</option>
-        <option value="muski">Muški</option>
-        <option value="zenski">Ženski</option>
-      </select>
+        <select ref={polRef} name="pol" required>
+          <option value="" disabled>
+            Izaberite pol
+          </option>
+          <option value="muski">Muški</option>
+          <option value="zenski">Ženski</option>
+        </select>
 
-      <input ref={datumRodjenjaRef} type="date" placeholder="Datum rođenja" />
+        <input ref={datumRodjenjaRef} type="date" placeholder="Datum rođenja" />
 
-    
-      <Button type="submit">Register</Button>
+        {/* ✅ Select za ulogu */}
+        <select ref={ulogaRef} name="uloga" required>
+          <option value="" disabled>
+            Izaberite ulogu
+          </option>
+          <option value="korisnik">Vezbač</option>
+          <option value="trener">Trener</option>
+        </select>
 
-      
-      <p>
-        Imate nalog? <Link to="/login">Ulogujte se u svoj nalog!</Link>
-      </p>
-    </form>
-  </div>
-);
+        <Button type="submit">Register</Button>
 
+        <p>
+          Imate nalog? <Link to="/login">Ulogujte se u svoj nalog!</Link>
+        </p>
+      </form>
+    </div>
+  );
 }

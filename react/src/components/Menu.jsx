@@ -1,13 +1,26 @@
 import { NavLink } from "react-router-dom";
 
-export default function Menu() {
+export default function Menu({
+  showDashboard = false,
+  showUserSetup = false,
+  showObroci = false,
+  showDodajObrok = false,
+  showVezbe = false,
+  showVezbaci = false,
+  showMojTrener=false,
+  showProgrami
+}) {
+  // Kreiramo listu stavki menija, filtriranu prema props
   const menuItems = [
-    { label: "Dashboard", to: "/dashboard" },
-    { label: "User setup", to: "/userSetup" },
-    { label: "Obroci", to: "/obrociPregled" },
-    { label: "Dodaj Obrok", to: "/dodajObrok" },
-    { label: "Vezbe", to: "/vezbe" },
-  ];
+    showDashboard && { label: "Dashboard", to: "/dashboard" },
+    showUserSetup && { label: "User setup", to: "/userSetup" },
+    showObroci && { label: "Obroci", to: "/obrociPregled" },
+    showDodajObrok && { label: "Dodaj Obrok", to: "/dodajObrok" },
+    showVezbe && { label: "Vežbe", to: "/vezbe" },
+    showVezbaci && { label: "Vežbači", to: "/vezbaci" },
+    showMojTrener && { label: "Moj Trener", to: "/mojTrener" },
+    showProgrami && {label:"Programi", to: "/programi"}  
+  ].filter(Boolean); // uklanja sve false vrednosti
 
   return (
     <nav className="flex flex-col gap-2">
