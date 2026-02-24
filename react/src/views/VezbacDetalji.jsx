@@ -13,9 +13,9 @@ export default function VezbacDetalji() {
   const [isEditingParam, setIsEditingParam] = useState(false);
   const [isEditingCilj, setIsEditingCilj] = useState(false);
 
-  const [isTrener] = useState(true); // ili iz context-a
+  const [isTrener] = useState(true); 
 
-  // funkcija za današnji datum u formatu YYYY-MM-DD
+  
   const todayDate = () => {
     const today = new Date();
     const yyyy = today.getFullYear();

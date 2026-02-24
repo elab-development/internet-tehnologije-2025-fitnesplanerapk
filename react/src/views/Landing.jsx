@@ -11,7 +11,7 @@ export default function Landing() {
   return (
     <div className="relative">
 
-      {/* Navbar */}
+   
       <nav className="w-full bg-[#eda336] fixed top-0 z-50 shadow-md">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-white tracking-wide">FitnessAplikacija</h1>
@@ -24,20 +24,20 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Glavni sadržaj */}
+      
       <div className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-tr from-[#667eea] to-[#515bff] text-white p-6 pt-32">
 
-        {/* Glavni naslov */}
+        
         <h1 className="text-5xl font-extrabold mb-6 text-center animate-fadeIn">
           Najjednostavnija Fitness Aplikacija
         </h1>
 
-        {/* Kratak opis */}
+       
         <p className="text-xl mb-12 text-center max-w-3xl animate-fadeIn delay-100">
           Pratite ishranu, treninge i hidrataciju na jednom mestu. Naša aplikacija je moderna, brza i intuitivna, kreirana da vam olakša zdrav život svakog dana.
         </p>
 
-        {/* Sekcija benefita */}
+      
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-16 max-w-5xl">
           {[
             { emoji: "🔥", text: "Praćenje dnevnog unosa hrane i kalorija" },
@@ -55,7 +55,7 @@ export default function Landing() {
           ))}
         </div>
 
-        {/* Dugme Buy Membership */}
+      
         <a
           href="https://fitnessaplikacija.com/"
           target="_blank"
@@ -65,7 +65,7 @@ export default function Landing() {
           Kupite članarinu odmah
         </a>
 
-        {/* Sekcija za trenere */}
+       
         <div className="bg-white text-[#515bff] rounded-2xl shadow-xl p-10 max-w-4xl w-full mb-20">
           <h2 className="text-3xl font-bold mb-4 text-center">
             Za Trenerе
@@ -90,7 +90,6 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Footer tekst */}
         <p className="mt-6 text-center text-sm max-w-md animate-fadeIn delay-200">
           Počnite danas i unapredite svoje zdravlje i rezultate uz najjednostavniju fitness aplikaciju!
         </p>

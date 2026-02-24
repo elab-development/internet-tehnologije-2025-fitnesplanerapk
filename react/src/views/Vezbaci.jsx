@@ -21,7 +21,7 @@ export default function Vezbaci() {
     navigate(`/vezbac/${vezbacId}`);
   };
 
-  // Filtriranje + pretraga
+  
   const filteredVezbaci = vezbaci.filter(v => {
     const fullName = `${v.ime} ${v.prezime}`.toLowerCase();
     const email = v.email?.toLowerCase() || "";
@@ -59,7 +59,7 @@ export default function Vezbaci() {
           </select>
         </div>
 
-        {/* Kartice vezbaca */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVezbaci.map((vezbac) => (
             <div

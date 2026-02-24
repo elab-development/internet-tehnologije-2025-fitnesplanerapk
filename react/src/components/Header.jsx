@@ -11,8 +11,8 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isAdmin = user?.uloga_id === 2;
-  const isKorisnik = user?.uloga_id === 1; // vezbač
-  const isTrener = user?.uloga_id === 3;   // trener
+  const isKorisnik = user?.uloga_id === 1; 
+  const isTrener = user?.uloga_id === 3;   
 
   const handleLogout = () => {
     setToken(null);
@@ -25,7 +25,10 @@ export default function Header() {
   };
 
   return (
-    <header className="app-header flex justify-between items-center p-4 text-white bg-blue-700">
+    <header 
+      className="app-header flex justify-between items-center p-4 text-white" 
+      style={{ backgroundColor: '#515bff' }}
+    >
       <div className="flex items-center relative">
         {(isKorisnik || isTrener) && (
           <>
@@ -39,9 +42,9 @@ export default function Header() {
                   showDashboard={isKorisnik}
                   showObroci={isKorisnik}
                   showDodajObrok={isKorisnik}
-                  showVezbe={true}          // svi vide vežbe
-                  showVezbaci={isTrener}    // samo trener vidi
-                  showUserSetup={isAdmin}   // samo admin vidi
+                  showVezbe={true}          
+                  showVezbaci={isTrener}    
+                  showUserSetup={isAdmin}   
                   showMojTrener={isKorisnik}
                   showProgrami={true}
                 />

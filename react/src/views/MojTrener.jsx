@@ -11,14 +11,14 @@ export default function MojTrener() {
   const [searchTrener, setSearchTrener] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
-  // Uzmi trenutnog trenera
+ 
   useEffect(() => {
     axiosClient.get("/me")
       .then(res => setTrener(res.data.trener || null))
       .catch(err => console.error(err));
   }, []);
 
-  // Ukloni trenera
+  
   const ukloniTrenera = () => {
     if (!window.confirm("Da li želiš da ukloniš trenutnog trenera?")) return;
     axiosClient.post("/trener/ukloni")
@@ -26,7 +26,7 @@ export default function MojTrener() {
       .catch(err => console.error(err));
   };
 
-  // Pretraga trenera
+  
   const pretraziTrenera = () => {
     if (!searchTrener) return;
     axiosClient.get(`/trener/pretraga?query=${searchTrener}`)
@@ -34,7 +34,7 @@ export default function MojTrener() {
       .catch(err => console.error(err));
   };
 
-  // Postavi novog trenera
+ 
   const postaviTrenera = (id) => {
     axiosClient.post("/trener/postavi", { trener_id: id })
       .then(res => {
@@ -74,7 +74,7 @@ export default function MojTrener() {
 
       <Footer />
 
-      {/* Modal za pretragu i postavljanje trenera */}
+      
       {showModal && (
         <Modal title="Postavi trenera" onClose={() => setShowModal(false)}>
           <div className="space-y-4">
