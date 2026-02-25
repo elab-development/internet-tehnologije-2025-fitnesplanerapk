@@ -13,7 +13,7 @@ import UserSetupPage from "./views/UserSetupPage.jsx";
 import DodajObrok from "./views/Ishrana.jsx";
 import ObrociPregled from "./views/ObrociPregled.jsx";
 import TrenerStranica from "./views/TrenerStranica.jsx";
-import Vezbe from "./views/Vezbe.jsx";
+import Vezbe from "./views/VezbeVezbac.jsx";
 import PregledPrograma from "./views/PregledPrograma.jsx";
 import ObrokEdit from "./views/ObrociEdit.jsx";
 import ObrociDan from "./views/ObrociDan.jsx";
@@ -21,6 +21,7 @@ import Landing from "./views/Landing.jsx";
 import Vezbaci from "./views/Vezbaci.jsx";
 import VezbacDetalji from "./views/VezbacDetalji.jsx";
 import MojTrener from "./views/MojTrener.jsx";
+import TrenerProfil from "./views/TrenerProfil.jsx";
 const router = createBrowserRouter([
   {
     path: '/',
@@ -67,7 +68,7 @@ const router = createBrowserRouter([
 },
 
 {
-        path: '/trenerStranica',
+        path: '/trenerVezbe',
         element: <TrenerStranica />
       },
 
@@ -96,6 +97,10 @@ const router = createBrowserRouter([
           path: '/mojTrener',
           element: <MojTrener />
       },
+      {
+        path: '/trener-profil',
+        element: <TrenerProfil/>
+      }
 
 
     ]

@@ -4,19 +4,23 @@ import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer.jsx";
 
-export default function TrenerStranica() {
+export default function VezbeVezbac() {
   const [vezbe, setVezbe] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [nazivTreninga, setNazivTreninga] = useState("");
   const [selectedVezbe, setSelectedVezbe] = useState([]);
-  const [isPublic, setIsPublic] = useState(true);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState(null);
 
   const [selectedKategorija, setSelectedKategorija] = useState("sve");
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Treninzi trenera
+  const [trenerskiProgrami, setTrenerskiProgrami] = useState([]);
+  const [loadingTreneri, setLoadingTreneri] = useState(false);
+  const [showTreneri, setShowTreneri] = useState(false);
 
   const getYoutubeThumbnail = (url) => {
     if (!url) return null;
@@ -49,7 +53,9 @@ export default function TrenerStranica() {
   const filtriraneVezbe = useMemo(() => {
     return vezbe
       .filter((v) =>
-        selectedKategorija === "sve" ? true : v.kategorija === selectedKategorija
+        selectedKategorija === "sve"
+          ? true
+          : v.kategorija?.toLowerCase() === selectedKategorija.toLowerCase()
       )
       .filter((v) => v.ime.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [vezbe, selectedKategorija, searchTerm]);
@@ -68,12 +74,7 @@ export default function TrenerStranica() {
   const updateVezbaField = (id, field, value) => {
     setSelectedVezbe((prev) =>
       prev.map((v) =>
-        v.id === id
-          ? {
-              ...v,
-              [field]: value === "" ? null : parseInt(value, 10),
-            }
-          : v
+        v.id === id ? { ...v, [field]: value === "" ? null : Number(value) } : v
       )
     );
   };
@@ -90,19 +91,51 @@ export default function TrenerStranica() {
     try {
       await axiosClient.post("/programi", {
         naziv: nazivTreninga,
-        public: isPublic,
-        vezbe: selectedVezbe,
+        public: false,
+        vezbe: selectedVezbe.map((v) => ({
+          id: v.id,
+          serija: v.serije,
+          ponavljanja: v.ponavljanja,
+          tezina: v.tezina,
+          trajanje: v.trajanje,
+          dan: 1,
+        })),
       });
 
       alert("Trening uspešno kreiran!");
       setNazivTreninga("");
       setSelectedVezbe([]);
-      setIsPublic(true);
     } catch (err) {
       setCreateError("Greška prilikom kreiranja treninga.");
     } finally {
       setCreating(false);
     }
+  };
+
+  const handleTreninziTrenera = async () => {
+    setLoadingTreneri(true);
+    try {
+      const response = await axiosClient.get("/programi/treneri");
+      setTrenerskiProgrami(response.data);
+      setShowTreneri(true);
+    } catch (err) {
+      alert("Greška prilikom učitavanja treninga trenera");
+    } finally {
+      setLoadingTreneri(false);
+    }
+  };
+
+  // Novo: Dodaj vežbe iz treneraovog treninga u selectedVezbe
+  const handleDodajTrening = (program) => {
+    const noveVezbe = program.vezbe.map((v) => ({
+      id: v.id,
+      serije: v.pivot?.serija ?? v.serije ?? null,
+      ponavljanja: v.pivot?.ponavljanja ?? v.ponavljanja ?? null,
+      tezina: v.pivot?.tezina ?? v.tezina ?? null,
+      trajanje: v.pivot?.trajanje ?? v.trajanje ?? null,
+    }));
+    setSelectedVezbe(noveVezbe);
+    setNazivTreninga(program.naziv);
   };
 
   if (loading)
@@ -128,30 +161,6 @@ export default function TrenerStranica() {
             className="w-full p-4 border rounded-xl mb-6 text-lg focus:ring-2 focus:ring-blue-500"
           />
 
-          <div className="flex items-center gap-6 mb-6">
-            <span className="font-medium text-gray-700">Vidljivost:</span>
-
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                checked={isPublic}
-                onChange={() => setIsPublic(true)}
-                className="accent-blue-500"
-              />
-              Public
-            </label>
-
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                checked={!isPublic}
-                onChange={() => setIsPublic(false)}
-                className="accent-blue-500"
-              />
-              Private
-            </label>
-          </div>
-
           {createError && <p className="text-red-500 mb-4">{createError}</p>}
 
           <Button
@@ -163,7 +172,7 @@ export default function TrenerStranica() {
           </Button>
         </div>
 
-        {/* Filter + search */}
+        {/* Filter + search + dugme Treninzi trenera */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <input
             type="text"
@@ -183,6 +192,13 @@ export default function TrenerStranica() {
               </option>
             ))}
           </select>
+          <Button
+            onClick={handleTreninziTrenera}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+            disabled={loadingTreneri}
+          >
+            {loadingTreneri ? "Učitavanje..." : "Treninzi trenera"}
+          </Button>
         </div>
 
         {/* Grid vežbi */}
@@ -277,6 +293,34 @@ export default function TrenerStranica() {
         ) : (
           <div className="bg-white rounded-2xl p-8 shadow text-center text-gray-500 text-lg">
             Nema vežbi koje odgovaraju kriterijumu
+          </div>
+        )}
+
+        {/* Prikaz treninga trenera */}
+        {showTreneri && trenerskiProgrami.length > 0 && (
+          <div className="mt-6 bg-white rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Treninzi trenera</h2>
+            <ul className="space-y-3">
+              {trenerskiProgrami.map((p) => (
+                <li
+                  key={p.id}
+                  className="border-b pb-2 last:border-none flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-semibold">{p.naziv}</p>
+                    <p className="text-sm text-gray-600">
+                      Trener: {p.korisnik.name} | Trajanje: {p.trajanje} min | Kalorije: {p.kalorije} | Intenzitet: {p.intenzitet}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => handleDodajTrening(p)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg"
+                  >
+                    Dodaj vežbe
+                  </Button>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </main>

@@ -15,9 +15,10 @@ class Program extends Model
         'naziv',
         'datum',
         'trajanje',
-        'potrosene_kalorije',
+        'kalorije',
         'intenzitet',
-        'korisnik_id'
+        'korisnik_id',
+        'public'
     ];
 
     public function vezbe()

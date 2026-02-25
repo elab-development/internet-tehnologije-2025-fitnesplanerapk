@@ -12,7 +12,8 @@ class Vezba extends Model
     protected $table = 'vezbe';
     protected $fillable = [
         'ime',
-        'snimak'
+        'snimak',
+        'kategorija'
     ];
 
     public function programi()

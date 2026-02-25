@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -77,6 +78,51 @@ public function postaviTrenera(Request $request)
     return response()->json([
         'message' => 'Trener uspešno postavljen',
         'trener' => $trener->only(['id','ime','prezime','email'])
+    ]);
+}
+
+public function updateProfil(Request $request)
+{
+    $user = auth()->user();
+
+    if (!$user->isTrener()) {
+        return response()->json(['message' => 'Nemate dozvolu.'], 403);
+    }
+
+    // Validacija
+    $data = $request->validate([
+        'ime' => 'required|string|max:255',
+        'prezime' => 'required|string|max:255',
+        'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:6|confirmed', // potvrda lozinke
+        'biografija' => 'nullable|string',
+        'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
+
+    // Upload slike
+    if ($request->hasFile('profile_image')) {
+        if ($user->profile_image) {
+            Storage::disk('public')->delete($user->profile_image);
+        }
+
+        $path = $request->file('profile_image')->store('profile_images', 'public');
+        $data['profile_image'] = $path;
+    }
+
+    // Lozinka
+    if (!empty($data['password'])) {
+        $data['password'] = Hash::make($data['password']);
+    } else {
+        unset($data['password']);
+    }
+
+    // Update korisnika
+    $user->update($data);
+
+    return response()->json([
+        'message' => 'Profil uspešno ažuriran',
+        'user' => $user
     ]);
 }
 public function ukloniTrenera()

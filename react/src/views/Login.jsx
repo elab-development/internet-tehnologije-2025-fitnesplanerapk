@@ -36,7 +36,7 @@ export default function Login() {
           navigate("/admin_dashboard");
         } 
         else if(data.user.uloga_id === 3)
-          {navigate("/vezbe");}
+          {navigate("/trenerVezbe");}
         else {
           navigate("/dashboard");
         }

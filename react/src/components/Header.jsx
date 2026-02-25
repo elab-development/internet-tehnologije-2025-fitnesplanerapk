@@ -42,11 +42,13 @@ export default function Header() {
                   showDashboard={isKorisnik}
                   showObroci={isKorisnik}
                   showDodajObrok={isKorisnik}
-                  showVezbe={true}          
+                  showVezbe={isKorisnik} 
+                  showTrenerVezbe={isTrener}         
                   showVezbaci={isTrener}    
                   showUserSetup={isAdmin}   
                   showMojTrener={isKorisnik}
                   showProgrami={true}
+                  showTrenerProfil={isTrener}
                 />
               </div>
             )}

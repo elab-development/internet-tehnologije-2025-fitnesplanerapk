@@ -13,12 +13,15 @@ class VezbaController extends Controller
     {
         $request->validate([
             'ime' => 'required|string|max:255',
-            'snimak' => 'required|url'
+            'snimak' => 'required|url',
+              'kategorija' => 'nullable|string',
+
         ]);
 
         return Vezba::create([
             'ime' => $request->ime,
             'snimak' => $request->snimak,
+            'kategorija' => $request->kategorija,
         ]);
     }
     public function index()

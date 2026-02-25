@@ -47,9 +47,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'allUsers']);
 });
 
-Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
-    return response()->json($request->user());
-});
+
 
 
 
@@ -94,7 +92,7 @@ Route::get('/test/programi', function () {
 });
 Route::middleware('auth:sanctum')->put('/obroci/{obrok}', [ObrokController::class, 'update']);
 
-Route::get('/programi/treneri', [ProgramController::class, 'treneriProgrami']);
+Route::middleware('auth:sanctum')->get('/programi/treneri', [ProgramController::class, 'treneriProgrami']);
 
 Route::middleware('auth:sanctum')->get('/obroci/{id}', [ObrokController::class, 'show']);
 
@@ -124,3 +122,8 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     $user = \App\Models\User::with('trener')->find($request->user()->id);
     return response()->json($user);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/trener/profil', [UserController::class, 'updateProfil']);
+});
+Route::middleware('auth:sanctum')->post('/programi/dodaj-veze', [ProgramController::class, 'dodajVezbe']);
