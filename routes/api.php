@@ -12,7 +12,7 @@ use App\Http\Controllers\VezbaController;
 use App\Http\Controllers\ProgramController;
 use App\Models\Vezba;
 use App\Models\Program;
-
+use Illuminate\Support\Facades\Http;
 
 
 use App\Http\Controllers\HidriranostController;
@@ -24,15 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-// Route::middleware('cors')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-// Route::middleware('cors')->group(function () {
-//     Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-// });
-//Route::middleware('auth:sanctum')->group(function () {
- //   Route::get('/obrociPregled', [ObrokController::class, 'pregled']);
-//});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/obrociPregled', [ObrokController::class, 'obrociPregled']);
 });
@@ -123,4 +115,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
     $user = \App\Models\User::with('trener')->find($request->user()->id);
     return response()->json($user);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/hidriranost', [HidriranostController::class, 'index']); 
 });

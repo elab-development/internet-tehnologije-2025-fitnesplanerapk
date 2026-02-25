@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 class CiljController extends Controller
 {
-   public function store(Request $request, $userId = null)
+   public function store(StoreCiljRequest $request, $userId = null)
 {
     $request->validate([
         'hidriranost' => 'required|numeric',

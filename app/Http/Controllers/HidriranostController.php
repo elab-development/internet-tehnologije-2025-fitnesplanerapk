@@ -8,7 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class HidriranostController extends Controller
 {
-   
+   public function index()
+    {
+        $hidriranosti = Hidriranost::with('user')->get(); // sa korisnikom, opcionalno
+        return response()->json($hidriranosti);
+    }
 
     public function danas()
     {
