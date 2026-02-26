@@ -251,33 +251,32 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [vezbe, setVezbe] = useState([]); // Ovo će sada povlačiti vežbe sa tvog API-ja
+  const [vezbe, setVezbe] = useState([]); 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         
-        // 1. Povlačenje korisnika iz tvoje baze
+       
         const usersResponse = await axiosClient.get("/admin/users");
         setUsers(usersResponse.data);
 
-        // 2. Povlačenje vežbi preko tvog Laravel proxy-ja
-        // Laravel će interno pozvati ExerciseDB i vratiti ti JSON
+        
         const vezbeResponse = await axiosClient.get("/exercises");
         setVezbe(vezbeResponse.data);
         console.log("Šta stiže iz API-ja:", vezbeResponse.data);
         setLoading(false);
       } catch (err) {
     if (err.response) {
-        // Server je odgovorio, ali sa greškom (npr. 401, 403, 404, 500)
+        
         console.log("Server odgovorio sa:", err.response.status);
         console.log("Podaci greške:", err.response.data);
     } else if (err.request) {
-        // Zahtev je poslat, ali server nije odgovorio (npr. Laravel nije upaljen)
+       
         console.log("Nema odgovora od servera:", err.request);
     } else {
-        // Neka druga greška u kodu
+        
         console.log("Greška u zahtevu:", err.message);
     }
     setError("Greška: " + (err.response?.data?.message || err.message));
@@ -289,26 +288,65 @@ export default function AdminDashboard() {
 
   if (loading) return <p className="text-center mt-10">Učitavanje podataka...</p>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
-
+   const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("sr-RS");
+  };
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
         
-        {/* Sekcija za korisnike ostaje ista */}
+      
         <section className="mb-10">
           <h1 className="text-3xl font-bold text-textPrimary mb-4">Lista korisnika</h1>
-          {/* ... tvoja tabela korisnika ... */}
+             <div className="bg-surface rounded-xl p-6 shadow overflow-x-auto">
+             <table className="w-full table-auto border-collapse">
+               <thead>
+                 <tr className="bg-gray-200">
+                   <th className="border px-4 py-2 text-left">Ime</th>
+                  <th className="border px-4 py-2 text-left">Prezime</th>
+                   <th className="border px-4 py-2 text-left">Email</th>
+                   <th className="border px-4 py-2 text-left">Username</th>
+                   <th className="border px-4 py-2 text-left">
+                     Datum registracije
+                  </th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {users.length > 0 ? (
+                  users.map((u) => (
+                    <tr key={u.id} className="hover:bg-gray-100">
+                      <td className="border px-4 py-2">{u.ime}</td>
+                      <td className="border px-4 py-2">{u.prezime}</td>
+                      <td className="border px-4 py-2">{u.email}</td>
+                      <td className="border px-4 py-2">{u.username}</td>
+                      <td className="border px-4 py-2">
+                        {formatDate(u.created_at)}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className="text-center py-4">
+                      Nema korisnika
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
 
-        {/* Sekcija za vežbe - sada prikazuje podatke sa ExerciseDB-a */}
+        
         <section>
           <h1 className="text-3xl font-bold text-textPrimary mb-4">Lista vežbi (ExerciseDB)</h1>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {vezbe.map((v) => (
               <div key={v.id} className="bg-surface rounded-xl shadow overflow-hidden">
-                {/* ExerciseDB vraća gifUrl umesto YouTube linka */}
+                
                 <img 
                   src={v.gifUrl} 
                   alt={v.name} 
