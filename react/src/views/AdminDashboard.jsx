@@ -4,6 +4,7 @@ import Header from "../components/Header.jsx";
 import Button from "../components/Button.jsx";
 import Footer from "../components/Footer.jsx";
 
+
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [vezbe, setVezbe] = useState([]);
@@ -74,18 +75,32 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
+        
+       
         const usersResponse = await axiosClient.get("/admin/users");
         setUsers(usersResponse.data);
 
-        const vezbeResponse = await axiosClient.get("/vezbe");
+        
+        const vezbeResponse = await axiosClient.get("/exercises");
         setVezbe(vezbeResponse.data);
 
         setLoading(false);
       } catch (err) {
-        console.log(err);
-        setError("Greška prilikom učitavanja podataka.");
-        setLoading(false);
-      }
+    if (err.response) {
+        
+        console.log("Server odgovorio sa:", err.response.status);
+        console.log("Podaci greške:", err.response.data);
+    } else if (err.request) {
+       
+        console.log("Nema odgovora od servera:", err.request);
+    } else {
+        
+        console.log("Greška u zahtevu:", err.message);
+    }
+    setError("Greška: " + (err.response?.data?.message || err.message));
+    setLoading(false);
+}
     };
     fetchData();
   }, []);
@@ -98,7 +113,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
-
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
         {/* USERS */}
         <section className="mb-14">

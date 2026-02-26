@@ -12,8 +12,8 @@ use App\Http\Controllers\VezbaController;
 use App\Http\Controllers\ProgramController;
 use App\Models\Vezba;
 use App\Models\Program;
-
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 use App\Http\Controllers\HidriranostController;
 Route::middleware('auth:sanctum')->group(function () {
@@ -24,15 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-// Route::middleware('cors')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-// Route::middleware('cors')->group(function () {
-//     Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-// });
-//Route::middleware('auth:sanctum')->group(function () {
- //   Route::get('/obrociPregled', [ObrokController::class, 'pregled']);
-//});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/obrociPregled', [ObrokController::class, 'obrociPregled']);
 });
@@ -127,3 +119,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/trener/profil', [UserController::class, 'updateProfil']);
 });
 Route::middleware('auth:sanctum')->post('/programi/dodaj-veze', [ProgramController::class, 'dodajVezbe']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/hidriranost', [HidriranostController::class, 'index']); 
+});
+
+
+Route::middleware('auth:sanctum')->get('/exercises', function () {
+    return Cache::remember('all_exercises', 86400, function () {
+        $response = Http::withHeaders([
+            'X-RapidAPI-Key' => '4cbb324438msh1395f1685da7781p1326c4jsnbd209dcfb79a',
+            'X-RapidAPI-Host' => 'exercisedb.p.rapidapi.com'
+        ])->get('https://exercisedb.p.rapidapi.com/exercises?limit=21'); 
+        if ($response->failed()) {
+            return response()->json([
+                'error' => 'API poziv nije uspeo',
+                'status' => $response->status(),
+                'body' => $response->json() 
+            ], 500);
+        }
+        return $response->json();
+    });
+});

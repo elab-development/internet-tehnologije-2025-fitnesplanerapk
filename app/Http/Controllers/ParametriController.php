@@ -39,8 +39,8 @@ class ParametriController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreParametriRequest $request)
-    {
-        $validated = $request->validate([
+{
+    $validated = $request->validate([
             'date' => 'required|date',
             'tezina' => 'required|numeric',
             'visina' => 'required|numeric',
@@ -49,26 +49,25 @@ class ParametriController extends Controller
             'obim_struka' => 'required|numeric',
         ]);
 
-        
-        $visinaUMetrima = $validated['visina'] / 100;
-        $bmi = $validated['tezina'] / ($visinaUMetrima * $visinaUMetrima);
+    $visinaUMetrima = $validated['visina'] / 100;
+    $bmi = $validated['tezina'] / ($visinaUMetrima * $visinaUMetrima);
 
-        $parametri = Parametri::create([
-            'user_id' => auth()->id(),
-            'date' => $validated['date'],
-            'tezina' => $validated['tezina'],
-            'visina' => $validated['visina'],
-            'bmi' => round($bmi, 2),
-            'masti' => $validated['masti'],
-            'misici' => $validated['misici'],
-            'obim_struka' => $validated['obim_struka'],
-        ]);
+    $parametri = Parametri::create([
+        'user_id' => auth()->id(),
+        'date' => $validated['date'],
+        'tezina' => $validated['tezina'],
+        'visina' => $validated['visina'],
+        'bmi' => round($bmi, 2),
+        'masti' => $validated['masti'],
+        'misici' => $validated['misici'],
+        'obim_struka' => $validated['obim_struka'],
+    ]);
 
-        return response()->json([
-            'message' => 'Parametri uspešno sačuvani',
-            'parametri' => $parametri
-        ], 201);
-    }
+    return response()->json([
+        'message' => 'Parametri uspešno sačuvani',
+        'parametri' => $parametri
+    ], 201);
+}
 
     /**
      * Display the specified resource.
@@ -111,22 +110,14 @@ class ParametriController extends Controller
     // }
     public function destroy($id)
     {
-        try {
-            $parametar = Parametri::findOrFail($id); 
+        $parametar = Parametri::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
 
-            
-            if ($parametar->user_id !== auth()->id()) {
-                return response()->json(['message' => 'Nije dozvoljeno brisanje ovog parametra'], 403);
-            }
+        $parametar->delete();
 
-            $parametar->delete();
-
-            return response()->json(['message' => 'Parametar uspešno obrisan']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Greška pri brisanju parametra',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Parametar uspešno obrisan'
+        ]);
     }
 }
