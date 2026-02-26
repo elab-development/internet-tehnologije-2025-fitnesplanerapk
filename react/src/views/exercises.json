@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "Squat",
+    "bodyPart": "legs",
+    "target": "quadriceps",
+    "equipment": ["barbell"],
+    "gifUrl": "https://example.com/squat.gif"
+  },
+  {
+    "id": 2,
+    "name": "Lunge",
+    "bodyPart": "legs",
+    "target": "hamstrings",
+    "equipment": ["bodyweight"],
+    "gifUrl": "https://example.com/lunge.gif"
+  },
+  {
+    "id": 3,
+    "name": "Deadlift",
+    "bodyPart": "back",
+    "target": "lats",
+    "equipment": ["barbell"],
+    "gifUrl": "https://example.com/deadlift.gif"
+  }
+]
