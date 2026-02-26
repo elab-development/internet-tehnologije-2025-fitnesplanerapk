@@ -13,7 +13,7 @@ use App\Http\Controllers\ProgramController;
 use App\Models\Vezba;
 use App\Models\Program;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\Cache;
 
 use App\Http\Controllers\HidriranostController;
 Route::middleware('auth:sanctum')->group(function () {
@@ -119,4 +119,22 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/hidriranost', [HidriranostController::class, 'index']); 
+});
+
+
+Route::middleware('auth:sanctum')->get('/exercises', function () {
+    return Cache::remember('all_exercises', 86400, function () {
+        $response = Http::withHeaders([
+            'X-RapidAPI-Key' => '4cbb324438msh1395f1685da7781p1326c4jsnbd209dcfb79a',
+            'X-RapidAPI-Host' => 'exercisedb.p.rapidapi.com'
+        ])->get('https://exercisedb.p.rapidapi.com/exercises?limit=21'); 
+        if ($response->failed()) {
+            return response()->json([
+                'error' => 'API poziv nije uspeo',
+                'status' => $response->status(),
+                'body' => $response->json() 
+            ], 500);
+        }
+        return $response->json();
+    });
 });
