@@ -335,7 +335,7 @@ import Footer from "../components/Footer.jsx";
 import Button from "../components/Button.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import Modal from "../components/Modal.jsx";
-import { Chart } from "react-google-charts"; // <-- dodaj ovo za grafikone
+import { Chart } from "react-google-charts"; 
 
 export default function Dashboard() {
   const { user } = useStateContext();
@@ -358,10 +358,10 @@ export default function Dashboard() {
   const [newCilj, setNewCilj] = useState({ hidriranost: "", tezina: "", kalorije: "" });
   const [newParam, setNewParam] = useState({
     date: new Date().toISOString().slice(0,10),
-    tezina: "", visina: "", bmi: "", masti: "", misici: "", obim_struka: ""
+    tezina: "", visina: "", masti: "", misici: "", obim_struka: ""
   });
 
-  // Fetch podaci
+
   useEffect(() => {
     if (!user) return;
 
@@ -382,7 +382,7 @@ export default function Dashboard() {
       .catch(err => console.log(err));
   }, [user]);
 
-  // Helper
+
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
@@ -406,7 +406,7 @@ export default function Dashboard() {
     });
   };
 
-  // Ciljevi i parametri CRUD
+  
   const obrisiCilj = (id) => {
     if (!window.confirm("Da li ste sigurni da želite da obrišete cilj?")) return;
     axiosClient.delete(`/cilj/${id}`)
@@ -440,7 +440,6 @@ export default function Dashboard() {
       ...newParam,
       tezina: Number(newParam.tezina),
       visina: Number(newParam.visina),
-      bmi: Number(newParam.bmi),
       masti: Number(newParam.masti),
       misici: Number(newParam.misici),
       obim_struka: Number(newParam.obim_struka)
@@ -449,24 +448,51 @@ export default function Dashboard() {
       setParametri(prev => [res.data.parametri, ...prev]);
       setNewParam({
         date: new Date().toISOString().slice(0,10),
-        tezina: "", visina: "", bmi: "", masti: "", misici: "", obim_struka: ""
+        tezina: "", visina: "", masti: "", misici: "", obim_struka: ""
       });
       setShowAddParamModal(false);
     })
     .catch(err => console.error(err));
+  };
+const preuzmiIzvestaj = () => {
+    axiosClient.post("/posalji-izvestaj")
+      .then(res => {
+        alert("Izveštaj je uspešno poslat na Vaš mejl! Proverite Mailtrap.");
+      })
+      .catch(err => {
+        
+        console.error("Full error:", err);
+
+        
+        const serverMessage = err.response?.data?.message || err.response?.data?.greska;
+        const status = err.response?.status;
+
+        if (status === 500) {
+          alert(`Greška na serveru (500): ${serverMessage || "Proveri Laravel logove (storage/logs/laravel.log)"}`);
+        } else if (status === 401) {
+          alert("Niste ulogovani ili je sesija istekla.");
+        } else {
+          alert(`Došlo je do greške: ${serverMessage || err.message}`);
+        }
+      });
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <main className="flex-1 max-w-7xl mx-auto px-6 py-8">
-        
-        {/* Osnovni podaci */}
+       
         <section className="mb-10">
           <h1 className="text-3xl font-bold text-textPrimary mb-2">
             Moj fitness dashboard
           </h1>
           <p className="text-gray-600 mb-4">Pregled tvog napretka, ciljeva i planova</p>
+          <Button 
+              onClick={preuzmiIzvestaj} 
+              className="text-white shadow-lg flex items-center gap-2 mb-4"
+            >
+             Pošalji izveštaj na mejl (PDF)
+            </Button>
           <div className="bg-surface rounded-xl p-6 shadow space-y-1">
             <p><strong>Ime:</strong> {user?.ime || "-"}</p>
             <p><strong>Prezime:</strong> {user?.prezime || "-"}</p>
@@ -475,7 +501,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Hidriranost */}
+      
         <section className="mb-10">
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-2">
@@ -487,7 +513,7 @@ export default function Dashboard() {
             <Button onClick={() => setShowHidriranostModal(true)}>
               {hidriranost ? "Dodaj" : "Započni merenje hidriranosti"}
             </Button>
-            {allHidriranost.length > 0 && (
+            {/* {allHidriranost.length > 0 && (
               <div className="mt-6 bg-blue-50 rounded-xl p-4 shadow M">
                 <Chart
                   chartType="LineChart"
@@ -521,18 +547,18 @@ export default function Dashboard() {
                   }}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </section>
 
-        {/* Ciljevi i parametri */}
+       
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* Ciljevi */}
           <div className="bg-surface rounded-xl p-6 shadow">
             <div className="flex justify-between mb-4">
               <h2 className="text-xl font-semibold">Ciljevi</h2>
-              <Button onClick={() => setShowAddCiljModal(true)}>Dodaj novi cilj</Button>
+              <Button onClick={() => setShowAddCiljModal(true)}>Dodaj</Button>
             </div>
 
             {ciljevi.length === 0 ? (
@@ -549,7 +575,7 @@ export default function Dashboard() {
                   Prikaži sve ciljeve
                 </Button>
 
-                {/* GRAFIKON CILJEVI */}
+                {/* GRAFIKON CILJEVI
                 <Chart
                   chartType="LineChart"
                   width="100%"
@@ -580,16 +606,16 @@ export default function Dashboard() {
                     chartArea: { left: 60, right: 20, top: 50, bottom: 80 },
                     backgroundColor: "#f9fafb"
                   }}
-                />
+                /> */}
               </>
             )}
           </div>
 
-          {/* Parametri */}
+       
           <div className="bg-surface rounded-xl p-6 shadow">
             <div className="flex justify-between mb-4">
               <h2 className="text-xl font-semibold">Parametri</h2>
-              <Button onClick={() => setShowAddParamModal(true)}>Dodaj nove parametre</Button>
+              <Button onClick={() => setShowAddParamModal(true)}>Dodaj</Button>
             </div>
 
             {parametri.length === 0 ? (
@@ -607,8 +633,8 @@ export default function Dashboard() {
                   Prikaži sve parametre
                 </Button>
 
-                {/* GRAFIKON PARAMETRI */}
-                <Chart
+               
+                {/* <Chart
                   chartType="LineChart"
                 width="100%"
                 height="300px"
@@ -638,18 +664,16 @@ export default function Dashboard() {
                   chartArea: { left: 60, right: 20, top: 50, bottom: 80 },
                   backgroundColor: "#fef3f2"
                 }}
-                />
+                /> */}
               </>
             )}
           </div>
 
-          {/* Plan ishrane */}
           <div className="bg-surface rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4">Plan ishrane</h2>
             <Button onClick={() => navigate("/obrociPregled")}>Pregled moje ishrane</Button>
           </div>
 
-          {/* Plan treninga */}
           <div className="bg-surface rounded-xl p-6 shadow">
             <h2 className="text-xl font-semibold mb-4">Plan treninga</h2>
             <Link to="/programi"><Button>Pregled mojih treninga</Button></Link>
@@ -660,7 +684,7 @@ export default function Dashboard() {
 
       <Footer />
 
-      {/* --- Modali ostaju potpuno netaknuti --- */}
+
       {showCiljevi && (
         <Modal title="Svi ciljevi" onClose={() => setShowCiljevi(false)}>
           <table className="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
@@ -751,7 +775,6 @@ export default function Dashboard() {
             <input type="date" value={newParam.date} onChange={e => setNewParam({...newParam, date: e.target.value})} className="border p-2 rounded" />
             <input type="number" placeholder="Težina (kg)" value={newParam.tezina} onChange={e => setNewParam({...newParam, tezina: e.target.value})} className="border p-2 rounded" />
             <input type="number" placeholder="Visina (cm)" value={newParam.visina} onChange={e => setNewParam({...newParam, visina: e.target.value})} className="border p-2 rounded" />
-            <input type="number" placeholder="BMI" value={newParam.bmi} onChange={e => setNewParam({...newParam, bmi: e.target.value})} className="border p-2 rounded" />
             <input type="number" placeholder="Masti (%)" value={newParam.masti} onChange={e => setNewParam({...newParam, masti: e.target.value})} className="border p-2 rounded" />
             <input type="number" placeholder="Mišići (%)" value={newParam.misici} onChange={e => setNewParam({...newParam, misici: e.target.value})} className="border p-2 rounded" />
             <input type="number" placeholder="Obim struka (cm)" value={newParam.obim_struka} onChange={e => setNewParam({...newParam, obim_struka: e.target.value})} className="border p-2 rounded" />

@@ -10,7 +10,8 @@ export default function Menu({
   showMojTrener=false,
   showProgrami=false,
   showTrenerProfil=false,
-  showTrenerVezbe=false
+  showTrenerVezbe=false,
+   showKorisnikProfil=false
 }) {
   // Kreiramo listu stavki menija, filtriranu prema props
   const menuItems = [
@@ -23,6 +24,7 @@ export default function Menu({
     showMojTrener && { label: "Moj Trener", to: "/mojTrener" },
     showProgrami && {label:"Programi", to: "/programi"},
     showTrenerProfil && {label:"Profil", to: "/trener-profil"},
+    showKorisnikProfil && {label:"Profil", to: "/korisnik-profil"},
     showTrenerProfil && {label:"Vezbe", to: "/trenerVezbe"},
     
   ].filter(Boolean); // uklanja sve false vrednosti

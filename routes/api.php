@@ -14,7 +14,7 @@ use App\Models\Vezba;
 use App\Models\Program;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
-
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\HidriranostController;
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/obroci', [ObrokController::class, 'store']);
@@ -118,6 +118,11 @@ Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/trener/profil', [UserController::class, 'updateProfil']);
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/korisnik/profil', [UserController::class, 'updateProfilKorisnika']);
+});
+
 Route::middleware('auth:sanctum')->post('/programi/dodaj-veze', [ProgramController::class, 'dodajVezbe']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/hidriranost', [HidriranostController::class, 'index']); 
@@ -140,3 +145,7 @@ Route::middleware('auth:sanctum')->get('/exercises', function () {
         return $response->json();
     });
 });
+
+
+
+Route::middleware('auth:sanctum')->post('/posalji-izvestaj', [EmailController::class, 'posaljiPdf']);

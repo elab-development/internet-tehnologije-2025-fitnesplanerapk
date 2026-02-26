@@ -22,6 +22,7 @@ import Vezbaci from "./views/Vezbaci.jsx";
 import VezbacDetalji from "./views/VezbacDetalji.jsx";
 import MojTrener from "./views/MojTrener.jsx";
 import TrenerProfil from "./views/TrenerProfil.jsx";
+import KorisnikProfil from "./views/KorisnikProfil.jsx";
 const router = createBrowserRouter([
   {
     path: '/',
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
       {
         path: '/trener-profil',
         element: <TrenerProfil/>
+      },
+      {
+        path: '/korisnik-profil',
+        element: <KorisnikProfil/>
       }
 
 

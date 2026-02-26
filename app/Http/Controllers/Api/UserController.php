@@ -210,7 +210,7 @@ public function show(User $user) {
         $trener = User::find($request->trener_id);
         $vezbac = User::find($request->vezbac_id);
 
-        // Proveravamo da li su uloge ispravne
+    
         if (!$trener->isTrener()) {
             return response()->json(['message' => 'Odabrani korisnik nije trener'], 400);
         }
@@ -218,7 +218,7 @@ public function show(User $user) {
             return response()->json(['message' => 'Odabrani korisnik nije vezbač'], 400);
         }
 
-        // Povezivanje vezbača sa trenerom
+     
         $vezbac->trener()->associate($trener);
         $vezbac->save();
 
@@ -229,9 +229,6 @@ public function show(User $user) {
         ]);
     }
 
-    /**
-     * Dohvatanje svih vezbača određenog trenera
-     */
     public function getVezbaciTrenera($trener_id)
     {
         $trener = User::findOrFail($trener_id);
@@ -245,9 +242,7 @@ public function show(User $user) {
         return response()->json($vezbaci);
     }
 
-    /**
-     * Dohvatanje trenera određenog vezbača
-     */
+   
     public function getTrenerVezbaca($vezbac_id)
     {
         $vezbac = User::findOrFail($vezbac_id);
@@ -259,5 +254,41 @@ public function show(User $user) {
         $trener = $vezbac->trener;
 
         return response()->json($trener);
+    }
+
+    public function updateProfilKorisnika(Request $request)
+    {
+        $user = auth()->user();
+
+    if ($user->uloga_id !== 1) {
+        return response()->json(['message' => 'Nemate dozvolu.'], 403);
+    }
+
+    
+    $data = $request->validate([
+        'ime' => 'required|string|max:255',
+        'prezime' => 'required|string|max:255',
+        'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:6|confirmed', 
+        
+    ]);
+
+   
+
+    // Lozinka
+    if (!empty($data['password'])) {
+        $data['password'] = Hash::make($data['password']);
+    } else {
+        unset($data['password']);
+    }
+
+    
+    $user->update($data);
+
+    return response()->json([
+        'message' => 'Profil uspešno ažuriran',
+        'user' => $user
+    ]);
     }
 }

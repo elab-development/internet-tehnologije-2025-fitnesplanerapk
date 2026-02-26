@@ -49,6 +49,7 @@ export default function Header() {
                   showMojTrener={isKorisnik}
                   showProgrami={true}
                   showTrenerProfil={isTrener}
+                  showKorisnikProfil={isKorisnik}
                 />
               </div>
             )}
