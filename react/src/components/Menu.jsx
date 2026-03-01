@@ -22,7 +22,7 @@ export default function Menu({
     showVezbe && { label: "Vežbe", to: "/vezbe" },
     showVezbaci && { label: "Vežbači", to: "/vezbaci" },
     showMojTrener && { label: "Moj Trener", to: "/mojTrener" },
-    showProgrami && {label:"Programi", to: "/programi"},
+    showProgrami && {label:"Treninzi", to: "/programi"},
     showTrenerProfil && {label:"Profil", to: "/trener-profil"},
     showKorisnikProfil && {label:"Profil", to: "/korisnik-profil"},
     showTrenerProfil && {label:"Vezbe", to: "/trenerVezbe"},

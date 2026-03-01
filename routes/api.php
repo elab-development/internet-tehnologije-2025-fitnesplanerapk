@@ -149,3 +149,4 @@ Route::middleware('auth:sanctum')->get('/exercises', function () {
 
 
 Route::middleware('auth:sanctum')->post('/posalji-izvestaj', [EmailController::class, 'posaljiPdf']);
+Route::middleware('auth:sanctum')->get('/programi/moji', [ProgramController::class, 'mojiProgrami']);

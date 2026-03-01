@@ -163,6 +163,33 @@ public function treneriProgrami(Request $request)
 
     return response()->json($programi);
 }
+public function destroy($id)
+{
+    // Pronađemo program koji pripada trenutno prijavljenom korisniku
+    $program = Program::where('korisnik_id', auth()->id())->find($id);
+
+    if (!$program) {
+        return response()->json(['message' => 'Program ne postoji ili nije vaš'], 404);
+    }
+
+    // Brisanje veza sa vezbama u pivot tabeli
+    $program->vezbe()->detach();
+
+    // Brisanje samog programa
+    $program->delete();
+
+    return response()->json(['message' => 'Program uspešno obrisan']);
+}
+public function mojiProgrami(Request $request)
+{
+    $userId = $request->user()->id;
+
+    $programi = Program::where('korisnik_id', $userId)
+        ->with('vezbe', 'korisnik')
+        ->get();
+
+    return response()->json($programi);
+}
 public function dodajVezbe(Request $request)
 {
     $user = $request->user();

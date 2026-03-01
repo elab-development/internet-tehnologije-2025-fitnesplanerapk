@@ -60,7 +60,7 @@ export default function TrenerStranica() {
       if (exists) return prev.filter((v) => v.id !== vezba.id);
       return [
         ...prev,
-        { id: vezba.id, serije: null, ponavljanja: null, tezina: null, trajanje: null },
+        { id: vezba.id, serija: null, ponavljanja: null, tezina: null, trajanje: null },
       ];
     });
   };
@@ -230,10 +230,10 @@ export default function TrenerStranica() {
                         <div className="flex gap-2">
                           <input
                             type="number"
-                            placeholder="Serije"
-                            value={selectedObj.serije ?? ""}
+                            placeholder="serija"
+                            value={selectedObj.serija ?? ""}
                             onChange={(e) =>
-                              updateVezbaField(v.id, "serije", e.target.value)
+                              updateVezbaField(v.id, "serija", e.target.value)
                             }
                             className="w-1/2 border rounded-lg p-2 text-sm"
                           />

@@ -66,7 +66,7 @@ export default function VezbeVezbac() {
       if (exists) return prev.filter((v) => v.id !== vezba.id);
       return [
         ...prev,
-        { id: vezba.id, serije: null, ponavljanja: null, tezina: null, trajanje: null },
+        { id: vezba.id, serija: null, ponavljanja: null, tezina: null, trajanje: null },
       ];
     });
   };
@@ -94,7 +94,7 @@ export default function VezbeVezbac() {
         public: false,
         vezbe: selectedVezbe.map((v) => ({
           id: v.id,
-          serija: v.serije,
+          serija: v.serija,
           ponavljanja: v.ponavljanja,
           tezina: v.tezina,
           trajanje: v.trajanje,
@@ -129,7 +129,7 @@ export default function VezbeVezbac() {
   const handleDodajTrening = (program) => {
     const noveVezbe = program.vezbe.map((v) => ({
       id: v.id,
-      serije: v.pivot?.serija ?? v.serije ?? null,
+      serija: v.pivot?.serija ?? v.serija ?? null,
       ponavljanja: v.pivot?.ponavljanja ?? v.ponavljanja ?? null,
       tezina: v.pivot?.tezina ?? v.tezina ?? null,
       trajanje: v.pivot?.trajanje ?? v.trajanje ?? null,
@@ -246,10 +246,10 @@ export default function VezbeVezbac() {
                         <div className="flex gap-2">
                           <input
                             type="number"
-                            placeholder="Serije"
-                            value={selectedObj.serije ?? ""}
+                            placeholder="serija"
+                            value={selectedObj.serija ?? ""}
                             onChange={(e) =>
-                              updateVezbaField(v.id, "serije", e.target.value)
+                              updateVezbaField(v.id, "serija", e.target.value)
                             }
                             className="w-1/2 border rounded-lg p-2 text-sm"
                           />
