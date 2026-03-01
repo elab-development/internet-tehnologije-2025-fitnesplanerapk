@@ -24,8 +24,9 @@ export default function AdminDashboard() {
     "Ramena",
     "Ruke",
     "Stomak",
-    "Kardio",
+    "Cardio",
     "Full body",
+    "Crossfit",
     "Ostalo",
   ];
 
@@ -82,7 +83,7 @@ export default function AdminDashboard() {
         setUsers(usersResponse.data);
 
         
-        const vezbeResponse = await axiosClient.get("/exercises");
+        const vezbeResponse = await axiosClient.get("/vezbe");
         setVezbe(vezbeResponse.data);
 
         setLoading(false);

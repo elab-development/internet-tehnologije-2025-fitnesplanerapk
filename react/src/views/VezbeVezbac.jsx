@@ -17,7 +17,7 @@ export default function VezbeVezbac() {
   const [selectedKategorija, setSelectedKategorija] = useState("sve");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Treninzi trenera
+
   const [trenerskiProgrami, setTrenerskiProgrami] = useState([]);
   const [loadingTreneri, setLoadingTreneri] = useState(false);
   const [showTreneri, setShowTreneri] = useState(false);
@@ -194,7 +194,7 @@ export default function VezbeVezbac() {
           </select>
           <Button
             onClick={handleTreninziTrenera}
-            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+            className="px-4 py-2 text-white rounded-lg"
             disabled={loadingTreneri}
           >
             {loadingTreneri ? "Učitavanje..." : "Treninzi trenera"}
@@ -314,7 +314,7 @@ export default function VezbeVezbac() {
                   </div>
                   <Button
                     onClick={() => handleDodajTrening(p)}
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg"
+                    className="text-white px-3 py-1 rounded-lg"
                   >
                     Dodaj vežbe
                   </Button>
