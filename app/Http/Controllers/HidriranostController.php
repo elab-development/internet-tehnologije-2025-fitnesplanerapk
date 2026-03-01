@@ -1,19 +1,38 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use OpenApi\Annotations as OA; 
 use Illuminate\Http\Request;
 use App\Models\Hidriranost;
 use Illuminate\Support\Facades\Auth;
 
+
 class HidriranostController extends Controller
 {
-   public function index()
+    /**
+     * @OA\Get(
+     *     path="/api/hidriranost",
+     *     summary="Lista svih unosa hidracije",
+     *     tags={"Hidriranost"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Lista svih unosa hidracije")
+     * )
+     */
+    public function index()
     {
         $hidriranosti = Hidriranost::with('user')->get(); // sa korisnikom, opcionalno
         return response()->json($hidriranosti);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/hidriranost-danas",
+     *     summary="Dnevna hidracija korisnika",
+     *     tags={"Hidriranost"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Podaci o hidraciji danas")
+     * )
+     */
     public function danas()
     {
         if (!Auth::check()) {
@@ -33,7 +52,22 @@ class HidriranostController extends Controller
         ], 200);
     }
 
-    
+    /**
+     * @OA\Post(
+     *     path="/api/hidriranost",
+     *     summary="Dodavanje unosa hidracije",
+     *     tags={"Hidriranost"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"ukupno"},
+     *             @OA\Property(property="ukupno", type="integer", example=500)
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Unos hidracije dodat")
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,7 +77,6 @@ class HidriranostController extends Controller
         $userId = Auth::id();
         $today = now()->toDateString();
 
-        
         $exists = Hidriranost::where('user_id', $userId)
             ->whereDate('created_at', $today)
             ->first();
@@ -62,31 +95,41 @@ class HidriranostController extends Controller
         return response()->json($hidriranost);
     }
 
-  
+    /**
+     * @OA\Put(
+     *     path="/api/hidriranost/{hidriranost}",
+     *     summary="Update hidracije",
+     *     tags={"Hidriranost"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="hidriranost", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(required=true, @OA\JsonContent(
+     *         @OA\Property(property="ukupno", type="integer", example=500)
+     *     )),
+     *     @OA\Response(response=200, description="Hidracija ažurirana")
+     * )
+     */
     public function update(Request $request, $id)
     {
-    $request->validate([
-        'ukupno' => 'required|numeric|min:0',
-    ]);
+        $request->validate([
+            'ukupno' => 'required|numeric|min:0',
+        ]);
 
-    $userId = $request->user()->id;
-    $novaVrednost = $request->ukupno;
+        $userId = $request->user()->id;
+        $novaVrednost = $request->ukupno;
 
-    
-    $hidriranost = Hidriranost::where('user_id', $userId)
-                              ->whereDate('datum', now())
-                              ->first();
+        $hidriranost = Hidriranost::where('user_id', $userId)
+                                  ->whereDate('datum', now())
+                                  ->first();
 
-    if (!$hidriranost) {
-        return response()->json([
-            'message' => 'Zapis za danas ne postoji'
-        ], 404);
-    }
+        if (!$hidriranost) {
+            return response()->json([
+                'message' => 'Zapis za danas ne postoji'
+            ], 404);
+        }
 
-   
-    $hidriranost->ukupno += $novaVrednost;
-    $hidriranost->save();
+        $hidriranost->ukupno += $novaVrednost;
+        $hidriranost->save();
 
-    return response()->json($hidriranost);
+        return response()->json($hidriranost);
     }
 }

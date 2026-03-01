@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use OpenApi\Annotations as OA; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -8,10 +9,26 @@ use Barryvdh\DomPDF\Facade\Pdf; // Ako koristiš dompdf
 use App\Models\Parametri; 
 use App\Models\Hidriranost;
 use App\Models\Cilj;
+
+
 class EmailController extends Controller
 {
-    
-
+    /**
+ * @OA\Post(
+ *     path="/api/posalji-izvestaj",
+ *     summary="Slanje PDF izveštaja korisniku",
+ *     tags={"Email"},
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"user_id"},
+ *             @OA\Property(property="user_id", type="integer", example=5)
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="PDF izveštaj poslat")
+ * )
+ */
     public function posaljiPdf(Request $request)
     {
         try {
@@ -21,18 +38,19 @@ class EmailController extends Controller
                 return response()->json(['message' => 'Korisnik nije autorizovan'], 401);
             }
 
-          
+            // Uzmi poslednjih 10 parametara korisnika
             $podaciParametri = Parametri::where('user_id', $user->id)
                 ->orderBy('date', 'asc')
                 ->take(10)
                 ->get();
 
+            // Uzmi poslednjih 10 unosa vode
             $podaciVoda = Hidriranost::where('user_id', $user->id)
                 ->orderBy('datum', 'asc')
                 ->take(10)
                 ->get();
 
-          
+            // Priprema podataka za grafikone
             $pLabels = $podaciParametri->pluck('date')->map(fn($d) => date('d.m', strtotime($d)))->toArray();
             $pTezina = $podaciParametri->pluck('tezina')->toArray();
             $pMasti = $podaciParametri->pluck('masti')->toArray();
@@ -41,9 +59,7 @@ class EmailController extends Controller
             $hLabels = $podaciVoda->pluck('datum')->map(fn($d) => date('d.m', strtotime($d)))->toArray();
             $hVoda = $podaciVoda->pluck('ukupno')->toArray();
 
-           
-            
-           
+            // Grafikon težine
             $chartTezina = [
                 'type' => 'line',
                 'data' => [
@@ -58,7 +74,7 @@ class EmailController extends Controller
                 ]
             ];
 
-       
+            // Grafikon unosa vode
             $chartVoda = [
                 'type' => 'bar',
                 'data' => [
@@ -71,7 +87,7 @@ class EmailController extends Controller
                 ]
             ];
 
-            
+            // Grafikon masti i mišića
             $chartSastav = [
                 'type' => 'line',
                 'data' => [
@@ -93,7 +109,7 @@ class EmailController extends Controller
                 ]
             ];
 
-         
+            // URL-ovi grafikona
             $urlTezina = "https://quickchart.io/chart?c=" . urlencode(json_encode($chartTezina));
             $urlVoda = "https://quickchart.io/chart?c=" . urlencode(json_encode($chartVoda));
             $urlSastav = "https://quickchart.io/chart?c=" . urlencode(json_encode($chartSastav));
@@ -107,11 +123,12 @@ class EmailController extends Controller
                 'chartSastavUrl' => $urlSastav
             ];
 
+            // Generiši PDF
             $pdf = Pdf::loadView('pdf.izvestaj', $data)
                       ->setOption('isRemoteEnabled', true)
                       ->setOption('chroot', public_path());
 
-        
+            // Pošalji mejl sa PDF-om
             Mail::send('emails.poruka', $data, function($message) use ($user, $pdf) {
                 $message->to($user->email)
                         ->subject('Vaš Personalizovani Fitness Izveštaj')

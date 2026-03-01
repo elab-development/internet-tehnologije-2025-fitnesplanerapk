@@ -1,204 +1,266 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Annotations as OA; 
 class UserController extends Controller
 {
     /**
-     * Prikazuje sve korisnike koji su vezbači ili admini
+     * @OA\Get(
+     *     path="/api/users/{user}",
+     *     summary="Prikaz korisnika",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="user", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Detalji korisnika")
+     * )
+     */
+    public function show(User $user)
+    {
+        $user->load('parametri', 'ciljevi');
+        return response()->json($user);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/vezbaci",
+     *     summary="Lista vežbača trenera",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Lista vežbača")
+     * )
      */
     public function vezbaciTrenera()
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    if ($user->uloga_id !== 3) { // 3 = trener
-        return response()->json(['message' => 'Nije trener'], 403);
-    }
-
-    // Dohvat svih vezbača koji imaju ovog trenera
-    $vezbaci = User::where('trener_id', $user->id)
-        ->select('id', 'ime', 'prezime', 'email', 'username')
-        ->get();
-
-    return response()->json($vezbaci);
-}
-public function parametri(User $user) {
-    return response()->json($user->parametri);
-}
-
-public function ciljevi(User $user) {
-    return response()->json($user->ciljevi);
-}
-public function pretragaTrenera(Request $request)
-{
-    $query = $request->query('query');
-
-    if (!$query) {
-        return response()->json([]);
-    }
-
-    $treneri = User::whereHas('uloga', function($q) {
-                    $q->where('ime', 'trener');
-                })
-                ->where(function($q) use ($query) {
-                    $q->where('ime', 'like', "%{$query}%")
-                      ->orWhere('prezime', 'like', "%{$query}%")
-                      ->orWhere('email', 'like', "%{$query}%");
-                })
-                ->get(['id', 'ime', 'prezime', 'email']);
-
-    return response()->json($treneri);
-}
-public function postaviTrenera(Request $request)
-{
-    $request->validate([
-        'trener_id' => 'required|exists:users,id'
-    ]);
-
-    $korisnik = Auth::user();
-
-    $trener = User::where('id', $request->trener_id)
-                  ->whereHas('uloga', function($q){
-                      $q->where('ime', 'trener');
-                  })
-                  ->first();
-
-    if (!$trener) {
-        return response()->json(['message' => 'Izabrani korisnik nije trener'], 400);
-    }
-
-    $korisnik->trener_id = $trener->id;
-    $korisnik->save();
-
-    return response()->json([
-        'message' => 'Trener uspešno postavljen',
-        'trener' => $trener->only(['id','ime','prezime','email'])
-    ]);
-}
-
-public function updateProfil(Request $request)
-{
-    $user = auth()->user();
-
-    if (!$user->isTrener()) {
-        return response()->json(['message' => 'Nemate dozvolu.'], 403);
-    }
-
-    // Validacija
-    $data = $request->validate([
-        'ime' => 'required|string|max:255',
-        'prezime' => 'required|string|max:255',
-        'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'password' => 'nullable|min:6|confirmed', // potvrda lozinke
-        'biografija' => 'nullable|string',
-        'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-    ]);
-
-    // Upload slike
-    if ($request->hasFile('profile_image')) {
-        if ($user->profile_image) {
-            Storage::disk('public')->delete($user->profile_image);
+        if ($user->uloga_id !== 3) { // 3 = trener
+            return response()->json(['message' => 'Nije trener'], 403);
         }
 
-        $path = $request->file('profile_image')->store('profile_images', 'public');
-        $data['profile_image'] = $path;
+        $vezbaci = User::where('trener_id', $user->id)
+            ->select('id', 'ime', 'prezime', 'email', 'username')
+            ->get();
+
+        return response()->json($vezbaci);
     }
 
-    // Lozinka
-    if (!empty($data['password'])) {
-        $data['password'] = Hash::make($data['password']);
-    } else {
-        unset($data['password']);
+    /**
+     * @OA\Post(
+     *     path="/api/trener/postavi",
+     *     summary="Postavljanje trenera korisniku",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"trener_id","user_id"},
+     *             @OA\Property(property="trener_id", type="integer", example=2),
+     *             @OA\Property(property="user_id", type="integer", example=5)
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Trener uspešno postavljen")
+     * )
+     */
+    public function postaviTrenera(Request $request)
+    {
+        $request->validate([
+            'trener_id' => 'required|exists:users,id'
+        ]);
+
+        $korisnik = Auth::user();
+
+        $trener = User::where('id', $request->trener_id)
+                      ->whereHas('uloga', fn($q) => $q->where('ime', 'trener'))
+                      ->first();
+
+        if (!$trener) {
+            return response()->json(['message' => 'Izabrani korisnik nije trener'], 400);
+        }
+
+        $korisnik->trener_id = $trener->id;
+        $korisnik->save();
+
+        return response()->json([
+            'message' => 'Trener uspešno postavljen',
+            'trener' => $trener->only(['id','ime','prezime','email'])
+        ]);
     }
 
-    // Update korisnika
-    $user->update($data);
+    /**
+     * @OA\Patch(
+     *     path="/api/profil/update",
+     *     summary="Update profila trenera",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(
+     *         @OA\Property(property="ime", type="string"),
+     *         @OA\Property(property="prezime", type="string"),
+     *         @OA\Property(property="username", type="string"),
+     *         @OA\Property(property="email", type="string"),
+     *         @OA\Property(property="password", type="string"),
+     *         @OA\Property(property="password_confirmation", type="string"),
+     *         @OA\Property(property="biografija", type="string"),
+     *         @OA\Property(property="profile_image", type="string", format="binary")
+     *     )),
+     *     @OA\Response(response=200, description="Profil uspešno ažuriran")
+     * )
+     */
+    public function updateProfil(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user->isTrener()) {
+            return response()->json(['message' => 'Nemate dozvolu.'], 403);
+        }
 
-    return response()->json([
-        'message' => 'Profil uspešno ažuriran',
-        'user' => $user
-    ]);
-}
-public function ukloniTrenera()
-{
-    $korisnik = Auth::user();
+        $data = $request->validate([
+            'ime' => 'required|string|max:255',
+            'prezime' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
+            'biografija' => 'nullable|string',
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-    $korisnik->trener_id = null;
-    $korisnik->save();
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+            $data['profile_image'] = $request->file('profile_image')->store('profile_images', 'public');
+        }
 
-    return response()->json([
-        'message' => 'Trener uklonjen'
-    ]);
-}
-public function storeParametar(Request $request, User $user)
-{
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
 
-    // Opcionalno: samo trener može dodati parametre
-    $authUser = auth()->user();
-    if ($authUser->uloga_id !== 3) {
-        return response()->json(['message' => 'Nije trener'], 403);
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Profil uspešno ažuriran',
+            'user' => $user
+        ]);
     }
 
-    $request->validate([
-        'date' => 'required|date',
-        'tezina' => 'required|numeric',
-        'visina' => 'required|numeric',
-        'bmi' => 'required|numeric',
-        'masti' => 'required|numeric',
-        'misici' => 'required|numeric',
-        'obim_struka' => 'required|numeric',
-    ]);
+    /**
+     * @OA\Post(
+     *     path="/api/trener/ukloni",
+     *     summary="Uklanjanje trenera sa korisnika",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Trener uklonjen")
+     * )
+     */
+    public function ukloniTrenera()
+    {
+        $korisnik = Auth::user();
+        $korisnik->trener_id = null;
+        $korisnik->save();
 
-    $param = $user->parametri()->create($request->all());
+        return response()->json(['message' => 'Trener uklonjen']);
+    }
 
-    return response()->json($param);
-}
-public function show(User $user) {
-    $user->load('parametri', 'ciljevi'); // eager load
-    return response()->json($user);
-}
+    /**
+     * @OA\Post(
+     *     path="/api/users/{user}/parametar",
+     *     summary="Dodavanje parametara korisniku (samo trener)",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(
+     *         @OA\Property(property="date", type="string", format="date"),
+     *         @OA\Property(property="tezina", type="numeric"),
+     *         @OA\Property(property="visina", type="numeric"),
+     *         @OA\Property(property="bmi", type="numeric"),
+     *         @OA\Property(property="masti", type="numeric"),
+     *         @OA\Property(property="misici", type="numeric"),
+     *         @OA\Property(property="obim_struka", type="numeric")
+     *     )),
+     *     @OA\Response(response=200, description="Parametar dodat")
+     * )
+     */
+    public function storeParametar(Request $request, User $user)
+    {
+        $authUser = auth()->user();
+        if ($authUser->uloga_id !== 3) {
+            return response()->json(['message' => 'Nije trener'], 403);
+        }
+
+        $request->validate([
+            'date' => 'required|date',
+            'tezina' => 'required|numeric',
+            'visina' => 'required|numeric',
+            'bmi' => 'required|numeric',
+            'masti' => 'required|numeric',
+            'misici' => 'required|numeric',
+            'obim_struka' => 'required|numeric',
+        ]);
+
+        $param = $user->parametri()->create($request->all());
+        return response()->json($param);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/users/all",
+     *     summary="Prikaz svih korisnika (admin)",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="Lista korisnika")
+     * )
+     */
     public function allUsers()
     {
         return response()->json(
-            User::whereIn('uloga_id', [1, 3]) // 1=korisnik, 3=trener
-                ->select(
-                    'id',
-                    'ime',
-                    'prezime',
-                    'email',
-                    'username',
-                    'created_at'
-                )->get()
+            User::whereIn('uloga_id', [1, 3])
+                ->select('id', 'ime', 'prezime', 'email', 'username', 'created_at')
+                ->get()
         );
     }
 
     /**
-     * Prikazuje sve korisnike (samo admin)
+     * @OA\Get(
+     *     path="/api/users/pretraga",
+     *     summary="Pretraga trenera po imenu, prezimenu ili emailu",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="query", in="query", required=false, @OA\Schema(type="string")),
+     *     @OA\Response(response=200, description="Lista trenera")
+     * )
      */
-    public function index()
+    public function pretragaTrenera(Request $request)
     {
-        $user = auth()->user();
+        $query = $request->query('query');
+        if (!$query) return response()->json([]);
 
-        if ($user->uloga_id !== 2) { // 2 = admin
-            return response()->json(['message' => 'Nije admin'], 403);
-        }
+        $treneri = User::whereHas('uloga', fn($q) => $q->where('ime', 'trener'))
+            ->where(fn($q) => $q->where('ime', 'like', "%{$query}%")
+                                ->orWhere('prezime', 'like', "%{$query}%")
+                                ->orWhere('email', 'like', "%{$query}%"))
+            ->get(['id','ime','prezime','email']);
 
-        $users = User::all();
-        return response()->json($users);
+        return response()->json($treneri);
     }
 
     /**
-     * Povezivanje vezbača sa trenerom
-     * 
-     * @param Request $request
-     * $request->trener_id => ID trenera
-     * $request->vezbac_id => ID vezbača
+     * @OA\Post(
+     *     path="/api/users/assign",
+     *     summary="Povezivanje vezbača sa trenerom",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(
+     *         @OA\Property(property="trener_id", type="integer"),
+     *         @OA\Property(property="vezbac_id", type="integer")
+     *     )),
+     *     @OA\Response(response=200, description="Vezbač povezan sa trenerom")
+     * )
      */
     public function assignVezbacToTrener(Request $request)
     {
@@ -210,15 +272,9 @@ public function show(User $user) {
         $trener = User::find($request->trener_id);
         $vezbac = User::find($request->vezbac_id);
 
-    
-        if (!$trener->isTrener()) {
-            return response()->json(['message' => 'Odabrani korisnik nije trener'], 400);
-        }
-        if (!$vezbac->isVezbac()) {
-            return response()->json(['message' => 'Odabrani korisnik nije vezbač'], 400);
-        }
+        if (!$trener->isTrener()) return response()->json(['message'=>'Odabrani korisnik nije trener'],400);
+        if (!$vezbac->isVezbac()) return response()->json(['message'=>'Odabrani korisnik nije vezbač'],400);
 
-     
         $vezbac->trener()->associate($trener);
         $vezbac->save();
 
@@ -229,66 +285,85 @@ public function show(User $user) {
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/trener/{trener_id}/vezbaci",
+     *     summary="Lista vežbača određenog trenera",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="trener_id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Lista vežbača")
+     * )
+     */
     public function getVezbaciTrenera($trener_id)
     {
         $trener = User::findOrFail($trener_id);
+        if (!$trener->isTrener()) return response()->json(['message'=>'Korisnik nije trener'],400);
 
-        if (!$trener->isTrener()) {
-            return response()->json(['message' => 'Korisnik nije trener'], 400);
-        }
-
-        $vezbaci = $trener->vezbaci;
-
-        return response()->json($vezbaci);
+        return response()->json($trener->vezbaci);
     }
 
-   
+    /**
+     * @OA\Get(
+     *     path="/api/vezbac/{vezbac_id}/trener",
+     *     summary="Prikaz trenera vezbača",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(name="vezbac_id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Trener vezbača")
+     * )
+     */
     public function getTrenerVezbaca($vezbac_id)
     {
         $vezbac = User::findOrFail($vezbac_id);
+        if (!$vezbac->isVezbac()) return response()->json(['message'=>'Korisnik nije vezbač'],400);
 
-        if (!$vezbac->isVezbac()) {
-            return response()->json(['message' => 'Korisnik nije vezbač'], 400);
-        }
-
-        $trener = $vezbac->trener;
-
-        return response()->json($trener);
+        return response()->json($vezbac->trener);
     }
 
+    /**
+     * @OA\Patch(
+     *     path="/api/profil/update/korisnik",
+     *     summary="Update profila vezbača",
+     *     tags={"User"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(required=true, @OA\JsonContent(
+     *         @OA\Property(property="ime", type="string"),
+     *         @OA\Property(property="prezime", type="string"),
+     *         @OA\Property(property="username", type="string"),
+     *         @OA\Property(property="email", type="string"),
+     *         @OA\Property(property="password", type="string"),
+     *         @OA\Property(property="password_confirmation", type="string")
+     *     )),
+     *     @OA\Response(response=200, description="Profil uspešno ažuriran")
+     * )
+     */
     public function updateProfilKorisnika(Request $request)
     {
         $user = auth()->user();
+        if ($user->uloga_id !== 1) {
+            return response()->json(['message' => 'Nemate dozvolu.'], 403);
+        }
 
-    if ($user->uloga_id !== 1) {
-        return response()->json(['message' => 'Nemate dozvolu.'], 403);
-    }
+        $data = $request->validate([
+            'ime' => 'required|string|max:255',
+            'prezime' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6|confirmed',
+        ]);
 
-    
-    $data = $request->validate([
-        'ime' => 'required|string|max:255',
-        'prezime' => 'required|string|max:255',
-        'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'password' => 'nullable|min:6|confirmed', 
-        
-    ]);
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
 
-   
+        $user->update($data);
 
-    // Lozinka
-    if (!empty($data['password'])) {
-        $data['password'] = Hash::make($data['password']);
-    } else {
-        unset($data['password']);
-    }
-
-    
-    $user->update($data);
-
-    return response()->json([
-        'message' => 'Profil uspešno ažuriran',
-        'user' => $user
-    ]);
+        return response()->json([
+            'message' => 'Profil uspešno ažuriran',
+            'user' => $user
+        ]);
     }
 }

@@ -10,31 +10,47 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
-
+use OpenApi\Annotations as OA; 
 class AuthController extends Controller
 {
     /**
-     * Registracija korisnika
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Registracija novog korisnika",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"ime","prezime","email","username","password","pol","datumRodjenja"},
+     *             @OA\Property(property="ime", type="string", example="Tina"),
+     *             @OA\Property(property="prezime", type="string", example="Nadic"),
+     *             @OA\Property(property="email", type="string", example="tina@example.com"),
+     *             @OA\Property(property="username", type="string", example="tinan"),
+     *             @OA\Property(property="password", type="string", example="password123"),
+     *             @OA\Property(property="pol", type="string", example="zenski"),
+     *             @OA\Property(property="datumRodjenja", type="string", format="date", example="2006-03-01"),
+     *             @OA\Property(property="uloga", type="string", example="korisnik")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Korisnik uspešno registrovan")
+     * )
      */
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
 
-        
         if (isset($data['uloga'])) {
             $uloga = Uloge::where('ime', $data['uloga'])->first();
             if (!$uloga) {
                 return response()->json(['message' => 'Odabrana uloga ne postoji!'], 422);
             }
         } else {
-            
             $uloga = Uloge::where('ime', 'korisnik')->first();
             if (!$uloga) {
                 return response()->json(['message' => 'Default uloga nije pronađena u bazi!'], 500);
             }
         }
 
-        /** @var User $user */
         $user = User::create([
             'ime' => $data['ime'],
             'prezime' => $data['prezime'],
@@ -46,14 +62,26 @@ class AuthController extends Controller
             'uloga_id' => $uloga->id, 
         ]);
 
-        // Kreiranje tokena za API pristup
         $token = $user->createToken('main')->plainTextToken;
 
         return response()->json(compact('user', 'token'), 201);
     }
 
     /**
-     * Login korisnika
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Login korisnika",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", example="tina@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Uspešan login, vraća token")
+     * )
      */
     public function login(LoginRequest $request)
     {
@@ -70,7 +98,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout korisnika
+     * @OA\Post(
+     *     path="/api/logout",
+     *     summary="Logout korisnika",
+     *     tags={"Auth"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=204, description="Korisnik uspešno odjavljen")
+     * )
      */
     public function logout(Request $request)
     {
