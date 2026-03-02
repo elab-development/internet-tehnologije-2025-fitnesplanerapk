@@ -67,7 +67,7 @@ class FitnessDataTest extends TestCase
             'kalorije' => 2000
         ]);
 
-        // Pozovemo delete rutu
+        
         $response = $this->deleteJson("/api/cilj/{$cilj->id}");
 
         $response->assertStatus(200);
@@ -106,26 +106,7 @@ class FitnessDataTest extends TestCase
         ]);
     }
 
-    #[Test]
-    public function korisnik_moze_da_doda_novu_vezbu()
-    {
-        $podaci = [
-            'ime' => 'Čučanj sa šipkom',
-            'snimak' => 'https://www.youtube.com/watch?v=12345',
-            'kategorija' => 'Noge'
-        ];
-
-        $response = $this->postJson('/api/vezbe', $podaci);
-
-        
-        $response->assertStatus(201);
-
-        
-        $this->assertDatabaseHas('vezbe', [
-            'ime' => 'Čučanj sa šipkom',
-            'kategorija' => 'Noge'
-        ]);
-    }
+    
 
     #[Test]
     public function korisnik_moze_da_vidi_listu_svih_vezbi()

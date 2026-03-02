@@ -120,4 +120,29 @@ class AdminAccessTest extends TestCase
         
         $response->assertJsonMissing(['naziv' => 'Topljenje masti 30 dana']);
     }
+
+    #[Test]
+    public function samo_administrator_moze_da_doda_novu_vezbu()
+    {
+        $podaci = [
+            'ime' => 'Mrtvo dizanje',
+            'snimak' => 'https://www.youtube.com/watch?v=op9S0u81vKk',
+            'kategorija' => 'Leđa'
+        ];
+
+        
+        Sanctum::actingAs($this->regularUser);
+        $responseUser = $this->postJson('/api/vezbe', $podaci);
+        $responseUser->assertStatus(403);
+
+        
+        Sanctum::actingAs($this->adminUser);
+        $responseAdmin = $this->postJson('/api/vezbe', $podaci);
+        $responseAdmin->assertStatus(201);
+
+        
+        $this->assertDatabaseHas('vezbe', [
+            'ime' => 'Mrtvo dizanje'
+        ]);
+    }
 }
