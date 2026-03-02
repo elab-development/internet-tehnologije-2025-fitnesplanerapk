@@ -7,82 +7,102 @@ use App\Http\Requests\StoreCiljRequest;
 use App\Http\Requests\UpdateCiljRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Attributes as OA;
+
 class CiljController extends Controller
 {
-   public function store(StoreCiljRequest $request, $userId = null)
-{
-    $request->validate([
-        'hidriranost' => 'required|numeric',
-        'tezina' => 'required|numeric',
-        'kalorije' => 'required|integer',
-    ]);
+    #[OA\Post(
+        path: "/api/cilj",
+        summary: "Kreiranje novog cilja",
+        tags: ["Ciljevi"],
+        security: [["sanctum" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["hidriranost", "tezina", "kalorije"],
+                properties: [
+                    new OA\Property(property: "hidriranost", type: "number", example: 2.5),
+                    new OA\Property(property: "tezina", type: "number", example: 75.5),
+                    new OA\Property(property: "kalorije", type: "integer", example: 2500)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: "Cilj uspešno kreiran"),
+            new OA\Response(response: 422, description: "Validaciona greška")
+        ]
+    )]
+    #[OA\Post(
+        path: "/api/users/{user}/ciljevi",
+        summary: "Trener dodaje cilj za vežbača",
+        tags: ["Ciljevi"],
+        security: [["sanctum" => []]],
+        parameters: [
+            new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+        ],
+        responses: [new OA\Response(response: 201, description: "Cilj kreiran")]
+    )]
+    public function store(StoreCiljRequest $request, $userId = null)
+    {
+        $request->validate([
+            'hidriranost' => 'required|numeric',
+            'tezina' => 'required|numeric',
+            'kalorije' => 'required|integer',
+        ]);
 
-    // Ako nema userId u ruti, koristi prijavljenog korisnika
-    $user_id = $userId ?? auth()->id();
+        // Ako nema userId u ruti, koristi prijavljenog korisnika
+        $user_id = $userId ?? auth()->id();
 
-    $cilj = Cilj::create([
-        'user_id' => $user_id,
-        'hidriranost' => $request->hidriranost,
-        'tezina' => $request->tezina,
-        'kalorije' => $request->kalorije,
-    ]);
+        $cilj = Cilj::create([
+            'user_id' => $user_id,
+            'hidriranost' => $request->hidriranost,
+            'tezina' => $request->tezina,
+            'kalorije' => $request->kalorije,
+        ]);
 
-    return response()->json($cilj, 201);
-}
-    /**
-     * Display a listing of the resource.
-     */
+        return response()->json($cilj, 201);
+    }
+
+    #[OA\Get(
+        path: "/api/cilj",
+        summary: "Prikaz poslednjeg cilja (kalorije) ili liste ciljeva",
+        tags: ["Ciljevi"],
+        security: [["sanctum" => []]],
+        responses: [new OA\Response(response: 200, description: "OK")]
+    )]
     public function index(Request $request)
     {
+        // Tvoja originalna logika za listu
         $ciljevi = Cilj::where('user_id', $request->user()->id)
                     ->orderBy('created_at', 'desc')
                     ->get();
 
         return response()->json($ciljevi);
     }
-    
+
+    #[OA\Get(
+        path: "/api/all-ciljevi",
+        summary: "Dobijanje svih ciljeva korisnika",
+        tags: ["Ciljevi"],
+        security: [["sanctum" => []]],
+        responses: [new OA\Response(response: 200, description: "OK")]
+    )]
     public function allCilj()
     {
         $ciljevi = auth()->user()->ciljevi()->orderByDesc('created_at')->get();
         return response()->json($ciljevi);
     }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
-     
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Cilj $cilj)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cilj $cilj)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCiljRequest $request, Cilj $cilj)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    #[OA\Delete(
+        path: "/api/cilj/{id}",
+        summary: "Brisanje cilja",
+        tags: ["Ciljevi"],
+        security: [["sanctum" => []]],
+        parameters: [
+            new OA\Parameter(name: "id", in: "path", required: true, schema: new OA\Schema(type: "integer"))
+        ],
+        responses: [new OA\Response(response: 200, description: "Obrisano")]
+    )]
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
@@ -98,14 +118,11 @@ class CiljController extends Controller
 
     public function getCilj()
     {
-        // Uzima poslednji cilj korisnika 
+        
         $cilj = Cilj::where('user_id', Auth::id())->latest()->first();
 
         return response()->json([
             'cilj' => $cilj ? $cilj->kalorije : null
         ]);
     }
-
-
-
 }

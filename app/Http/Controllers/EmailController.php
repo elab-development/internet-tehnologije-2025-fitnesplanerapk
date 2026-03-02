@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -8,10 +9,20 @@ use Barryvdh\DomPDF\Facade\Pdf; // Ako koristiš dompdf
 use App\Models\Parametri; 
 use App\Models\Hidriranost;
 use App\Models\Cilj;
+use OpenApi\Attributes as OA;
+
 class EmailController extends Controller
 {
-    
-
+    #[OA\Post(
+        path: "/api/posalji-izvestaj",
+        summary: "Slanje personalizovanog PDF izveštaja",
+        tags: ["Izveštaji"],
+        security: [["sanctum" => []]],
+        responses: [
+            new OA\Response(response: 200, description: "Izveštaj uspešno poslat"),
+            new OA\Response(response: 500, description: "Serverska greška")
+        ]
+    )]
     public function posaljiPdf(Request $request)
     {
         try {
