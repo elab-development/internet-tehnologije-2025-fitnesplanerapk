@@ -7,12 +7,12 @@ export default defineConfig({
 
   server: {
   proxy: {
-    '/api': {
-      target: 'http://host.docker.internal:8000',   // ← ovo menjaš
-      changeOrigin: true,
-      secure: false,
-    }
+  '/api': {
+    target: 'http://laravel-app:8000',
+    changeOrigin: true,
+    secure: false,
   }
+}
 }
 
     // Optional: helps with file watching in Docker (Windows + bind mounts can be slow)
