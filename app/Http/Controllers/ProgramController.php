@@ -5,29 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Program;
 use App\Models\Vezba;
 use Illuminate\Http\Request;
-use OpenApi\Annotations as OA; 
+use OpenApi\Attributes as OA; // Promenjeno u Attributes
+
 class ProgramController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/programi",
-     *     summary="Lista svih programa",
-     *     tags={"Programi"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista programa",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="naziv", type="string", example="Program za masu"),
-     *                 @OA\Property(property="public", type="boolean", example=true)
-     *             )
-     *         )
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/api/programi',
+        summary: 'Lista svih programa',
+        tags: ['Programi'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista programa',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer', example: 1),
+                            new OA\Property(property: 'naziv', type: 'string', example: 'Program za masu'),
+                            new OA\Property(property: 'public', type: 'boolean', example: true)
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
     public function index(Request $request)
     {
         $userId = $request->user()->id;
@@ -40,26 +43,37 @@ class ProgramController extends Controller
         return response()->json($programi);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/programi",
-     *     summary="Kreiranje programa",
-     *     tags={"Programi"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"naziv"},
-     *             @OA\Property(property="naziv", type="string", example="Program za masu"),
-     *             @OA\Property(property="public", type="boolean", example=true)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Program uspešno kreiran"
-     *     )
-     * )
-     */
+    #[OA\Post(
+        path: '/api/programi',
+        summary: 'Kreiranje programa',
+        tags: ['Programi'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['naziv', 'public', 'vezbe'],
+                properties: [
+                    new OA\Property(property: 'naziv', type: 'string', example: 'Program za masu'),
+                    new OA\Property(property: 'public', type: 'boolean', example: true),
+                    new OA\Property(
+                        property: 'vezbe',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'dan', type: 'integer', example: 1),
+                                new OA\Property(property: 'serija', type: 'integer', example: 3),
+                                new OA\Property(property: 'ponavljanja', type: 'integer', example: 12)
+                            ]
+                        )
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Program uspešno kreiran')
+        ]
+    )]
     public function store(Request $request)
     {
         $request->validate([
@@ -119,49 +133,44 @@ class ProgramController extends Controller
         return response()->json($program->load('vezbe'), 201);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/programi/{id}",
-     *     summary="Ažuriranje programa",
-     *     tags={"Programi"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"naziv", "public", "vezbe"},
-     *             @OA\Property(property="naziv", type="string", example="Program za masu"),
-     *             @OA\Property(property="public", type="boolean", example=true),
-     *             @OA\Property(
-     *                 property="vezbe",
-     *                 type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="dan", type="integer", example=1),
-     *                     @OA\Property(property="serija", type="integer", example=4),
-     *                     @OA\Property(property="ponavljanja", type="integer", example=12),
-     *                     @OA\Property(property="tezina", type="number", example=50),
-     *                     @OA\Property(property="trajanje", type="integer", example=15),
-     *                     @OA\Property(property="bpm", type="integer", example=120)
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Program uspešno ažuriran"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Program nije pronađen ili nije vaš"
-     *     )
-     * )
-     */
+    #[OA\Put(
+        path: '/api/programi/{id}',
+        summary: 'Ažuriranje programa',
+        tags: ['Programi'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['naziv', 'public', 'vezbe'],
+                properties: [
+                    new OA\Property(property: 'naziv', type: 'string', example: 'Program za masu'),
+                    new OA\Property(property: 'public', type: 'boolean', example: true),
+                    new OA\Property(
+                        property: 'vezbe',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'dan', type: 'integer', example: 1),
+                                new OA\Property(property: 'serija', type: 'integer', example: 4),
+                                new OA\Property(property: 'ponavljanja', type: 'integer', example: 12),
+                                new OA\Property(property: 'tezina', type: 'number', example: 50),
+                                new OA\Property(property: 'trajanje', type: 'integer', example: 15),
+                                new OA\Property(property: 'bpm', type: 'integer', example: 120)
+                            ]
+                        )
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Program uspešno ažuriran'),
+            new OA\Response(response: 404, description: 'Program nije pronađen ili nije vaš')
+        ]
+    )]
     public function update(Request $request, $id)
     {
         $program = Program::where('korisnik_id', $request->user()->id)->findOrFail($id);
@@ -223,24 +232,18 @@ class ProgramController extends Controller
         return response()->json($program->load('vezbe'));
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/programi/{id}",
-     *     summary="Brisanje programa",
-     *     tags={"Programi"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Program uspešno obrisan"
-     *     )
-     * )
-     */
+    #[OA\Delete(
+        path: '/api/programi/{id}',
+        summary: 'Brisanje programa',
+        tags: ['Programi'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Program uspešno obrisan')
+        ]
+    )]
     public function destroy($id)
     {
         $program = Program::where('korisnik_id', auth()->id())->find($id);

@@ -7,26 +7,38 @@ use App\Models\Hrana;
 use App\Models\ObrokHrana;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use OpenApi\Annotations as OA; 
+use OpenApi\Attributes as OA; // Promenjeno u Attributes
+
 class ObrokController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/obroci",
-     *     summary="Lista svih obroka korisnika",
-     *     tags={"Obroci"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Lista obroka",
-     *         @OA\JsonContent(type="array", @OA\Items(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="naziv", type="string", example="Doručak"),
-     *             @OA\Property(property="kalorije", type="integer", example=500)
-     *         ))
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/api/obroci',
+        summary: 'Lista svih obroka korisnika',
+        tags: ['Obroci'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Lista obroka',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'datum', type: 'string', example: '2023-10-27'),
+                        new OA\Property(property: 'ukupno_kalorija', type: 'integer', example: 1200),
+                        new OA\Property(
+                            property: 'obroci',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'naziv', type: 'string', example: 'Doručak')
+                                ]
+                            )
+                        )
+                    ]
+                )
+            )
+        ]
+    )]
     public function index(Request $request)
     {
         $datum = $request->query('datum');
@@ -55,26 +67,35 @@ class ObrokController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/obroci",
-     *     summary="Dodavanje novog obroka",
-     *     tags={"Obroci"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"naziv","kalorije"},
-     *             @OA\Property(property="naziv", type="string", example="Doručak"),
-     *             @OA\Property(property="kalorije", type="integer", example=500)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Obrok uspešno dodat"
-     *     )
-     * )
-     */
+    #[OA\Post(
+        path: '/api/obroci',
+        summary: 'Dodavanje novog obroka',
+        tags: ['Obroci'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['naziv', 'datum', 'namirnice'],
+                properties: [
+                    new OA\Property(property: 'naziv', type: 'string', example: 'Doručak'),
+                    new OA\Property(property: 'datum', type: 'string', format: 'date', example: '2023-10-27'),
+                    new OA\Property(
+                        property: 'namirnice',
+                        type: 'array',
+                        items: new OA\Items(
+                            properties: [
+                                new OA\Property(property: 'kolicina', type: 'number', example: 100),
+                                new OA\Property(property: 'hrana_id', type: 'integer', example: 1)
+                            ]
+                        )
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Obrok uspešno dodat')
+        ]
+    )]
     public function store(Request $request)
     {
         $request->validate([
@@ -132,24 +153,18 @@ class ObrokController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/obroci/{id}",
-     *     summary="Prikaz jednog obroka",
-     *     tags={"Obroci"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Detalji obroka"
-     *     )
-     * )
-     */
+    #[OA\Get(
+        path: '/api/obroci/{id}',
+        summary: 'Prikaz jednog obroka',
+        tags: ['Obroci'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detalji obroka')
+        ]
+    )]
     public function show($id)
     {
         $obrok = Obrok::with('hrana.hrana')
@@ -175,31 +190,27 @@ class ObrokController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/obroci/{obrok}",
-     *     summary="Update obroka",
-     *     tags={"Obroci"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="obrok",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="naziv", type="string", example="Doručak"),
-     *             @OA\Property(property="kalorije", type="integer", example=500)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Obrok uspešno izmenjen"
-     *     )
-     * )
-     */
+    #[OA\Put(
+        path: '/api/obroci/{obrok}',
+        summary: 'Update obroka',
+        tags: ['Obroci'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'obrok', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'naziv', type: 'string', example: 'Doručak'),
+                    new OA\Property(property: 'datum', type: 'string', format: 'date')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Obrok uspešno izmenjen')
+        ]
+    )]
     public function update(Request $request, Obrok $obrok)
     {
         if ($obrok->user_id !== auth()->id()) {
@@ -286,24 +297,18 @@ class ObrokController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/obroci/{obrok}",
-     *     summary="Brisanje obroka",
-     *     tags={"Obroci"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="obrok",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Obrok uspešno obrisan"
-     *     )
-     * )
-     */
+    #[OA\Delete(
+        path: '/api/obroci/{obrok}',
+        summary: 'Brisanje obroka',
+        tags: ['Obroci'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'obrok', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Obrok uspešno obrisan')
+        ]
+    )]
     public function destroy(Obrok $obrok)
     {
         if ($obrok->user_id !== auth()->id()) {

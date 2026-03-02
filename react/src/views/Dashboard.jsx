@@ -457,7 +457,7 @@ export default function Dashboard() {
 const preuzmiIzvestaj = () => {
     axiosClient.post("/posalji-izvestaj")
       .then(res => {
-        alert("Izveštaj je uspešno poslat na Vaš mejl! Proverite Mailtrap.");
+        alert("Izveštaj je uspešno poslat na Vaš mejl!");
       })
       .catch(err => {
         

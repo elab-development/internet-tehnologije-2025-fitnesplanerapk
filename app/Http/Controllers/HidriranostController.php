@@ -1,38 +1,38 @@
 <?php
 
 namespace App\Http\Controllers;
-use OpenApi\Annotations as OA; 
+
 use Illuminate\Http\Request;
 use App\Models\Hidriranost;
 use Illuminate\Support\Facades\Auth;
-
+use OpenApi\Attributes as OA; // Promenjeno sa Annotations na Attributes
 
 class HidriranostController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/hidriranost",
-     *     summary="Lista svih unosa hidracije",
-     *     tags={"Hidriranost"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Lista svih unosa hidracije")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/hidriranost',
+        summary: 'Lista svih unosa hidracije',
+        tags: ['Hidriranost'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista svih unosa hidracije')
+        ]
+    )]
     public function index()
     {
         $hidriranosti = Hidriranost::with('user')->get(); // sa korisnikom, opcionalno
         return response()->json($hidriranosti);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/hidriranost-danas",
-     *     summary="Dnevna hidracija korisnika",
-     *     tags={"Hidriranost"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Podaci o hidraciji danas")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/hidriranost-danas',
+        summary: 'Dnevna hidracija korisnika',
+        tags: ['Hidriranost'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Podaci o hidraciji danas')
+        ]
+    )]
     public function danas()
     {
         if (!Auth::check()) {
@@ -52,22 +52,25 @@ class HidriranostController extends Controller
         ], 200);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/hidriranost",
-     *     summary="Dodavanje unosa hidracije",
-     *     tags={"Hidriranost"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"ukupno"},
-     *             @OA\Property(property="ukupno", type="integer", example=500)
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Unos hidracije dodat")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/hidriranost',
+        summary: 'Dodavanje unosa hidracije',
+        tags: ['Hidriranost'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['ukupno'],
+                properties: [
+                    new OA\Property(property: 'ukupno', type: 'integer', example: 500)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Unos hidracije dodat'),
+            new OA\Response(response: 400, description: 'Već postoji unos za danas')
+        ]
+    )]
     public function store(Request $request)
     {
         $request->validate([
@@ -95,19 +98,32 @@ class HidriranostController extends Controller
         return response()->json($hidriranost);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/hidriranost/{hidriranost}",
-     *     summary="Update hidracije",
-     *     tags={"Hidriranost"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(name="hidriranost", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\RequestBody(required=true, @OA\JsonContent(
-     *         @OA\Property(property="ukupno", type="integer", example=500)
-     *     )),
-     *     @OA\Response(response=200, description="Hidracija ažurirana")
-     * )
-     */
+    #[OA\Put(
+        path: '/api/hidriranost/{hidriranost}',
+        summary: 'Update hidracije',
+        tags: ['Hidriranost'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'hidriranost',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'ukupno', type: 'integer', example: 500)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Hidracija ažurirana'),
+            new OA\Response(response: 404, description: 'Zapis za danas ne postoji')
+        ]
+    )]
     public function update(Request $request, $id)
     {
         $request->validate([

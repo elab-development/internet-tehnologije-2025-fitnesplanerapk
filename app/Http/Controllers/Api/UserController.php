@@ -8,34 +8,37 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use OpenApi\Annotations as OA; 
+use OpenApi\Attributes as OA; // Promenjeno u Attributes
+
 class UserController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/users/{user}",
-     *     summary="Prikaz korisnika",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(name="user", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Detalji korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/users/{user}',
+        summary: 'Prikaz korisnika',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Detalji korisnika')
+        ]
+    )]
     public function show(User $user)
     {
         $user->load('parametri', 'ciljevi');
         return response()->json($user);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/vezbaci",
-     *     summary="Lista vežbača trenera",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Lista vežbača")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/vezbaci',
+        summary: 'Lista vežbača trenera',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista vežbača')
+        ]
+    )]
     public function vezbaciTrenera()
     {
         $user = auth()->user();
@@ -51,23 +54,24 @@ class UserController extends Controller
         return response()->json($vezbaci);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/trener/postavi",
-     *     summary="Postavljanje trenera korisniku",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"trener_id","user_id"},
-     *             @OA\Property(property="trener_id", type="integer", example=2),
-     *             @OA\Property(property="user_id", type="integer", example=5)
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Trener uspešno postavljen")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/trener/postavi',
+        summary: 'Postavljanje trenera korisniku',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['trener_id'],
+                properties: [
+                    new OA\Property(property: 'trener_id', type: 'integer', example: 2)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Trener uspešno postavljen')
+        ]
+    )]
     public function postaviTrenera(Request $request)
     {
         $request->validate([
@@ -93,25 +97,30 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Patch(
-     *     path="/api/profil/update",
-     *     summary="Update profila trenera",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(
-     *         @OA\Property(property="ime", type="string"),
-     *         @OA\Property(property="prezime", type="string"),
-     *         @OA\Property(property="username", type="string"),
-     *         @OA\Property(property="email", type="string"),
-     *         @OA\Property(property="password", type="string"),
-     *         @OA\Property(property="password_confirmation", type="string"),
-     *         @OA\Property(property="biografija", type="string"),
-     *         @OA\Property(property="profile_image", type="string", format="binary")
-     *     )),
-     *     @OA\Response(response=200, description="Profil uspešno ažuriran")
-     * )
-     */
+    #[OA\Patch(
+        path: '/api/profil/update',
+        summary: 'Update profila trenera',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'ime', type: 'string'),
+                    new OA\Property(property: 'prezime', type: 'string'),
+                    new OA\Property(property: 'username', type: 'string'),
+                    new OA\Property(property: 'email', type: 'string'),
+                    new OA\Property(property: 'password', type: 'string'),
+                    new OA\Property(property: 'password_confirmation', type: 'string'),
+                    new OA\Property(property: 'biografija', type: 'string'),
+                    new OA\Property(property: 'profile_image', type: 'string', format: 'binary')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Profil uspešno ažuriran')
+        ]
+    )]
     public function updateProfil(Request $request)
     {
         $user = auth()->user();
@@ -150,15 +159,15 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/trener/ukloni",
-     *     summary="Uklanjanje trenera sa korisnika",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Trener uklonjen")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/trener/ukloni',
+        summary: 'Uklanjanje trenera sa korisnika',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Trener uklonjen')
+        ]
+    )]
     public function ukloniTrenera()
     {
         $korisnik = Auth::user();
@@ -168,24 +177,32 @@ class UserController extends Controller
         return response()->json(['message' => 'Trener uklonjen']);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/users/{user}/parametar",
-     *     summary="Dodavanje parametara korisniku (samo trener)",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(
-     *         @OA\Property(property="date", type="string", format="date"),
-     *         @OA\Property(property="tezina", type="numeric"),
-     *         @OA\Property(property="visina", type="numeric"),
-     *         @OA\Property(property="bmi", type="numeric"),
-     *         @OA\Property(property="masti", type="numeric"),
-     *         @OA\Property(property="misici", type="numeric"),
-     *         @OA\Property(property="obim_struka", type="numeric")
-     *     )),
-     *     @OA\Response(response=200, description="Parametar dodat")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/users/{user}/parametar',
+        summary: 'Dodavanje parametara korisniku (samo trener)',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'date', type: 'string', format: 'date'),
+                    new OA\Property(property: 'tezina', type: 'number'),
+                    new OA\Property(property: 'visina', type: 'number'),
+                    new OA\Property(property: 'bmi', type: 'number'),
+                    new OA\Property(property: 'masti', type: 'number'),
+                    new OA\Property(property: 'misici', type: 'number'),
+                    new OA\Property(property: 'obim_struka', type: 'number')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Parametar dodat')
+        ]
+    )]
     public function storeParametar(Request $request, User $user)
     {
         $authUser = auth()->user();
@@ -207,15 +224,15 @@ class UserController extends Controller
         return response()->json($param);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/users/all",
-     *     summary="Prikaz svih korisnika (admin)",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Lista korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/users/all',
+        summary: 'Prikaz svih korisnika (admin)',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista korisnika')
+        ]
+    )]
     public function allUsers()
     {
         return response()->json(
@@ -225,16 +242,18 @@ class UserController extends Controller
         );
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/users/pretraga",
-     *     summary="Pretraga trenera po imenu, prezimenu ili emailu",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(name="query", in="query", required=false, @OA\Schema(type="string")),
-     *     @OA\Response(response=200, description="Lista trenera")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/users/pretraga',
+        summary: 'Pretraga trenera po imenu, prezimenu ili emailu',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'query', in: 'query', required: false, schema: new OA\Schema(type: 'string'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista trenera')
+        ]
+    )]
     public function pretragaTrenera(Request $request)
     {
         $query = $request->query('query');
@@ -249,19 +268,24 @@ class UserController extends Controller
         return response()->json($treneri);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/users/assign",
-     *     summary="Povezivanje vezbača sa trenerom",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(
-     *         @OA\Property(property="trener_id", type="integer"),
-     *         @OA\Property(property="vezbac_id", type="integer")
-     *     )),
-     *     @OA\Response(response=200, description="Vezbač povezan sa trenerom")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/users/assign',
+        summary: 'Povezivanje vezbača sa trenerom',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'trener_id', type: 'integer'),
+                    new OA\Property(property: 'vezbac_id', type: 'integer')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Vezbač povezan sa trenerom')
+        ]
+    )]
     public function assignVezbacToTrener(Request $request)
     {
         $request->validate([
@@ -285,16 +309,18 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/trener/{trener_id}/vezbaci",
-     *     summary="Lista vežbača određenog trenera",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(name="trener_id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Lista vežbača")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/trener/{trener_id}/vezbaci',
+        summary: 'Lista vežbača određenog trenera',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'trener_id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista vežbača')
+        ]
+    )]
     public function getVezbaciTrenera($trener_id)
     {
         $trener = User::findOrFail($trener_id);
@@ -303,16 +329,18 @@ class UserController extends Controller
         return response()->json($trener->vezbaci);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/vezbac/{vezbac_id}/trener",
-     *     summary="Prikaz trenera vezbača",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(name="vezbac_id", in="path", required=true, @OA\Schema(type="integer")),
-     *     @OA\Response(response=200, description="Trener vezbača")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/vezbac/{vezbac_id}/trener',
+        summary: 'Prikaz trenera vezbača',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'vezbac_id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Trener vezbača')
+        ]
+    )]
     public function getTrenerVezbaca($vezbac_id)
     {
         $vezbac = User::findOrFail($vezbac_id);
@@ -321,23 +349,28 @@ class UserController extends Controller
         return response()->json($vezbac->trener);
     }
 
-    /**
-     * @OA\Patch(
-     *     path="/api/profil/update/korisnik",
-     *     summary="Update profila vezbača",
-     *     tags={"User"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(required=true, @OA\JsonContent(
-     *         @OA\Property(property="ime", type="string"),
-     *         @OA\Property(property="prezime", type="string"),
-     *         @OA\Property(property="username", type="string"),
-     *         @OA\Property(property="email", type="string"),
-     *         @OA\Property(property="password", type="string"),
-     *         @OA\Property(property="password_confirmation", type="string")
-     *     )),
-     *     @OA\Response(response=200, description="Profil uspešno ažuriran")
-     * )
-     */
+    #[OA\Patch(
+        path: '/api/profil/update/korisnik',
+        summary: 'Update profila vezbača',
+        tags: ['User'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'ime', type: 'string'),
+                    new OA\Property(property: 'prezime', type: 'string'),
+                    new OA\Property(property: 'username', type: 'string'),
+                    new OA\Property(property: 'email', type: 'string'),
+                    new OA\Property(property: 'password', type: 'string'),
+                    new OA\Property(property: 'password_confirmation', type: 'string')
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Profil uspešno ažuriran')
+        ]
+    )]
     public function updateProfilKorisnika(Request $request)
     {
         $user = auth()->user();

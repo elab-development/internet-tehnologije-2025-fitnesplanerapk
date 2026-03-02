@@ -5,18 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Parametri;
 use App\Http\Requests\StoreParametriRequest;
 use App\Http\Requests\UpdateParametriRequest;
-use OpenApi\Annotations as OA; 
+use OpenApi\Attributes as OA; // Promenjeno u Attributes
+
 class ParametriController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/parametri",
-     *     summary="Prikaz trenutnih parametara korisnika",
-     *     tags={"Parametri"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Trenutni parametri korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/parametri',
+        summary: 'Prikaz trenutnih parametara korisnika',
+        tags: ['Parametri'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Trenutni parametri korisnika')
+        ]
+    )]
     public function index()
     {
         $parametri = Parametri::where('user_id', auth()->id())
@@ -26,42 +27,44 @@ class ParametriController extends Controller
         return response()->json($parametri);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/parametri/all",
-     *     summary="Prikaz svih parametara korisnika",
-     *     tags={"Parametri"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Lista svih parametara korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/parametri/all',
+        summary: 'Prikaz svih parametara korisnika',
+        tags: ['Parametri'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Lista svih parametara korisnika')
+        ]
+    )]
     public function allParametri()
     {
         $parametri = auth()->user()->parametri()->orderByDesc('date')->get();
         return response()->json($parametri);
     }
 
-    /**
-     * @OA\Post(
-     *     path="/api/parametri",
-     *     summary="Dodavanje parametara korisnika",
-     *     tags={"Parametri"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"date","tezina","visina","masti","misici","obim_struka"},
-     *             @OA\Property(property="date", type="string", format="date", example="2026-03-01"),
-     *             @OA\Property(property="tezina", type="number", example=70),
-     *             @OA\Property(property="visina", type="number", example=175),
-     *             @OA\Property(property="masti", type="number", example=15),
-     *             @OA\Property(property="misici", type="number", example=40),
-     *             @OA\Property(property="obim_struka", type="number", example=80)
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Parametri uspešno dodati")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/parametri',
+        summary: 'Dodavanje parametara korisnika',
+        tags: ['Parametri'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['date', 'tezina', 'visina', 'masti', 'misici', 'obim_struka'],
+                properties: [
+                    new OA\Property(property: 'date', type: 'string', format: 'date', example: '2026-03-01'),
+                    new OA\Property(property: 'tezina', type: 'number', example: 70),
+                    new OA\Property(property: 'visina', type: 'number', example: 175),
+                    new OA\Property(property: 'masti', type: 'number', example: 15),
+                    new OA\Property(property: 'misici', type: 'number', example: 40),
+                    new OA\Property(property: 'obim_struka', type: 'number', example: 80)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Parametri uspešno dodati')
+        ]
+    )]
     public function store(StoreParametriRequest $request)
     {
         $validated = $request->validate([
@@ -93,52 +96,48 @@ class ParametriController extends Controller
         ], 201);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/parametri/{id}",
-     *     summary="Prikaz jednog parametra",
-     *     tags={"Parametri"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Prikaz jednog parametra korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/parametri/{id}',
+        summary: 'Prikaz jednog parametra',
+        tags: ['Parametri'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Prikaz jednog parametra korisnika')
+        ]
+    )]
     public function show(Parametri $parametri)
     {
         return response()->json($parametri);
     }
 
-    /**
-     * @OA\Put(
-     *     path="/api/parametri/{id}",
-     *     summary="Izmena parametara korisnika",
-     *     tags={"Parametri"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(property="date", type="string", format="date", example="2026-03-01"),
-     *             @OA\Property(property="tezina", type="number", example=72),
-     *             @OA\Property(property="visina", type="number", example=175),
-     *             @OA\Property(property="masti", type="number", example=16),
-     *             @OA\Property(property="misici", type="number", example=41),
-     *             @OA\Property(property="obim_struka", type="number", example=81)
-     *         )
-     *     ),
-     *     @OA\Response(response=200, description="Parametri uspešno izmenjeni")
-     * )
-     */
+    #[OA\Put(
+        path: '/api/parametri/{id}',
+        summary: 'Izmena parametara korisnika',
+        tags: ['Parametri'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'date', type: 'string', format: 'date', example: '2026-03-01'),
+                    new OA\Property(property: 'tezina', type: 'number', example: 72),
+                    new OA\Property(property: 'visina', type: 'number', example: 175),
+                    new OA\Property(property: 'masti', type: 'number', example: 16),
+                    new OA\Property(property: 'misici', type: 'number', example: 41),
+                    new OA\Property(property: 'obim_struka', type: 'number', example: 81)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Parametri uspešno izmenjeni')
+        ]
+    )]
     public function update(UpdateParametriRequest $request, Parametri $parametri)
     {
         $validated = $request->validate([
@@ -169,21 +168,18 @@ class ParametriController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/parametri/{id}",
-     *     summary="Brisanje parametra",
-     *     tags={"Parametri"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Parametar uspešno obrisan")
-     * )
-     */
+    #[OA\Delete(
+        path: '/api/parametri/{id}',
+        summary: 'Brisanje parametra',
+        tags: ['Parametri'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Parametar uspešno obrisan')
+        ]
+    )]
     public function destroy($id)
     {
         $parametar = Parametri::where('id', $id)
@@ -197,17 +193,11 @@ class ParametriController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Parametri $parametri)
     {
         //

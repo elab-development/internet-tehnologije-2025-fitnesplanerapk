@@ -1,0 +1,1640 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Fitnes Planer API",
+        "description": "API dokumentacija za aplikaciju Fitnes Planer",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Lokalni razvojni server"
+        }
+    ],
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registracija novog korisnika",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ime",
+                                    "prezime",
+                                    "email",
+                                    "username",
+                                    "password",
+                                    "pol",
+                                    "datumRodjenja"
+                                ],
+                                "properties": {
+                                    "ime": {
+                                        "type": "string",
+                                        "example": "Tina"
+                                    },
+                                    "prezime": {
+                                        "type": "string",
+                                        "example": "Nadic"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "tina@example.com"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "tinan"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "pol": {
+                                        "type": "string",
+                                        "example": "zenski"
+                                    },
+                                    "datumRodjenja": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2006-03-01"
+                                    },
+                                    "uloga": {
+                                        "type": "string",
+                                        "example": "korisnik"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Korisnik uspešno registrovan"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login korisnika",
+                "operationId": "222b2625838e3c57e017987f73598fda",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "tina@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešan login, vraća token"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout korisnika",
+                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "responses": {
+                    "204": {
+                        "description": "Korisnik uspešno odjavljen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Prikaz korisnika",
+                "operationId": "f310aa35b9243239c65dbc8b8f4b135e",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalji korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/vezbaci": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Lista vežbača trenera",
+                "operationId": "393c911e482db6a70b8e6b77184d502d",
+                "responses": {
+                    "200": {
+                        "description": "Lista vežbača"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/postavi": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Postavljanje trenera korisniku",
+                "operationId": "ed8c86403d9b4b9039888fd699b0e278",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "trener_id"
+                                ],
+                                "properties": {
+                                    "trener_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Trener uspešno postavljen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/profil/update": {
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update profila trenera",
+                "operationId": "39ca6b48badbdaf7186b892718eb648f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "ime": {
+                                        "type": "string"
+                                    },
+                                    "prezime": {
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    },
+                                    "biografija": {
+                                        "type": "string"
+                                    },
+                                    "profile_image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil uspešno ažuriran"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/ukloni": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Uklanjanje trenera sa korisnika",
+                "operationId": "a2363680f6ad6000050c92c1cc62a366",
+                "responses": {
+                    "200": {
+                        "description": "Trener uklonjen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}/parametar": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Dodavanje parametara korisniku (samo trener)",
+                "operationId": "4ca6c1e56749954d7f7ee9da4c6023e9",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "tezina": {
+                                        "type": "number"
+                                    },
+                                    "visina": {
+                                        "type": "number"
+                                    },
+                                    "bmi": {
+                                        "type": "number"
+                                    },
+                                    "masti": {
+                                        "type": "number"
+                                    },
+                                    "misici": {
+                                        "type": "number"
+                                    },
+                                    "obim_struka": {
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Parametar dodat"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/all": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Prikaz svih korisnika (admin)",
+                "operationId": "547c2ad54c24a35fa9b79e1130522933",
+                "responses": {
+                    "200": {
+                        "description": "Lista korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/pretraga": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Pretraga trenera po imenu, prezimenu ili emailu",
+                "operationId": "53d8d319258d4849cd15c54023d12082",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista trenera"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/assign": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Povezivanje vezbača sa trenerom",
+                "operationId": "2d3de178d0113ae5f4bcddf46c15f138",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trener_id": {
+                                        "type": "integer"
+                                    },
+                                    "vezbac_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vezbač povezan sa trenerom"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/{trener_id}/vezbaci": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Lista vežbača određenog trenera",
+                "operationId": "e37092c347ae231314feed87661f1ec0",
+                "parameters": [
+                    {
+                        "name": "trener_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista vežbača"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/vezbac/{vezbac_id}/trener": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Prikaz trenera vezbača",
+                "operationId": "392d728987f2b4acd116aab1f7de8284",
+                "parameters": [
+                    {
+                        "name": "vezbac_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trener vezbača"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/profil/update/korisnik": {
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update profila vezbača",
+                "operationId": "a604c7a1d1bcdbdea98f2385447c7a27",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "ime": {
+                                        "type": "string"
+                                    },
+                                    "prezime": {
+                                        "type": "string"
+                                    },
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil uspešno ažuriran"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/cilj": {
+            "get": {
+                "tags": [
+                    "Cilj"
+                ],
+                "summary": "Prikaz trenutnog cilja korisnika",
+                "operationId": "fd2dfccd9cdf0a531326853ee4b5bbab",
+                "responses": {
+                    "200": {
+                        "description": "Trenutni cilj korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Cilj"
+                ],
+                "summary": "Dodavanje cilja korisnika",
+                "operationId": "8526d7924fbade42da65922d26b92ffd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "hidriranost",
+                                    "tezina",
+                                    "kalorije"
+                                ],
+                                "properties": {
+                                    "hidriranost": {
+                                        "type": "number",
+                                        "example": 2
+                                    },
+                                    "tezina": {
+                                        "type": "number",
+                                        "example": 70
+                                    },
+                                    "kalorije": {
+                                        "type": "integer",
+                                        "example": 2000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cilj uspešno dodat"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/cilj/last": {
+            "get": {
+                "tags": [
+                    "Cilj"
+                ],
+                "summary": "Dohvat poslednjeg cilja korisnika",
+                "operationId": "63733db0ce6169d01d3ab2cba56c5886",
+                "responses": {
+                    "200": {
+                        "description": "Poslednji cilj korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/cilj/{id}": {
+            "delete": {
+                "tags": [
+                    "Cilj"
+                ],
+                "summary": "Brisanje cilja",
+                "operationId": "4b559550f33ef1868e4b910c2874d041",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cilj uspešno obrisan"
+                    },
+                    "404": {
+                        "description": "Cilj nije pronađen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/posalji-izvestaj": {
+            "post": {
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Slanje PDF izveštaja korisniku",
+                "operationId": "f4899fece09cc0d70960b3fa7bae0469",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "PDF izveštaj poslat"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/hidriranost": {
+            "get": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Lista svih unosa hidracije",
+                "operationId": "bf6df820b711f8a428ad9746ee551668",
+                "responses": {
+                    "200": {
+                        "description": "Lista svih unosa hidracije"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Dodavanje unosa hidracije",
+                "operationId": "d77e4db157d1cdcb2d1a94721e2c44c4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ukupno"
+                                ],
+                                "properties": {
+                                    "ukupno": {
+                                        "type": "integer",
+                                        "example": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Unos hidracije dodat"
+                    },
+                    "400": {
+                        "description": "Već postoji unos za danas"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/hidriranost-danas": {
+            "get": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Dnevna hidracija korisnika",
+                "operationId": "c9ae59d21399d1350f1da1d5f03e0587",
+                "responses": {
+                    "200": {
+                        "description": "Podaci o hidraciji danas"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/hidriranost/{hidriranost}": {
+            "put": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Update hidracije",
+                "operationId": "09b98a5dc51c0f6033df585bb48562d0",
+                "parameters": [
+                    {
+                        "name": "hidriranost",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "ukupno": {
+                                        "type": "integer",
+                                        "example": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Hidracija ažurirana"
+                    },
+                    "404": {
+                        "description": "Zapis za danas ne postoji"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci": {
+            "get": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Lista svih obroka korisnika",
+                "operationId": "d6f2aea1dd9c0e21914eb0bda8807af1",
+                "responses": {
+                    "200": {
+                        "description": "Lista obroka",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "datum": {
+                                            "type": "string",
+                                            "example": "2023-10-27"
+                                        },
+                                        "ukupno_kalorija": {
+                                            "type": "integer",
+                                            "example": 1200
+                                        },
+                                        "obroci": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "naziv": {
+                                                        "type": "string",
+                                                        "example": "Doručak"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Dodavanje novog obroka",
+                "operationId": "18201e23f7f9e0debee72768721ebede",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "naziv",
+                                    "datum",
+                                    "namirnice"
+                                ],
+                                "properties": {
+                                    "naziv": {
+                                        "type": "string",
+                                        "example": "Doručak"
+                                    },
+                                    "datum": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-10-27"
+                                    },
+                                    "namirnice": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "kolicina": {
+                                                    "type": "number",
+                                                    "example": 100
+                                                },
+                                                "hrana_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Obrok uspešno dodat"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci/{id}": {
+            "get": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Prikaz jednog obroka",
+                "operationId": "fbc84ac6c3afc7847b07665e161d0cc8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalji obroka"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci/{obrok}": {
+            "put": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Update obroka",
+                "operationId": "e71fbf2f3e7d12bcd36e36bece090bb4",
+                "parameters": [
+                    {
+                        "name": "obrok",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "naziv": {
+                                        "type": "string",
+                                        "example": "Doručak"
+                                    },
+                                    "datum": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Obrok uspešno izmenjen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Brisanje obroka",
+                "operationId": "d5689170aa01a3e1cd016602b6ec3ffb",
+                "parameters": [
+                    {
+                        "name": "obrok",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obrok uspešno obrisan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/parametri": {
+            "get": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Prikaz trenutnih parametara korisnika",
+                "operationId": "aa2c02decb26e48cda39f4ed8c847255",
+                "responses": {
+                    "200": {
+                        "description": "Trenutni parametri korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Dodavanje parametara korisnika",
+                "operationId": "fe1d120d24d2de94b3e87d7f1321305a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date",
+                                    "tezina",
+                                    "visina",
+                                    "masti",
+                                    "misici",
+                                    "obim_struka"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-01"
+                                    },
+                                    "tezina": {
+                                        "type": "number",
+                                        "example": 70
+                                    },
+                                    "visina": {
+                                        "type": "number",
+                                        "example": 175
+                                    },
+                                    "masti": {
+                                        "type": "number",
+                                        "example": 15
+                                    },
+                                    "misici": {
+                                        "type": "number",
+                                        "example": 40
+                                    },
+                                    "obim_struka": {
+                                        "type": "number",
+                                        "example": 80
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Parametri uspešno dodati"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/parametri/all": {
+            "get": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Prikaz svih parametara korisnika",
+                "operationId": "a7df358da4a75dc5fdffa83285442514",
+                "responses": {
+                    "200": {
+                        "description": "Lista svih parametara korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/parametri/{id}": {
+            "get": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Prikaz jednog parametra",
+                "operationId": "8cd895998d04ab192df38d0c0e321b21",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Prikaz jednog parametra korisnika"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Izmena parametara korisnika",
+                "operationId": "6c384875695e815c0e10ebf27aa8c614",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-01"
+                                    },
+                                    "tezina": {
+                                        "type": "number",
+                                        "example": 72
+                                    },
+                                    "visina": {
+                                        "type": "number",
+                                        "example": 175
+                                    },
+                                    "masti": {
+                                        "type": "number",
+                                        "example": 16
+                                    },
+                                    "misici": {
+                                        "type": "number",
+                                        "example": 41
+                                    },
+                                    "obim_struka": {
+                                        "type": "number",
+                                        "example": 81
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Parametri uspešno izmenjeni"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Brisanje parametra",
+                "operationId": "3af24123c1ada44e720c08d30eb0861e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Parametar uspešno obrisan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi": {
+            "get": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Lista svih programa",
+                "operationId": "f09bbf69c2ccd1b54ab42936d5f229db",
+                "responses": {
+                    "200": {
+                        "description": "Lista programa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "naziv": {
+                                                "type": "string",
+                                                "example": "Program za masu"
+                                            },
+                                            "public": {
+                                                "type": "boolean",
+                                                "example": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Kreiranje programa",
+                "operationId": "89d76987b3c272235f9a26f93aa7f9da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "naziv",
+                                    "public",
+                                    "vezbe"
+                                ],
+                                "properties": {
+                                    "naziv": {
+                                        "type": "string",
+                                        "example": "Program za masu"
+                                    },
+                                    "public": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "vezbe": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "dan": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "serija": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "ponavljanja": {
+                                                    "type": "integer",
+                                                    "example": 12
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Program uspešno kreiran"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi/{id}": {
+            "put": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Ažuriranje programa",
+                "operationId": "6a041802eb0e1ad9baec7a6f29f0785e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "naziv",
+                                    "public",
+                                    "vezbe"
+                                ],
+                                "properties": {
+                                    "naziv": {
+                                        "type": "string",
+                                        "example": "Program za masu"
+                                    },
+                                    "public": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "vezbe": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "dan": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "serija": {
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "ponavljanja": {
+                                                    "type": "integer",
+                                                    "example": 12
+                                                },
+                                                "tezina": {
+                                                    "type": "number",
+                                                    "example": 50
+                                                },
+                                                "trajanje": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "bpm": {
+                                                    "type": "integer",
+                                                    "example": 120
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Program uspešno ažuriran"
+                    },
+                    "404": {
+                        "description": "Program nije pronađen ili nije vaš"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Brisanje programa",
+                "operationId": "d6d93e303eeb70c03ba2526494fce5ab",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Program uspešno obrisan"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/vezbe": {
+            "get": {
+                "tags": [
+                    "Vezbe"
+                ],
+                "summary": "Lista svih vežbi",
+                "operationId": "c68b10ed06660710c304f5651cfd54ca",
+                "responses": {
+                    "200": {
+                        "description": "Lista vežbi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "ime": {
+                                                "type": "string",
+                                                "example": "Čučnjevi"
+                                            },
+                                            "snimak": {
+                                                "type": "string",
+                                                "example": "https://linkdosnimka.com"
+                                            },
+                                            "kategorija": {
+                                                "type": "string",
+                                                "example": "noge"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Vezbe"
+                ],
+                "summary": "Dodavanje vežbe",
+                "operationId": "72365369e04d339c75da721b14e7cea6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ime",
+                                    "snimak"
+                                ],
+                                "properties": {
+                                    "ime": {
+                                        "type": "string",
+                                        "example": "Čučnjevi"
+                                    },
+                                    "snimak": {
+                                        "type": "string",
+                                        "example": "https://linkdosnimka.com"
+                                    },
+                                    "kategorija": {
+                                        "type": "string",
+                                        "example": "noge"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Vežba uspešno dodata"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        },
+        {
+            "name": "Cilj",
+            "description": "Cilj"
+        },
+        {
+            "name": "Email",
+            "description": "Email"
+        },
+        {
+            "name": "Hidriranost",
+            "description": "Hidriranost"
+        },
+        {
+            "name": "Obroci",
+            "description": "Obroci"
+        },
+        {
+            "name": "Parametri",
+            "description": "Parametri"
+        },
+        {
+            "name": "Programi",
+            "description": "Programi"
+        },
+        {
+            "name": "Vezbe",
+            "description": "Vezbe"
+        }
+    ]
+}

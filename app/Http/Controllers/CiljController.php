@@ -7,27 +7,30 @@ use App\Http\Requests\StoreCiljRequest;
 use App\Http\Requests\UpdateCiljRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use OpenApi\Annotations as OA; 
+use OpenApi\Attributes as OA;
+
 class CiljController extends Controller
 {
-    /**
-     * @OA\Post(
-     *     path="/api/cilj",
-     *     summary="Dodavanje cilja korisnika",
-     *     tags={"Cilj"},
-     *     security={{"sanctum":{}}},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"hidriranost","tezina","kalorije"},
-     *             @OA\Property(property="hidriranost", type="numeric", example=2),
-     *             @OA\Property(property="tezina", type="numeric", example=70),
-     *             @OA\Property(property="kalorije", type="integer", example=2000)
-     *         )
-     *     ),
-     *     @OA\Response(response=201, description="Cilj uspešno dodat")
-     * )
-     */
+    #[OA\Post(
+        path: '/api/cilj',
+        summary: 'Dodavanje cilja korisnika',
+        tags: ['Cilj'],
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['hidriranost', 'tezina', 'kalorije'],
+                properties: [
+                    new OA\Property(property: 'hidriranost', type: 'number', example: 2),
+                    new OA\Property(property: 'tezina', type: 'number', example: 70),
+                    new OA\Property(property: 'kalorije', type: 'integer', example: 2000)
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 201, description: 'Cilj uspešno dodat')
+        ]
+    )]
     public function store(StoreCiljRequest $request, $userId = null)
     {
         $request->validate([
@@ -48,15 +51,15 @@ class CiljController extends Controller
         return response()->json($cilj, 201);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/cilj",
-     *     summary="Prikaz trenutnog cilja korisnika",
-     *     tags={"Cilj"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Trenutni cilj korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/cilj',
+        summary: 'Prikaz trenutnog cilja korisnika',
+        tags: ['Cilj'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Trenutni cilj korisnika')
+        ]
+    )]
     public function index(Request $request)
     {
         $ciljevi = Cilj::where('user_id', $request->user()->id)
@@ -66,21 +69,15 @@ class CiljController extends Controller
         return response()->json($ciljevi);
     }
 
-    public function allCilj()
-    {
-        $ciljevi = auth()->user()->ciljevi()->orderByDesc('created_at')->get();
-        return response()->json($ciljevi);
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/api/cilj/last",
-     *     summary="Dohvat poslednjeg cilja korisnika",
-     *     tags={"Cilj"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Poslednji cilj korisnika")
-     * )
-     */
+    #[OA\Get(
+        path: '/api/cilj/last',
+        summary: 'Dohvat poslednjeg cilja korisnika',
+        tags: ['Cilj'],
+        security: [['sanctum' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Poslednji cilj korisnika')
+        ]
+    )]
     public function getCilj()
     {
         $cilj = Cilj::where('user_id', Auth::id())->latest()->first();
@@ -90,18 +87,24 @@ class CiljController extends Controller
         ]);
     }
 
-    /**
-     * @OA\Delete(
-     *     path="/api/cilj/{id}",
-     *     summary="Brisanje cilja",
-     *     tags={"Cilj"},
-     *     security={{"sanctum":{}}},
-     *     @OA\Parameter(
-     *         name="id", in="path", required=true, @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(response=200, description="Cilj uspešno obrisan")
-     * )
-     */
+    #[OA\Delete(
+        path: '/api/cilj/{id}',
+        summary: 'Brisanje cilja',
+        tags: ['Cilj'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            )
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Cilj uspešno obrisan'),
+            new OA\Response(response: 404, description: 'Cilj nije pronađen')
+        ]
+    )]
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
@@ -114,6 +117,9 @@ class CiljController extends Controller
         $cilj->delete();
         return response()->json(['message' => 'Cilj obrisan']);
     }
+
+    
+
 
     /**
      * Show the form for creating a new resource.

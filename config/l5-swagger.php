@@ -44,7 +44,8 @@ return [
                  * Absolute paths to directory containing the swagger annotations are stored.
                  */
  'annotations' => [
-    base_path('app/Http/Controllers/Api')
+    base_path('app/Http/Controllers')
+    
 ],
             ],
         ],
@@ -102,67 +103,16 @@ return [
         ],
 
         'scanOptions' => [
-            /**
-             * Configuration for default processors. Allows to pass processors configuration to swagger-php.
-             *
-             * @link https://zircote.github.io/swagger-php/reference/processors.html
-             */
-            'default_processors_configuration' => [
-            /** Example */
-            /**
-             * 'operationId.hash' => true,
-             * 'pathFilter' => [
-             * 'tags' => [
-             * '/pets/',
-             * '/store/',
-             * ],
-             * ],.
-             */
-            ],
-
-            /**
-             * analyser: defaults to \OpenApi\StaticAnalyser .
-             *
-             * @see \OpenApi\scan
-             */
-            'analyser' => null,
-
-            /**
-             * analysis: defaults to a new \OpenApi\Analysis .
-             *
-             * @see \OpenApi\scan
-             */
-            'analysis' => null,
-
-            /**
-             * Custom query path processors classes.
-             *
-             * @link https://github.com/zircote/swagger-php/tree/master/Examples/processors/schema-query-parameter
-             * @see \OpenApi\scan
-             */
-            'processors' => [
-                // new \App\SwaggerProcessors\SchemaQueryParameter(),
-            ],
-
-            /**
-             * pattern: string       $pattern File pattern(s) to scan (default: *.php) .
-             *
-             * @see \OpenApi\scan
-             */
-            'pattern' => null,
-
-            /*
-             * Absolute path to directories that should be excluded from scanning
-             * @note This option overwrites `paths.excludes`
-             * @see \OpenApi\scan
-             */
-            'exclude' => [],
-
-            /*
-             * Allows to generate specs either for OpenAPI 3.0.0 or OpenAPI 3.1.0.
-             * By default the spec will be in version 3.0.0
-             */
-            'open_api_spec_version' => env('L5_SWAGGER_OPEN_API_SPEC_VERSION', \L5Swagger\Generator::OPEN_API_DEFAULT_SPEC_VERSION),
+             'default_processors_configuration' => [],
+    'analyser' => null,
+    'analysis' => null,
+    'processors' => [
+        // new \App\SwaggerProcessors\SchemaQueryParameter(),
+    ],
+    'pattern' => null,
+    'exclude' => [],
+    'attributes' => true, // <-- Ova linija omogućava PHP 8 atribute
+    'open_api_spec_version' => env('L5_SWAGGER_OPEN_API_SPEC_VERSION', \L5Swagger\Generator::OPEN_API_DEFAULT_SPEC_VERSION),
         ],
 
         /*
@@ -181,7 +131,7 @@ return [
          * Set this to `true` in development mode so that docs would be regenerated on each request
          * Set this to `false` to disable swagger generation on production
          */
-        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', false),
+        'generate_always' => env('L5_SWAGGER_GENERATE_ALWAYS', true),
 
         /*
          * Set this to `true` to generate a copy of documentation in yaml format
