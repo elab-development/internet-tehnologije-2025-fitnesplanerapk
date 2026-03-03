@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  laravel-db:
+    image: mysql:8.0
+    container_name: laravel-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: fitnes
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel123
+    ports:
+      - "3308:3306" # spoljašnji pristup
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "laravel", "-plaravel123"]
+      interval: 5s
+      retries: 10
+
+  laravel-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      laravel-db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: laravel-db
+      DB_PORT: 3306
+      DB_DATABASE: fitnes
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel123
+    command: >
+      sh -c "/usr/local/bin/wait-for-it.sh laravel-db:3306 -- php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"
+
+  react-app:
+    build:
+      context: ./react
+      dockerfile: Dockerfile
+    container_name: react-app
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./react:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: >
+      sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
+
+volumes:
+  dbdata:
