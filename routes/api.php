@@ -37,6 +37,7 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'allUsers']);
+    Route::post('/vezbe', [VezbaController::class, 'store']);
 });
 
 
@@ -56,7 +57,7 @@ Route::middleware('auth:sanctum')->get('/all-ciljevi', [CiljController::class, '
 Route::middleware('auth:sanctum')->get('/all-parametri', [ParametriController::class, 'allParametri']);
 
 Route::middleware('auth:sanctum')->get('/vezbe', [VezbaController::class, 'index']);
-Route::middleware('auth:sanctum')->post('/vezbe', [VezbaController::class, 'store']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/hidriranost-danas', [HidriranostController::class, 'danas']);
@@ -103,8 +104,7 @@ Route::middleware('auth:sanctum')->get('/users/{user}/ciljevi', [UserController:
 Route::middleware('auth:sanctum')->get('/users/{user}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->get('/vezbac/{user}', [UserController::class, 'show']);
 Route::middleware('auth:sanctum')->post('/users/{user}/parametri', [UserController::class, 'storeParametar']);
-// Route::middleware('auth:sanctum')->get('/admin/users', [UsersController::class, 'index']);
-// Uz middleware auth:sanctum
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/trener/pretraga', [UserController::class, 'pretragaTrenera']);
     Route::post('/trener/postavi', [UserController::class, 'postaviTrenera']);

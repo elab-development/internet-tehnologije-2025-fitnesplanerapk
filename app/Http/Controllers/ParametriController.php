@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Request;
 use App\Models\Parametri;
 use App\Http\Requests\StoreParametriRequest;
 use App\Http\Requests\UpdateParametriRequest;
@@ -11,7 +11,7 @@ class ParametriController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $parametri = Parametri::where('user_id', $request->user()->id)
                         ->orderBy('date', 'desc')

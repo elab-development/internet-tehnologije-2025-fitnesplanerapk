@@ -8,13 +8,13 @@ use Illuminate\Http\Request;
 class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
-    {
-       
-        if ($request->user()->uloga_id !== 2) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
+{
+    
+    if ($request->user() && $request->user()->uloga && $request->user()->uloga->ime === 'admin') {
         return $next($request);
     }
+
+    return response()->json(['message' => 'Unauthorized - Only admins allowed'], 403);
+}
 }
 
