@@ -1,0 +1,945 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Fitnes Planer API",
+        "description": "Dokumentacija koristeći PHP Atribute",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Lokalni API server"
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Autentifikacija"
+                ],
+                "summary": "Registracija novog korisnika",
+                "operationId": "5d4fa5d5607ed675ba93907e1fc94534",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ime",
+                                    "prezime",
+                                    "email",
+                                    "username",
+                                    "password",
+                                    "pol",
+                                    "datumRodjenja"
+                                ],
+                                "properties": {
+                                    "ime": {
+                                        "type": "string",
+                                        "example": "Jovan"
+                                    },
+                                    "prezime": {
+                                        "type": "string",
+                                        "example": "Jovanović"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "jovan@example.com"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "jovan123"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "Pass123!"
+                                    },
+                                    "pol": {
+                                        "type": "string",
+                                        "example": "muski"
+                                    },
+                                    "datumRodjenja": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1995-05-15"
+                                    },
+                                    "uloga": {
+                                        "type": "string",
+                                        "example": "korisnik"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Korisnik uspešno registrovan"
+                    },
+                    "422": {
+                        "description": "Validaciona greška"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Autentifikacija"
+                ],
+                "summary": "Prijava korisnika",
+                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "jovan@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Pass123!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešan login"
+                    },
+                    "401": {
+                        "description": "Pogrešni podaci"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Autentifikacija"
+                ],
+                "summary": "Odjava korisnika",
+                "operationId": "28d48c13fca984400ac8de99f54ee13a",
+                "responses": {
+                    "204": {
+                        "description": "Uspešna odjava"
+                    },
+                    "401": {
+                        "description": "Niste autorizovani"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/vezbaci": {
+            "get": {
+                "tags": [
+                    "Trener"
+                ],
+                "summary": "Prikazuje vežbače ulogovanog trenera",
+                "operationId": "393c911e482db6a70b8e6b77184d502d",
+                "responses": {
+                    "200": {
+                        "description": "Lista vežbača"
+                    },
+                    "403": {
+                        "description": "Nije trener"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}/parametri": {
+            "get": {
+                "tags": [
+                    "Korisnik"
+                ],
+                "summary": "Prikazuje parametre određenog korisnika",
+                "operationId": "0ab01f692b423cfeec073c622757db0c",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista parametara"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Trener"
+                ],
+                "summary": "Dodavanje novih parametara korisniku (samo trener)",
+                "operationId": "b16a002dcf04b932295b78afa918a56c",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date",
+                                    "tezina",
+                                    "visina"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "tezina": {
+                                        "type": "number"
+                                    },
+                                    "visina": {
+                                        "type": "number"
+                                    },
+                                    "bmi": {
+                                        "type": "number"
+                                    },
+                                    "masti": {
+                                        "type": "number"
+                                    },
+                                    "misici": {
+                                        "type": "number"
+                                    },
+                                    "obim_struka": {
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Parametri dodati"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}/ciljevi": {
+            "get": {
+                "tags": [
+                    "Korisnik"
+                ],
+                "summary": "Prikazuje ciljeve određenog korisnika",
+                "operationId": "eff15b992fb7d9e16920a5bc7549f08a",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista ciljeva"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Ciljevi"
+                ],
+                "summary": "Trener dodaje cilj za vežbača",
+                "operationId": "47fc5cf14b9bf210aa109e4c6a1fac50",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Cilj kreiran"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/pretraga": {
+            "get": {
+                "tags": [
+                    "Korisnik"
+                ],
+                "summary": "Pretraga trenera po imenu, prezimenu ili emailu",
+                "operationId": "a920da270bb8cce04a05d34f12bf11c1",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rezultati pretrage"
+                    }
+                }
+            }
+        },
+        "/api/trener/postavi": {
+            "post": {
+                "tags": [
+                    "Korisnik"
+                ],
+                "summary": "Vežbač bira sebi trenera",
+                "operationId": "ed8c86403d9b4b9039888fd699b0e278",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trener_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešno"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/profil": {
+            "post": {
+                "tags": [
+                    "Trener"
+                ],
+                "summary": "Ažuriranje profila za trenere",
+                "operationId": "bbf41c5c09b20934657b6e8350e318c3",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno ažurirano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/ukloni": {
+            "post": {
+                "tags": [
+                    "Korisnik"
+                ],
+                "summary": "Vežbač uklanja trenutnog trenera",
+                "operationId": "a2363680f6ad6000050c92c1cc62a366",
+                "responses": {
+                    "200": {
+                        "description": "Trener uklonjen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}": {
+            "get": {
+                "tags": [
+                    "Admin",
+                    "Trener"
+                ],
+                "summary": "Prikaz detalja korisnika sa parametrima i ciljevima",
+                "operationId": "f310aa35b9243239c65dbc8b8f4b135e",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalji korisnika"
+                    }
+                }
+            }
+        },
+        "/api/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Lista svih vežbača i trenera (bez admina)",
+                "operationId": "62de38e4360e33c01d5e407345cbdad5",
+                "responses": {
+                    "200": {
+                        "description": "Lista korisnika"
+                    }
+                }
+            }
+        },
+        "/api/admin/complete-users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Kompletna lista svih korisnika (Admin)",
+                "operationId": "ebc8ddd07b80c30c1300a448f8595104",
+                "responses": {
+                    "200": {
+                        "description": "Svi podaci"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/assign-vezbac-trener": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin povezuje vežbača i trenera",
+                "operationId": "9d2c897705165184c027bc27ad5d4602",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trener_id": {
+                                        "type": "integer"
+                                    },
+                                    "vezbac_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešno povezano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/trener/{trener_id}/vezbaci": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Prikaz svih vežbača određenog trenera",
+                "operationId": "e37092c347ae231314feed87661f1ec0",
+                "parameters": [
+                    {
+                        "name": "trener_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista"
+                    }
+                }
+            }
+        },
+        "/api/vezbac/{vezbac_id}/trener": {
+            "get": {
+                "tags": [
+                    "Admin",
+                    "Korisnik"
+                ],
+                "summary": "Prikaz trenera određenog vežbača",
+                "operationId": "392d728987f2b4acd116aab1f7de8284",
+                "parameters": [
+                    {
+                        "name": "vezbac_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Podaci o treneru"
+                    }
+                }
+            }
+        },
+        "/api/korisnik/profil": {
+            "post": {
+                "tags": [
+                    "Korisnik"
+                ],
+                "summary": "Ažuriranje profila za vežbače",
+                "operationId": "5c68d254652d3831a460869a76549d5d",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/cilj": {
+            "get": {
+                "tags": [
+                    "Ciljevi"
+                ],
+                "summary": "Prikaz poslednjeg cilja (kalorije) ili liste ciljeva",
+                "operationId": "fd2dfccd9cdf0a531326853ee4b5bbab",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Ciljevi"
+                ],
+                "summary": "Kreiranje novog cilja",
+                "operationId": "8526d7924fbade42da65922d26b92ffd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "hidriranost",
+                                    "tezina",
+                                    "kalorije"
+                                ],
+                                "properties": {
+                                    "hidriranost": {
+                                        "type": "number",
+                                        "example": 2.5
+                                    },
+                                    "tezina": {
+                                        "type": "number",
+                                        "example": 75.5
+                                    },
+                                    "kalorije": {
+                                        "type": "integer",
+                                        "example": 2500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cilj uspešno kreiran"
+                    },
+                    "422": {
+                        "description": "Validaciona greška"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/all-ciljevi": {
+            "get": {
+                "tags": [
+                    "Ciljevi"
+                ],
+                "summary": "Dobijanje svih ciljeva korisnika",
+                "operationId": "4f0ea8f931f42f4091b39e48076bb538",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/cilj/{id}": {
+            "delete": {
+                "tags": [
+                    "Ciljevi"
+                ],
+                "summary": "Brisanje cilja",
+                "operationId": "4b559550f33ef1868e4b910c2874d041",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obrisano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/test-ruta": {
+            "get": {
+                "summary": "Provera rada preko Atributa",
+                "operationId": "f5232e9bb0ac8a318a5f5996d51295ff",
+                "responses": {
+                    "200": {
+                        "description": "Sve radi savršeno!"
+                    }
+                }
+            }
+        },
+        "/api/posalji-izvestaj": {
+            "post": {
+                "tags": [
+                    "Izveštaji"
+                ],
+                "summary": "Slanje personalizovanog PDF izveštaja",
+                "operationId": "f4899fece09cc0d70960b3fa7bae0469",
+                "responses": {
+                    "200": {
+                        "description": "Izveštaj uspešno poslat"
+                    },
+                    "500": {
+                        "description": "Serverska greška"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/hidriranost": {
+            "get": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Prikaz svih zapisa o hidriranosti",
+                "operationId": "bf6df820b711f8a428ad9746ee551668",
+                "responses": {
+                    "200": {
+                        "description": "Lista svih zapisa"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Kreiranje novog zapisa o hidriranosti za danas",
+                "operationId": "d77e4db157d1cdcb2d1a94721e2c44c4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "ukupno": {
+                                        "type": "number",
+                                        "example": 0.5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Zapis kreiran"
+                    },
+                    "400": {
+                        "description": "Zapis za danas već postoji"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/hidriranost-danas": {
+            "get": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Provera da li postoji zapis o hidriranosti za današnji dan",
+                "operationId": "c9ae59d21399d1350f1da1d5f03e0587",
+                "responses": {
+                    "200": {
+                        "description": "Informacija o postojanju zapisa"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/hidriranost/{hidriranost}": {
+            "put": {
+                "tags": [
+                    "Hidriranost"
+                ],
+                "summary": "Dodavanje količine vode na današnji zapis",
+                "operationId": "09b98a5dc51c0f6033df585bb48562d0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "ukupno": {
+                                        "type": "number",
+                                        "example": 0.25
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vrednost ažurirana"
+                    },
+                    "404": {
+                        "description": "Zapis nije pronađen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/vezbe": {
+            "get": {
+                "tags": [
+                    "Vežbe"
+                ],
+                "summary": "Prikaz svih vežbi",
+                "operationId": "c68b10ed06660710c304f5651cfd54ca",
+                "responses": {
+                    "200": {
+                        "description": "Lista svih vežbi"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Vežbe"
+                ],
+                "summary": "Kreiranje nove vežbe",
+                "operationId": "72365369e04d339c75da721b14e7cea6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ime",
+                                    "snimak"
+                                ],
+                                "properties": {
+                                    "ime": {
+                                        "type": "string",
+                                        "example": "Čučanj"
+                                    },
+                                    "snimak": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://youtube.com/watch?v=123"
+                                    },
+                                    "kategorija": {
+                                        "type": "string",
+                                        "example": "Noge",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Vežba uspešno kreirana"
+                    },
+                    "422": {
+                        "description": "Validaciona greška"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autentifikacija",
+            "description": "Autentifikacija"
+        },
+        {
+            "name": "Trener",
+            "description": "Trener"
+        },
+        {
+            "name": "Korisnik",
+            "description": "Korisnik"
+        },
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
+        {
+            "name": "Ciljevi",
+            "description": "Ciljevi"
+        },
+        {
+            "name": "Izveštaji",
+            "description": "Izveštaji"
+        },
+        {
+            "name": "Hidriranost",
+            "description": "Hidriranost"
+        },
+        {
+            "name": "Vežbe",
+            "description": "Vežbe"
+        }
+    ]
+}

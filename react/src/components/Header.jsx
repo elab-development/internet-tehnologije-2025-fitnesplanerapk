@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from './Button.jsx';
 import MenuIcon from './MenuIcon.jsx';
 import Menu from './Menu.jsx';
+import Quote from './Quote.jsx';
 
 export default function Header() {
   const { user, setUser, setToken } = useStateContext();
@@ -57,7 +58,9 @@ export default function Header() {
         )}
         <h1 className="ml-3 text-lg font-semibold select-none">Fitness Aplikacija</h1>
       </div>
-
+        <div className="hidden md:block ml-6 text-sm italic">
+          <Quote />
+        </div>
       {user && (
         <div className="flex items-center gap-3">
           {isKorisnik && <span className="font-medium">Zdravo, {user.ime}</span>}
