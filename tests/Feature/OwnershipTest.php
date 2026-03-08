@@ -49,14 +49,8 @@ class OwnershipTest extends TestCase
 
         
         Sanctum::actingAs($this->korisnikA);
-
-       
         $response = $this->deleteJson("/api/obroci/{$obrokKorisnikaB->id}");
-
-        
         $response->assertStatus(403);
-
-        
         $this->assertDatabaseHas('obroci', ['id' => $obrokKorisnikaB->id]);
     }
 
@@ -70,10 +64,7 @@ class OwnershipTest extends TestCase
         ]);
 
         Sanctum::actingAs($this->korisnikA);
-
         $response = $this->getJson("/api/obroci/{$obrokKorisnikaB->id}");
-
-        
         $response->assertStatus(404); 
     }
 

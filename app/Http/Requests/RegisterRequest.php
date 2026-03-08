@@ -33,7 +33,7 @@ class RegisterRequest extends FormRequest
             ],
             'pol' => 'required|in:muski,zenski',
             'datumRodjenja' => 'required|date',
-            'uloga' => 'required|in:korisnik,trener' // ✅ Dodato pravilo za ulogu
+            'uloga' => 'required|in:korisnik,trener' 
         ];
     }
 

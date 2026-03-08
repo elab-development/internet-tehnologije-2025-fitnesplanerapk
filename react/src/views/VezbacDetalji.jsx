@@ -473,25 +473,38 @@ export default function VezbacDetalji() {
 
               {/* Grafikoni parametri */}
               <Chart
-                chartType="LineChart"
-                width="100%"
-                height="300px"
-                data={[
-                  ["Datum", "Težina", "BMI"],
-                  ...vezbac.parametri.map(p => [formatDate(p.date), p.tezina || 0, p.bmi || 0])
-                ]}
-                options={{
-                  title: "Napredak parametara",
-                  curveType: "function",
-                  legend: { position: "bottom" },
-                  colors: ["#EF4444", "#3B82F6"],
-                  pointSize: 5,
-                  lineWidth: 3,
-                  hAxis: { slantedText: true, slantedTextAngle: 45 },
-                  vAxis: { minValue: 0 },
-                  chartArea: { left: 60, right: 20, top: 50, bottom: 80 }
-                }}
-              />
+              chartType="LineChart"
+              width="100%"
+              height="400px" // Malo veća visina zbog više linija
+              data={[
+                ["Datum", "Težina", "BMI", "Masti (%)", "Mišići (%)"],
+                ...vezbac.parametri.map(p => [
+                  formatDate(p.date), 
+                  p.tezina || 0, 
+                  p.bmi || 0,
+                  p.masti || 0,
+                  p.misici || 0
+                ])
+              ]}
+              options={{
+                title: "Sveobuhvatni napredak tela",
+                curveType: "function",
+                legend: { position: "bottom" },
+               
+                colors: ["#EF4444", "#3B82F6", "#F59E0B", "#10B981"], 
+                pointSize: 5,
+                lineWidth: 3,
+                hAxis: { 
+                  slantedText: true, 
+                  slantedTextAngle: 45 
+                },
+                vAxis: { 
+                  minValue: 0,
+                  title: "Vrednosti / Procenat"
+                },
+                chartArea: { left: 60, right: 20, top: 50, bottom: 100 }
+              }}
+            />
             </>
           ) : <p className="text-gray-600">Nema unetih parametara.</p>}
         </div>

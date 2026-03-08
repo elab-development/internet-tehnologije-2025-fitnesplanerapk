@@ -9,7 +9,7 @@ class StoreCiljRequest extends FormRequest
    
     public function authorize(): bool
     {
-        // korisnik mora biti ulogovan da bi mogao da doda cilj
+        
         return auth()->check();
     }
 
@@ -17,9 +17,9 @@ class StoreCiljRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'hidriranost' => 'required|numeric|min:0|max:100', // % ili litar
-            'tezina' => 'required|numeric|min:0|max:500', // kg, podesiti po logici
-            'kalorije' => 'required|integer|min:0|max:10000', // dnevni kalorijski cilj
+            'hidriranost' => 'required|numeric|min:0|max:100', 
+            'tezina' => 'required|numeric|min:0|max:500', 
+            'kalorije' => 'required|integer|min:0|max:10000', 
         ];
     }
 
