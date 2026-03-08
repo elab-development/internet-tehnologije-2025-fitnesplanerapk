@@ -838,6 +838,743 @@
                 ]
             }
         },
+        "/api/hrana": {
+            "get": {
+                "tags": [
+                    "Hrana"
+                ],
+                "summary": "Prikaz svih namirnica iz baze",
+                "description": "Vraća listu svih dostupnih namirnica sa njihovim kalorijskim vrednostima.",
+                "operationId": "79d4eccfa5ec7bfa6bbb0f82fe9df1bf",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno vraćena lista hrane",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "naziv": {
+                                                "type": "string",
+                                                "example": "Belo meso"
+                                            },
+                                            "kalorije": {
+                                                "type": "integer",
+                                                "example": 165
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Niste ulogovani"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci": {
+            "get": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Lista obroka za datum",
+                "operationId": "d6f2aea1dd9c0e21914eb0bda8807af1",
+                "parameters": [
+                    {
+                        "name": "datum",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Kreiranje novog obroka",
+                "operationId": "18201e23f7f9e0debee72768721ebede",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "datum",
+                                    "naziv",
+                                    "namirnice"
+                                ],
+                                "properties": {
+                                    "datum": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "naziv": {
+                                        "type": "string"
+                                    },
+                                    "namirnice": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Kreirano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci/pregled": {
+            "get": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Grupisani pregled svih obroka po danima",
+                "operationId": "ec078b354ff6697e0ea0f424689a3d4f",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obrociPregled": {
+            "get": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Filtrirani pregled obroka po opsegu",
+                "operationId": "22e18a13b475d410a249c5aab6641cee",
+                "parameters": [
+                    {
+                        "name": "od",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "do",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci/{obrok}": {
+            "put": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Update obroka",
+                "operationId": "e71fbf2f3e7d12bcd36e36bece090bb4",
+                "parameters": [
+                    {
+                        "name": "obrok",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ažurirano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Brisanje obroka",
+                "operationId": "d5689170aa01a3e1cd016602b6ec3ffb",
+                "parameters": [
+                    {
+                        "name": "obrok",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obrisano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/obroci/{id}": {
+            "get": {
+                "tags": [
+                    "Obroci"
+                ],
+                "summary": "Detalji obroka",
+                "operationId": "fbc84ac6c3afc7847b07665e161d0cc8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/parametri": {
+            "get": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Prikaz liste parametara ulogovanog korisnika",
+                "operationId": "aa2c02decb26e48cda39f4ed8c847255",
+                "responses": {
+                    "200": {
+                        "description": "Uspešno vraćeni parametri"
+                    },
+                    "401": {
+                        "description": "Niste ulogovani"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Snimanje novih telesnih parametara",
+                "description": "Kreira novi unos parametara i automatski računa BMI.",
+                "operationId": "fe1d120d24d2de94b3e87d7f1321305a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date",
+                                    "tezina",
+                                    "visina",
+                                    "masti",
+                                    "misici",
+                                    "obim_struka"
+                                ],
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-03-08"
+                                    },
+                                    "tezina": {
+                                        "type": "number",
+                                        "example": 85.5
+                                    },
+                                    "visina": {
+                                        "type": "number",
+                                        "example": 185
+                                    },
+                                    "masti": {
+                                        "type": "number",
+                                        "example": 15.2
+                                    },
+                                    "misici": {
+                                        "type": "number",
+                                        "example": 40.1
+                                    },
+                                    "obim_struka": {
+                                        "type": "number",
+                                        "example": 90
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Parametri uspešno sačuvani"
+                    },
+                    "422": {
+                        "description": "Validaciona greška"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/all-parametri": {
+            "get": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Dobijanje svih parametara korisnika preko relacije",
+                "operationId": "7f06a113d492e44cacd8acbe8640b6ab",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/parametar/{id}": {
+            "delete": {
+                "tags": [
+                    "Parametri"
+                ],
+                "summary": "Brisanje određenog parametra",
+                "operationId": "5b8def93813367383b12d7399f635616",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obrisano"
+                    },
+                    "404": {
+                        "description": "Nije pronađeno"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/podaci": {
+            "post": {
+                "tags": [
+                    "Podaci o vežbanju"
+                ],
+                "summary": "Unos podataka za određenu vežbu",
+                "description": "Beleži rezultate izvedene vežbe poput serija, ponavljanja, težine i pulsa (BPM).",
+                "operationId": "8278483a0361610b8638aa0182403e19",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "vezba_id"
+                                ],
+                                "properties": {
+                                    "vezba_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "trajanje": {
+                                        "description": "Trajanje u sekundama",
+                                        "type": "integer",
+                                        "example": 60,
+                                        "nullable": true
+                                    },
+                                    "serija": {
+                                        "type": "integer",
+                                        "example": 3,
+                                        "nullable": true
+                                    },
+                                    "ponavljanja": {
+                                        "type": "integer",
+                                        "example": 12,
+                                        "nullable": true
+                                    },
+                                    "tezina": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 52.5,
+                                        "nullable": true
+                                    },
+                                    "bpm": {
+                                        "type": "integer",
+                                        "example": 135,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Podaci uspešno kreirani"
+                    },
+                    "422": {
+                        "description": "Greška u validaciji"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/podaci/{id}": {
+            "put": {
+                "tags": [
+                    "Podaci o vežbanju"
+                ],
+                "summary": "Ažuriranje postojećih podataka o vežbi",
+                "operationId": "2771a727e4680c473d2288416ddf508d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trajanje": {
+                                        "type": "integer"
+                                    },
+                                    "serija": {
+                                        "type": "integer"
+                                    },
+                                    "ponavljanja": {
+                                        "type": "integer"
+                                    },
+                                    "tezina": {
+                                        "type": "number"
+                                    },
+                                    "bpm": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Uspešno ažurirano"
+                    },
+                    "404": {
+                        "description": "Podaci nisu pronađeni"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi": {
+            "get": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Prikaz dostupnih programa (javni + sopstveni)",
+                "operationId": "f09bbf69c2ccd1b54ab42936d5f229db",
+                "responses": {
+                    "200": {
+                        "description": "Lista programa"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Kreiranje novog programa sa vežbama",
+                "operationId": "89d76987b3c272235f9a26f93aa7f9da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "naziv",
+                                    "vezbe",
+                                    "public"
+                                ],
+                                "properties": {
+                                    "naziv": {
+                                        "type": "string"
+                                    },
+                                    "public": {
+                                        "type": "boolean"
+                                    },
+                                    "vezbe": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "dan": {
+                                                    "type": "integer"
+                                                },
+                                                "serija": {
+                                                    "type": "integer"
+                                                },
+                                                "ponavljanja": {
+                                                    "type": "integer"
+                                                },
+                                                "tezina": {
+                                                    "type": "number"
+                                                },
+                                                "trajanje": {
+                                                    "type": "integer"
+                                                },
+                                                "bpm": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Program kreiran"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi/{id}": {
+            "put": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Ažuriranje programa",
+                "operationId": "6a041802eb0e1ad9baec7a6f29f0785e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Program ažuriran"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Brisanje sopstvenog programa",
+                "operationId": "d6d93e303eeb70c03ba2526494fce5ab",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obrisano"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi/treneri": {
+            "get": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Programi trenera (zavisi da li korisnik ima trenera)",
+                "operationId": "5bd9c061aeb2abbc25b16096ddc91638",
+                "responses": {
+                    "200": {
+                        "description": "Lista programa"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi/moji": {
+            "get": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Prikaz svih programa koje je kreirao ulogovani korisnik",
+                "operationId": "1d1440e08bfa0ddb7a9108138ceced7e",
+                "responses": {
+                    "200": {
+                        "description": "Lista mojih programa"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/programi/dodaj-veze": {
+            "post": {
+                "tags": [
+                    "Programi"
+                ],
+                "summary": "Brzo kreiranje 'Trening trenera' programa",
+                "operationId": "ff9f880f455ea5197e4b1d38cab0239d",
+                "responses": {
+                    "201": {
+                        "description": "Program dodat"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/vezbe": {
             "get": {
                 "tags": [
@@ -936,6 +1673,26 @@
         {
             "name": "Hidriranost",
             "description": "Hidriranost"
+        },
+        {
+            "name": "Hrana",
+            "description": "Hrana"
+        },
+        {
+            "name": "Obroci",
+            "description": "Obroci"
+        },
+        {
+            "name": "Parametri",
+            "description": "Parametri"
+        },
+        {
+            "name": "Podaci o vežbanju",
+            "description": "Podaci o vežbanju"
+        },
+        {
+            "name": "Programi",
+            "description": "Programi"
         },
         {
             "name": "Vežbe",
