@@ -12,7 +12,7 @@ class UlogeSeeder extends Seeder
      */
     public function run(): void
     {
-        $uloge = ['korisnik', 'trener', 'admin'];
+        $uloge = ['korisnik', 'admin', 'trener'];
 
         foreach ($uloge as $ime) {
             // Ako uloga već postoji, preskoči

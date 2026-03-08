@@ -10,6 +10,10 @@ export default function AdminRoute({ children }) {
   }
 
   
+  if (user?.uloga_id == 2) {
+    return <Navigate to="/vezbaci" replace />;
+  }
+
   if (user?.uloga_id !== 2) {
     return <Navigate to="/dashboard" replace />;
   }
