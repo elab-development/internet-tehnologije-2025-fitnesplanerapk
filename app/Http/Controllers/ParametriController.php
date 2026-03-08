@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use App\Models\Parametri;
 use App\Http\Requests\StoreParametriRequest;
 use App\Http\Requests\UpdateParametriRequest;
-use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class ParametriController extends Controller

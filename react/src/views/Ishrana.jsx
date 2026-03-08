@@ -19,12 +19,11 @@ export default function Ishrana() {
   const navigate = useNavigate();
   const editMode = !!id;
   const [recipe, setRecipe] = useState(null);
-  const [hrana, setHrana] = useState([]); // lokalna baza
+  const [hrana, setHrana] = useState([]);
   const [filteredHrana, setFilteredHrana] = useState([]);
   const [focusIndex, setFocusIndex] = useState(null);
   const [activeSuggestion, setActiveSuggestion] = useState(0);
   const [showRecipePopup, setShowRecipePopup] = useState(false);
-
 
   const [obrok, setObrok] = useState({
     datum: new Date().toISOString().slice(0, 10),
@@ -39,18 +38,14 @@ export default function Ishrana() {
       }
     ]
   });
- //recept dana
+
+  // Recept dana
   useEffect(() => {
-  fetch("https://www.themealdb.com/api/json/v1/1/random.php")
-    .then(res => res.json())
-    .then(data => {
-      setRecipe(data.meals[0]);
-    })
-    .catch(err => console.error(err));
-}, []);
-
-
-
+    fetch("https://www.themealdb.com/api/json/v1/1/random.php")
+      .then(res => res.json())
+      .then(data => setRecipe(data.meals[0]))
+      .catch(err => console.error(err));
+  }, []);
 
   // Učitavanje lokalne hrane
   useEffect(() => {
@@ -59,7 +54,7 @@ export default function Ishrana() {
       .catch(err => console.error(err));
   }, []);
 
-  // Ako je edit → učitaj obrok
+  // Edit mode: učitaj obrok
   useEffect(() => {
     if (editMode) {
       axiosClient.get(`/obroci/${id}`)
@@ -81,7 +76,6 @@ export default function Ishrana() {
     }
   }, [editMode, id]);
 
-  // Dodavanje/brisanje namirnica
   const dodajNamirnicu = () => {
     setObrok({
       ...obrok,
@@ -98,88 +92,70 @@ export default function Ishrana() {
     setObrok({ ...obrok, namirnice: temp });
   };
 
- // Funkcija koja kombinuje lokalnu bazu i USDA API
-const fetchPredlozi = async (value, index) => {
-  //  Filtriraj predloge iz lokalne baze
-  const predloziLocal = hrana.filter(h =>
-    h.naziv.toLowerCase().includes(value.toLowerCase())
-  );
+  // Autocomplete
+  const fetchPredlozi = async (value, index) => {
+    const predloziLocal = hrana.filter(h =>
+      h.naziv.toLowerCase().includes(value.toLowerCase())
+    );
 
-  // Poziv USDA API za dodatne predloge
-  let predloziUSDA = [];
-  if (value.length > 2) {
-    try {
-      const res = await fetch(
-        `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(
-          value
-        )}&pageSize=5&api_key=ss6hPlTYf5corvmMExs0M6auVFfJfhl9Vnu5DfT3`
-      );
-      const data = await res.json();
-
-      predloziUSDA = data.foods?.map(f => {
-        // Nađi kalorije po 100g
-        const kcal = f.foodNutrients?.find(
-          n => n.nutrientName === "Energy" && n.unitName === "KCAL"
-        )?.value;
-
-        return {
-          naziv: f.description,
-          kalorije: kcal || 0
-        };
-      }) || [];
-    } catch (err) {
-      console.error("USDA API error:", err);
+    let predloziUSDA = [];
+    if (value.length > 2) {
+      try {
+        const res = await fetch(
+          `https://api.nal.usda.gov/fdc/v1/foods/search?query=${encodeURIComponent(
+            value
+          )}&pageSize=5&api_key=ss6hPlTYf5corvmMExs0M6auVFfJfhl9Vnu5DfT3`
+        );
+        const data = await res.json();
+        predloziUSDA = data.foods?.map(f => {
+          const kcal = f.foodNutrients?.find(
+            n => n.nutrientName === "Energy" && n.unitName === "KCAL"
+          )?.value;
+          return { naziv: f.description, kalorije: kcal || 0 };
+        }) || [];
+      } catch (err) {
+        console.error("USDA API error:", err);
+      }
     }
-  }
 
-  //  Kombinuj predloge i prikaži
-  setFilteredHrana([...predloziLocal, ...predloziUSDA]);
-  setFocusIndex(index);
-  setActiveSuggestion(0);
-};
+    setFilteredHrana([...predloziLocal, ...predloziUSDA]);
+    setFocusIndex(index);
+    setActiveSuggestion(0);
+  };
 
   const debouncedFetchPredlozi = debounce(fetchPredlozi, 300);
 
-  // Promena inputa za naziv namirnice
   const handleNamirnicaChange = (index, value) => {
     const temp = [...obrok.namirnice];
     temp[index].custom_naziv = value;
     setObrok({ ...obrok, namirnice: temp });
-
     debouncedFetchPredlozi(value, index);
   };
 
-  // Izbor predloga
   const handleSelectHrana = (index, h) => {
     const temp = [...obrok.namirnice];
     temp[index].custom_naziv = h.naziv;
     temp[index].kalorije_na_100g = h.kalorije || 0;
     temp[index].hrana_id = h.id || null;
-
     if (temp[index].kolicina) {
       temp[index].kalorije = Math.round((temp[index].kolicina * temp[index].kalorije_na_100g) / 100);
     }
-
     setObrok({ ...obrok, namirnice: temp });
     setFilteredHrana([]);
     setFocusIndex(null);
   };
 
-  // Promena količine ili kalorija na 100g
   const handleKolicinaChange = (index, field, value) => {
     const temp = [...obrok.namirnice];
     temp[index][field] = value;
-
     const kolicina = Number(temp[index].kolicina);
     const kcal100 = Number(temp[index].kalorije_na_100g);
     if (kolicina && kcal100) {
       temp[index].kalorije = Math.round((kolicina * kcal100) / 100);
     }
-
     setObrok({ ...obrok, namirnice: temp });
   };
 
-  // Čuvanje i brisanje obroka
   const sacuvajObrok = async () => {
     try {
       const payload = {
@@ -225,179 +201,178 @@ const fetchPredlozi = async (value, index) => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-      <div className="fixed top-20 right-6 w-64 bg-white p-2 rounded-lg shadow z-50">
-      {recipe ? (
-        <div className="flex flex-col items-center">
-          <img src={recipe.strMealThumb} alt={recipe.strMeal} className="rounded-lg mb-2 w-full"/>
-          <h3 className="font-semibold text-sm text-center mb-2">{recipe.strMeal}</h3>
-          {/* Dugme za otvaranje popup-a */}
-          <Button
-            className="text-sm px-3 py-1 rounded"
-            onClick={() => setShowRecipePopup(true)}
-          >
-            Pogledaj recept
-          </Button>
-        </div>
-      ) : (
-        <p>Učitavanje...</p>
-      )}
-    </div>
-      <main className="flex-grow max-w-7xl mx-auto p-6 flex gap-10 items-start">
-        <div className="flex-1">
-        <h1 className="text-3xl font-bold mb-6">{editMode ? "Izmeni Obrok" : "Dodaj Obrok"}</h1>
 
-        <input
-          type="date"
-          value={obrok.datum}
-          onChange={e => setObrok({ ...obrok, datum: e.target.value })}
-          className="border p-2 rounded w-full mb-4"
-        />
-
-        <input
-          type="text"
-          placeholder="Naziv obroka (Doručak, Ručak...)"
-          value={obrok.naziv}
-          onChange={e => setObrok({ ...obrok, naziv: e.target.value })}
-          className="border p-2 rounded w-full mb-6"
-        />
-
-        {obrok.namirnice.map((n, i) => (
-          <div key={i} className="bg-white p-4 rounded-lg shadow mb-4 relative">
-            <input
-              type="text"
-              placeholder="Naziv namirnice"
-              value={n.custom_naziv}
-              onChange={e => handleNamirnicaChange(i, e.target.value)}
-              className="border p-2 rounded w-full mb-2"
-            />
-
-            {focusIndex === i && filteredHrana.length > 0 && (
-              <ul className="absolute z-10 bg-white border rounded w-full max-h-48 overflow-y-auto">
-                {filteredHrana.map((h, idx) => (
-                  <li
-                    key={idx}
-                    className={`p-2 cursor-pointer hover:bg-gray-200 ${activeSuggestion === idx ? "bg-gray-100" : ""}`}
-                    onClick={() => handleSelectHrana(i, h)}
-                  >
-                    {h.naziv} {h.kalorije ? `- ${h.kalorije} kcal/100g` : ""}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <input
-              type="number"
-              placeholder="Količina (g)"
-              value={n.kolicina}
-              onChange={e => handleKolicinaChange(i, "kolicina", e.target.value)}
-              className="border p-2 rounded w-full mb-2"
-            />
-
-            {!n.hrana_id && (
-              <input
-                type="number"
-                placeholder="Kalorije na 100g"
-                value={n.kalorije_na_100g}
-                onChange={e => handleKolicinaChange(i, "kalorije_na_100g", e.target.value)}
-                className="border p-2 rounded w-full mb-2"
-              />
-            )}
-
-            <div className="flex justify-between items-center">
-              <span className="font-semibold">Kalorije: {n.kalorije}</span>
-              <Button onClick={() => obrisiNamirnicu(i)}>Obriši</Button>
-            </div>
-          </div>
-        ))}
-
-        <div className="flex gap-4">
-          <Button onClick={dodajNamirnicu}>Dodaj namirnicu</Button>
-          <Button onClick={sacuvajObrok}>{editMode ? "Sačuvaj izmene" : "Sačuvaj obrok"}</Button>
-          {editMode && <Button onClick={obrisiObrok} className="bg-red-500 hover:bg-red-600">Obriši obrok</Button>}
-        </div>
-        
-        </div>
-        {/* <div className="bg-white p-4 rounded-lg shadow h-fit">
-        <h2 className="text-xl font-bold mb-4">🍲 Recept dana</h2>
-
+      {/* Recept dana sidebar */}
+      <aside className="fixed top-20 right-4 w-72 bg-white p-4 rounded-xl shadow-lg z-50 hidden lg:flex flex-col items-center gap-3">
         {recipe ? (
           <>
-            <img
-              src={recipe.strMealThumb}
-              alt={recipe.strMeal}
-              className="rounded-lg mb-3"
-            />
-
-            <h3 className="font-semibold text-lg">{recipe.strMeal}</h3>
-
-            <p className="text-sm text-gray-600 mb-2">
-              {recipe.strCategory} • {recipe.strArea}
-            </p>
-
-            <p className="text-sm line-clamp-4 mb-3">
-              {recipe.strInstructions}
-            </p>
-
-            <a
-              href={recipe.strYoutube}
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-500 hover:underline"
+            <img src={recipe.strMealThumb} alt={recipe.strMeal} className="rounded-xl mb-2 w-full object-cover shadow-sm"/>
+            <h3 className="font-semibold text-center text-lg">{recipe.strMeal}</h3>
+            <Button
+              className="text-sm px-4 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition"
+              onClick={() => setShowRecipePopup(true)}
             >
-              Pogledaj video recept
-            </a>
+              Pogledaj recept
+            </Button>
           </>
         ) : (
-          <p>Učitavanje recepta...</p>
+          <p className="text-gray-500 text-sm">Učitavanje...</p>
         )}
-      </div> */}
+      </aside>
+
+      <main className="flex-grow max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <section className="flex flex-col">
+          <h1 className="text-3xl font-bold mb-6">{editMode ? "Izmeni Obrok" : "Dodaj Obrok"}</h1>
+
+          {/* Datum i naziv obroka */}
+          <input
+            type="date"
+            value={obrok.datum}
+            onChange={e => setObrok({ ...obrok, datum: e.target.value })}
+            className="border p-3 rounded-xl w-full mb-4 focus:ring-2 focus:ring-green-400 focus:outline-none transition"
+          />
+          <input
+            type="text"
+            placeholder="Naziv obroka (Doručak, Ručak...)"
+            value={obrok.naziv}
+            onChange={e => setObrok({ ...obrok, naziv: e.target.value })}
+            className="border p-3 rounded-xl w-full mb-6 focus:ring-2 focus:ring-green-400 focus:outline-none transition"
+          />
+
+          {/* Namirnice */}
+          {obrok.namirnice.map((n, i) => (
+            <div key={i} className="bg-white p-5 rounded-2xl shadow-md mb-5 relative transition hover:shadow-lg">
+              <input
+                type="text"
+                placeholder="Naziv namirnice"
+                value={n.custom_naziv}
+                onChange={e => handleNamirnicaChange(i, e.target.value)}
+                className="border p-3 rounded-xl w-full mb-2 focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+              />
+
+              {focusIndex === i && filteredHrana.length > 0 && (
+                <ul className="absolute z-50 bg-white border rounded-xl w-full max-h-48 overflow-y-auto shadow-lg mt-1">
+                  {filteredHrana.map((h, idx) => (
+                    <li
+                      key={idx}
+                      className={`p-3 cursor-pointer hover:bg-green-100 transition rounded-lg ${activeSuggestion === idx ? "bg-green-50" : ""}`}
+                      onClick={() => handleSelectHrana(i, h)}
+                    >
+                      {h.naziv} {h.kalorije ? `- ${h.kalorije} kcal/100g` : ""}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <input
+                  type="number"
+                  placeholder="Količina (g)"
+                  value={n.kolicina}
+                  onChange={e => handleKolicinaChange(i, "kolicina", e.target.value)}
+                  className="border p-3 rounded-xl focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+                />
+                {!n.hrana_id && (
+                  <input
+                    type="number"
+                    placeholder="Kalorije na 100g"
+                    value={n.kalorije_na_100g}
+                    onChange={e => handleKolicinaChange(i, "kalorije_na_100g", e.target.value)}
+                    className="border p-3 rounded-xl focus:ring-2 focus:ring-green-300 focus:outline-none transition"
+                  />
+                )}
+              </div>
+
+              <div className="flex justify-between items-center mt-2">
+                <span className="font-semibold text-green-600">Kalorije: {n.kalorije}</span>
+                <Button
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full transition"
+                  onClick={() => obrisiNamirnicu(i)}
+                >
+                  Obriši
+                </Button>
+              </div>
+            </div>
+          ))}
+
+          {/* Dugmad */}
+          <div className="flex flex-wrap gap-4 mt-3">
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-full transition"
+              onClick={dodajNamirnicu}
+            >
+              Dodaj namirnicu
+            </Button>
+            <Button
+              className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full transition"
+              onClick={sacuvajObrok}
+            >
+              {editMode ? "Sačuvaj izmene" : "Sačuvaj obrok"}
+            </Button>
+            {editMode && (
+              <Button
+                className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-full transition"
+                onClick={obrisiObrok}
+              >
+                Obriši obrok
+              </Button>
+            )}
+          </div>
+        </section>
+
+        {/* Recept dana mobilni */}
+        <section className="lg:hidden bg-white p-4 rounded-xl shadow-lg">
+          {recipe ? (
+            <>
+              <img src={recipe.strMealThumb} alt={recipe.strMeal} className="rounded-xl mb-3 w-full object-cover"/>
+              <h3 className="font-semibold text-center text-lg">{recipe.strMeal}</h3>
+              <Button
+                className="text-sm px-4 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition w-full"
+                onClick={() => setShowRecipePopup(true)}
+              >
+                Pogledaj recept
+              </Button>
+            </>
+          ) : (
+            <p className="text-gray-500 text-sm">Učitavanje...</p>
+          )}
+        </section>
       </main>
-      
-      
+
       <Footer />
-        {showRecipePopup && (
+
+      {/* Modal */}
+      {showRecipePopup && recipe && (
         <div className="fixed inset-0 flex justify-center items-start pt-20 z-50">
-          {/* Pozadina sa blur efektom */}
           <div
-            className="absolute inset-0 backdrop-blur-sm bg-white/30"
+            className="absolute inset-0 backdrop-blur-sm bg-black/30"
             onClick={() => setShowRecipePopup(false)}
           ></div>
 
-          {/* Modal sadržaj */}
-          <div className="relative bg-white rounded-lg shadow-lg max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 z-50">
+          <div className="relative bg-white rounded-2xl shadow-xl max-w-xl w-full max-h-[90vh] overflow-y-auto p-6 z-50">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-lg font-bold"
               onClick={() => setShowRecipePopup(false)}
             >
               ✖
             </button>
-
-            {recipe && (
-              <>
-                <img src={recipe.strMealThumb} alt={recipe.strMeal} className="rounded-lg mb-3 w-full"/>
-                <h2 className="text-2xl font-bold mb-2">{recipe.strMeal}</h2>
-                <p className="text-sm text-gray-600 mb-2">
-                  {recipe.strCategory} • {recipe.strArea}
-                </p>
-                <p className="text-sm mb-3 whitespace-pre-line">{recipe.strInstructions}</p>
-                {recipe.strYoutube && (
-                  <a
-                    href={recipe.strYoutube}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    Pogledaj video recept
-                  </a>
-                )}
-              </>
+            <img src={recipe.strMealThumb} alt={recipe.strMeal} className="rounded-xl mb-4 w-full object-cover"/>
+            <h2 className="text-2xl font-bold mb-2">{recipe.strMeal}</h2>
+            <p className="text-sm text-gray-600 mb-2">{recipe.strCategory} • {recipe.strArea}</p>
+            <p className="text-sm mb-3 whitespace-pre-line">{recipe.strInstructions}</p>
+            {recipe.strYoutube && (
+              <a
+                href={recipe.strYoutube}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 hover:underline"
+              >
+                Pogledaj video recept
+              </a>
             )}
           </div>
         </div>
       )}
     </div>
-    
   );
-
 }
-
