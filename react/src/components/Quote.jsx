@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-
+import axiosClient from "../views/axios-client";
 function Quote() {
   const [quote, setQuote] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/quote") 
-      .then((res) => res.json())
-      .then((data) => setQuote(`${data.quote} — ${data.author}`));
+    
+    axiosClient.get('/quote') 
+      .then(({ data }) => {
+        
+        setQuote(`${data.quote} — ${data.author}`);
+      })
+      .catch((err) => {
+        console.error("Greška pri preuzimanju citata:", err);
+        setQuote("Nije uspelo učitavanje citata.");
+      });
   }, []);
 
   return <div>{quote}</div>;

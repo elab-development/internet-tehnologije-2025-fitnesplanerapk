@@ -1,0 +1,66 @@
+# --- STAGE 1: Build React ---
+FROM node:18-alpine AS react-build
+WORKDIR /app
+COPY ./react/package*.json ./
+RUN npm install
+COPY ./react ./
+# Vite pravi /dist, Create React App pravi /build
+RUN npm run build
+
+# --- STAGE 2: PHP + Nginx ---
+FROM php:8.2-fpm-alpine
+
+# Instalacija Nginx-a, supervisora i PHP zavisnosti
+RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev
+
+# PHP Ekstenzije
+RUN docker-php-ext-install pdo_mysql mbstring bcmath gd
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+# 1. Prvo kopiramo aplikaciju
+COPY . .
+
+# 2. Kopiramo React build direktno u Laravel public folder
+# NAPOMENA: Proveri da li tvoj React pravi 'dist' ili 'build' folder
+COPY --from=react-build /app/dist ./public
+
+# 3. KREIRANJE STRUKTURE KOJA NEDOSTAJE (Rešava tvoj Error 500)
+RUN mkdir -p storage/framework/sessions \
+             storage/framework/views \
+             storage/framework/cache \
+             bootstrap/cache
+
+# 4. POSTAVLJANJE PERMISIJA
+# www-data je standardni korisnik za PHP-FPM na Alpine-u
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+# 5. Nginx konfiguracija za SPA Routing (React Router)
+RUN echo 'server { \
+    listen 80; \
+    root /var/www/html/public; \
+    index index.php index.html; \
+    location / { \
+        try_files $uri $uri/ /index.php?$query_string; \
+    } \
+    location ~ \.php$ { \
+        fastcgi_pass 127.0.0.1:9000; \
+        fastcgi_index index.php; \
+        include fastcgi_params; \
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name; \
+    } \
+}' > /etc/nginx/http.d/default.conf
+
+# 6. Instalacija Laravel zavisnosti
+RUN composer install --no-dev --optimize-autoloader
+
+EXPOSE 80
+
+# 7. Pokretanje migracija i startovanje servisa
+# Na Railway-u je port dinamičan, pa koristimo ${PORT:-80}
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+#CMD ["sh", "-c", "php artisan migrate --force && php-fpm -D && nginx -g 'daemon off;'"]

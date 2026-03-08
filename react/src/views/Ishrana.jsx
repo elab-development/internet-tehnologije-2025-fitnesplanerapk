@@ -209,7 +209,7 @@ export default function Ishrana() {
             <img src={recipe.strMealThumb} alt={recipe.strMeal} className="rounded-xl mb-2 w-full object-cover shadow-sm"/>
             <h3 className="font-semibold text-center text-lg">{recipe.strMeal}</h3>
             <Button
-              className="text-sm px-4 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition"
+              className="text-sm px-4 py-2 transition"
               onClick={() => setShowRecipePopup(true)}
             >
               Pogledaj recept
