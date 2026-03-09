@@ -1,4 +1,4 @@
-# --- STAGE 1: Build React ---
+# --- STAGE 1: React Build ---
 FROM node:20-alpine AS react-build
 WORKDIR /app
 COPY ./react/package*.json ./
@@ -9,33 +9,29 @@ RUN npm run build
 # --- STAGE 2: PHP + Nginx ---
 FROM php:8.2-fpm-alpine
 
-# Instalacija zavisnosti
+# Instalacija paketa (dodat supervisor)
 RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev libzip-dev
+
 RUN docker-php-ext-install pdo_mysql mbstring bcmath gd zip
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 COPY . .
 
-# Kopiranje React build-a (Proveri da li je /dist ili /build kod tebe)
 COPY --from=react-build /app/dist ./public
 
-# Folderi i permisije (uključujući /run/nginx koji Alpine traži)
-RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache /run/nginx
+# Folderi i permisije
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache /run/nginx /var/log/supervisor
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# KOPIRANJE TVOG KONFIGA
+# Kopiranje Nginx i Supervisor konfiga
 COPY ./nginx/default.conf /etc/nginx/http.d/default.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Startna skripta
-# 1. Menja PORT_NUMBER sa Railway portom
-# 2. Pokreće migracije
-# 3. Startuje PHP-FPM u pozadini
-# 4. Startuje Nginx u prvom planu
+# Skripta koja menja port i pokreće supervisor
 CMD sh -c "sed -i 's/PORT_NUMBER/'\"$PORT\"'/g' /etc/nginx/http.d/default.conf && \
     php artisan migrate --force && \
-    php-fpm -D && \
-    nginx -g 'daemon off;'"
+    /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
