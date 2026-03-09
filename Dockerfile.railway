@@ -4,12 +4,12 @@ WORKDIR /app
 COPY ./react/package*.json ./
 RUN npm install
 COPY ./react ./
-# Vite će sada automatski buildovati u /app/public/build
 RUN npm run build
 
 # --- STAGE 2: PHP + Nginx ---
 FROM php:8.2-fpm-alpine
 
+# Instalacija paketa
 RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev libzip-dev
 RUN docker-php-ext-install pdo_mysql mbstring bcmath gd zip
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -17,12 +17,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# KOPIRAMO ceo public folder iz react-build faze
-# Pošto smo u vite.config.js podesili outDir: '../public/build', 
-# tvoji fajlovi su već u ispravnom formatu
-COPY --from=react-build /app/public/build ./public/build
+# KLJUČNA PROMENA: 
+# Pravimo folder i kopiramo sadržaj iz /app/dist (gde je Vite buildovao) u public/build
+RUN mkdir -p ./public/build
+COPY --from=react-build /app/dist/ ./public/build/
 
-# Permisije i folderi
+# Ostatak foldera i permisije
 RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache /run/nginx /var/log/supervisor
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
@@ -32,7 +32,6 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN composer install --no-dev --optimize-autoloader
 
-# Dodali smo clear komande za sigurno osvežavanje
 CMD sh -c "sed -i 's/PORT_NUMBER/'\"$PORT\"'/g' /etc/nginx/http.d/default.conf && \
     php artisan config:clear && \
     php artisan migrate --force && \
