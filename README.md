@@ -249,7 +249,7 @@ Ova komanda pokreće:
 - Laravel backend
 - MySQL bazu
   
-# Komanda ispod gasi okruženje
+# Komanda za gašenje okruženja
 ```
 docker-compose up --build
 ```
