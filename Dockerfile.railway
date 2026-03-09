@@ -18,9 +18,13 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-COPY --from=react-build /app/dist ./public
+# 1. PRVO obrišemo ako postoji nešto (opciono) i napravimo build folder
+RUN mkdir -p ./public/build
 
-# Folderi i permisije
+# 2. KOPIRAMO dist u public/build (ovo je ključno!)
+COPY --from=react-build /app/dist/ ./public/build/
+
+# ... (ostatak foldera i permisija)
 RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache /run/nginx /var/log/supervisor
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache

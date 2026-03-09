@@ -5,7 +5,7 @@
     <title>Fitness Planner</title>
 
     @viteReactRefresh
-    @vite('react/src/main.jsx')
+    @vite(['react/src/main.jsx'])
 </head>
 <body>
     <div id="root"></div>
