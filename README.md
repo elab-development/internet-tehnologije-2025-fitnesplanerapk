@@ -243,15 +243,13 @@ http://127.0.0.1:3000
 docker-compose up --build
 ```
 
-Ova komanda pokreće:
-
-- React frontend
-- Laravel backend
-- MySQL bazu
-  
+# Komanda za pokretanje kontejnera u pozadini
+```
+docker-compose up -d  
+```
 # Komanda za gašenje okruženja
 ```
-docker-compose up --build
+docker-compose down
 ```
 ---
 
