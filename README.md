@@ -34,6 +34,7 @@ Aplikacija omogućava korisnicima da:
 * prate unos kalorija kroz plan ishrane
 * prate dnevni unos tečnosti
 * evidentiraju parametre kao što su težina, visina i BMI
+* analiziraju svoj napredak kroz vizualizaciju podataka
 
 Cilj aplikacije je da korisnicima omogući bolju organizaciju treninga i ishrane, kao i praćenje napretka kroz vreme.
 
@@ -69,36 +70,109 @@ U projektu su korišćene sledeće tehnologije:
 
 Aplikacija koristi **klijent-server arhitekturu**.
 
-* React aplikacija predstavlja frontend deo sistema
-* Laravel aplikacija predstavlja backend API
-* Komunikacija se odvija putem HTTP REST zahteva
-* Podaci se razmenjuju u JSON formatu
+* React aplikacija radi u browseru i šalje HTTP zahteve backendu koristeći Axios.
+* Laravel aplikacija predstavlja backend API, obrađuje zahteve, komunicira sa bazom podataka i vraća odgovore u JSON formatu.
+* Komunikacija se odvija putem HTTP REST zahteva.
+* Podaci se razmenjuju u JSON formatu.
+* MySQL se koristi za čuvanje svih podataka aplikacije.
 
 ---
 
-# Funkcionalnosti aplikacije
+# DevOps i infrastruktura
+
+U projektu se koriste sledeće DevOps tehnologije:
+
+- Docker za pokretanje aplikacije u kontejnerima
+- docker-compose za orkestraciju servisa
+- GitHub za verzionisanje koda
+- GitHub Actions za CI/CD pipeline
+- Cloud deployment (Azure / AWS / DigitalOcean)
+
+---
+
+# Eksterni API servisi
+
+Aplikacija koristi nekoliko eksternih API servisa.
+
+## USDA FoodData Central API
+
+Koristi se za pretragu nutritivnih vrednosti namirnica.
+
+---
+
+## ZenQuotes API
+
+Koristi se za prikaz motivacionih citata na dashboard-u.
+
+Endpoint:
+
+https://zenquotes.io/api/random
+
+# Glavne funkcionalnosti
+
+Aplikacija omogućava:
+
+## Upravljanje korisnicima
+- registraciju i prijavu korisnika
+- autentifikaciju pomoću tokena
+- upravljanje ulogama korisnika
+
+## Upravljanje treninzima
+- kreiranje personalizovanih trening programa
+- izbor vežbi iz baze
+- podešavanje parametara vežbi (serije, ponavljanja, trajanje, težina, BPM)
+- pregled trening programa
+- brisanje i izmena programa
+
+## Upravljanje ishranom
+- unos obroka po danima
+- unos namirnica i nutritivnih vrednosti
+- automatski obračun kalorija
+- pregled dnevnog kalorijskog unosa
+
+## Praćenje hidriranosti
+- unos količine popijene vode
+- pregled dnevne hidriranosti
+- praćenje napretka u odnosu na cilj
+
+## Praćenje napretka
+- grafički prikaz promene telesnih parametara
+- istorija ciljeva
+- statistika hidriranosti
+
+---
+
+# Uloge u sistemu
 
 ## Korisnik
+Korisnik ima mogućnost da:
+- registruje i prijavi nalog
+- unese svoje fizičke parametre
+- postavi ciljeve
+- kreira trening programe
+- upravlja planom ishrane
+- prati hidriranost
+- pregleda statistiku napretka
 
-* registracija i prijava
-* unos i izmena ličnih parametara
-* definisanje fitness ciljeva
-* kreiranje trening programa
-* pregled i izmena trening programa
-* planiranje ishrane
-* pregled kalorijskog unosa
-* praćenje hidriranosti
+Korisnik nema pristup podacima drugih korisnika.
 
-## Administrator
+---
 
-* prijava na sistem
-* pregled korisnika
-* dodavanje novih vežbi
-* izmena i brisanje vežbi
+## Admin
+Administrator ima mogućnost da:
+- se prijavi na sistem
+- vidi listu korisnika
+- dodaje vežbe u bazu
+- briše vežbe
+- upravlja bazom vežbi
 
-## Gost
+---
 
-* pregled vežbi
+## Trener
+Trener ima mogućnost da:
+- pregleda bazu vežbi
+- kreira trening programe
+- omogući korisnicima da koriste pripremljene treninge
 
 ---
 
@@ -181,6 +255,20 @@ http://127.0.0.1:3000
 
 ---
 
+# Pokretanje pomoću Docker-a
+
+
+docker-compose up --build
+
+
+Ova komanda pokreće:
+
+- React frontend
+- Laravel backend
+- MySQL bazu
+
+---
+
 ## Model podataka
 
 ### Entiteti i veze
@@ -219,6 +307,53 @@ http://127.0.0.1:3000
 | Dodavanje vežbi        | VezbeController      | POST /api/vezbe            | AdminDashboard                 |
 
 ---
+
+# Bezbednost
+
+Aplikacija koristi više bezbednosnih mehanizama:
+
+- autentifikaciju pomoću tokena (Laravel Sanctum)
+- hashovanje lozinki pomoću bcrypt algoritma
+- CORS zaštitu
+- CSRF zaštitu
+- validaciju podataka na backendu
+- zaštitu od XSS napada
+
+---
+
+# Automatizovani testovi
+
+U projektu su implementirani automatizovani testovi pomoću Laravel PHPUnit framework-a.
+
+Vrste testova:
+
+- Feature testovi (testiranje API ruta)
+- Integration testovi
+- Unit testovi
+
+Testovi proveravaju:
+
+- registraciju i login korisnika
+- pristup administrativnim rutama
+- zaštitu podataka između korisnika
+- validnost hashovanih lozinki
+
+---
+
+# Vizualizacija podataka
+
+Za prikaz statistike koristi se biblioteka:
+
+**react-google-charts**
+
+Prikazani grafici:
+
+- Donut grafikon dnevne hidriranosti
+- Linijski grafikon promene težine i BMI
+- Grafikon istorije ciljeva
+
+---
+
 
 ## Uloge i permisije
 
