@@ -251,24 +251,6 @@ Ova komanda pokreće:
 
 ---
 
-## Model podataka
-
-### Entiteti i veze
-
-- **Korisnik** (id, ime, birthday, pol, mail, username, pass, uloga_id)  
-- **Uloga** (id, ime)  
-- **Parametri** (id, date, tezina, visina, bmi, masti, misici, obim_struka, korisnik_id)  
-- **Cilj** (id, hidriranost, tezina, dnevne_kalorije, korisnik_id)  
-- **Hidriranost** (id, ukupno, datum, upozorenje, kolicina, korisnik_id)  
-- **Ishrana** (id, naziv, ukupne_kalorije, datum, korisnik_id)  
-- **Obrok** (id, tip, ukupne_kalorije, ishrana_id)  
-- **Namirnice** (id, naziv, kalorije, tezina, tip, kolicina)  
-- **Obrok_Namirnica** (obrok_id, namirnica_id)  
-- **Program** (id, vreme, naziv, datum, potrosene_kalorije, trajanje, intenzitet, korisnik_id)  
-- **Vežbe** (id, ime, snimak)  
-- **Program_Vezba** (program_id, vezba_id, trajanje, broj, serija, ponavljanja, tezina, bpm, dan)  
-
----
 
 
 # Bezbednost
