@@ -34,9 +34,10 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Instalacija bez skripti da ne pukne build
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Runtime: OVO se izvršava kad kontejner krene, ovde su dostupne sve ENV varijable
+# Runtime: Dodali smo migracije i seedere ovde
 CMD sh -c "sed -i 's/PORT_NUMBER/'\"$PORT\"'/g' /etc/nginx/http.d/default.conf && \
     php artisan package:discover --ansi && \
     php artisan config:cache && \
     php artisan migrate --force && \
+    php artisan db:seed --force && \
     /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
