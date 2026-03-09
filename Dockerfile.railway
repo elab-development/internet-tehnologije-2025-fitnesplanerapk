@@ -70,6 +70,7 @@ RUN composer install --no-dev --optimize-autoloader
 # - Menja PORT_NUMBER u Nginx-u sa portom koji Railway dodeli ($PORT)
 # - Pokreće migracije baze
 # - Startuje PHP-FPM i Nginx
+# 6. Startna skripta
 CMD sh -c "sed -i 's/PORT_NUMBER/'\"$PORT\"'/g' /etc/nginx/http.d/default.conf && \
     php artisan migrate --force && \
     php-fpm -D && \
