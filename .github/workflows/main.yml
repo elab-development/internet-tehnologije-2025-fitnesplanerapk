@@ -22,7 +22,7 @@ jobs:
       - name: Install PHP Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-        - name: Install ParaTest
+      - name: Install ParaTest
         run: composer require brianium/paratest --dev --with-all-dependencies
 
       - name: Run PHP Tests
