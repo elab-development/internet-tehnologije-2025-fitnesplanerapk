@@ -1,20 +1,23 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'   // ← assuming this is a valid plugin; if not, remove it or fix import
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-
-  server: {
-  proxy: {
-  '/api': {
-    target: 'http://laravel-app:8000',
-    changeOrigin: true,
-    secure: false,
-  }
-}
-}
-
-    // Optional: helps with file watching in Docker (Windows + bind mounts can be slow)
-   
-})
+    plugins: [
+        react(),
+        tailwindcss(),
+    ],
+    build: {
+        // Ovo će buildovati fajlove direktno u public/build
+        outDir: '../public/build', 
+        manifest: 'manifest.json',
+        emptyOutDir: true,
+        rollupOptions: {
+            output: {
+                entryFileNames: 'assets/[name]-[hash].js',
+                chunkFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash][extname]'
+            }
+        }
+    }
+});

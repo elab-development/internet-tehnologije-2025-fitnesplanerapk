@@ -1,15 +1,15 @@
 # --- STAGE 1: React Build ---
 FROM node:20-alpine AS react-build
 WORKDIR /app
-COPY ./react/package*.json ./
-RUN npm install
+# Kopiramo react folder
 COPY ./react ./
+WORKDIR /app
+RUN npm install
 RUN npm run build
 
 # --- STAGE 2: PHP + Nginx ---
 FROM php:8.2-fpm-alpine
 
-# Instalacija paketa
 RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev libzip-dev
 RUN docker-php-ext-install pdo_mysql mbstring bcmath gd zip
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -17,12 +17,14 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# KLJUČNA PROMENA: 
-# Pravimo folder i kopiramo sadržaj iz /app/dist (gde je Vite buildovao) u public/build
-RUN mkdir -p ./public/build
-COPY --from=react-build /app/dist/ ./public/build/
-
-# Ostatak foldera i permisije
+# Ovde kopiramo generisane fajlove iz react faze u public/build
+COPY --from=react-build /app/public/build ./public/build
+# Kreiramo simbolički link ako manifest nije direktno u build folderu
+# Ovo garantuje da Laravel uvek nađe manifest bez obzira na verziju Vite-a
+RUN if [ -f ./public/build/.vite/manifest.json ]; then \
+    ln -s .vite/manifest.json ./public/build/manifest.json; \
+    fi
+# Permisije i setup
 RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache /run/nginx /var/log/supervisor
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
