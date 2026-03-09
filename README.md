@@ -257,37 +257,6 @@ docker-compose up --build
 
 
 
-# Bezbednost
-
-Aplikacija koristi više bezbednosnih mehanizama:
-
-- autentifikaciju pomoću tokena (Laravel Sanctum)
-- hashovanje lozinki pomoću bcrypt algoritma
-- CORS zaštitu
-- CSRF zaštitu
-- validaciju podataka na backendu
-- zaštitu od XSS napada
-
----
-
-# Automatizovani testovi
-
-U projektu su implementirani automatizovani testovi pomoću Laravel PHPUnit framework-a.
-
-Vrste testova:
-
-- Feature testovi (testiranje API ruta)
-- Integration testovi
-- Unit testovi
-
-Testovi proveravaju:
-
-- registraciju i login korisnika
-- pristup administrativnim rutama
-- zaštitu podataka između korisnika
-- validnost hashovanih lozinki
-
----
 
 # Vizualizacija podataka
 
