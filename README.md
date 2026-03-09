@@ -27,14 +27,7 @@ https://github.com/elab-development/internet-tehnologije-2025-fitnesplanerapk
 # Opis aplikacije
 
 **Personalizovani Fitness Planner** je web aplikacija namenjena korisnicima koji žele da planiraju i prate svoje fitness aktivnosti.
-
-Aplikacija omogućava korisnicima da:
-
-* kreiraju personalizovane trening programe
-* prate unos kalorija kroz plan ishrane
-* prate dnevni unos tečnosti
-* evidentiraju parametre kao što su težina, visina i BMI
-* analiziraju svoj napredak kroz vizualizaciju podataka
+Aplikacija omogućava korisnicima da planiraju, prave i beleže svoje planove treninga koristeći vežbe iz baze aplikacije, prate svoju ishranu zapisujući svoje obroke, prati svoj unos tečnosti tokom dana, kao i beleže svoje parametre i ciljeve i prate kako se oni menjaju tokom vremena. Ukoliko korisnik to želi, može da ili postavi svog trenera, ili koristi već pogotve treninge koje su treneri objavili tako da budu vidljivi za celu publiku. Aplikacija je poptuno zaštićena i omogućava da svako ima pristup svojim funkcionalnostima, bilo da ima ulogu korisnika, trenera ili admina. Iskustvo u samoj aplikaciji je poboljšano korišćenjem eksternih API-ja za predlog namirnica, kao i predloga recepata koji mogu poslužiti kao inspiracija za obroke. Takodje su sve bitne statistike koje korisnicima mogu značiti za praćenje napretka, grafički prikazane na stranicama.
 
 Cilj aplikacije je da korisnicima omogući bolju organizaciju treninga i ishrane, kao i praćenje napretka kroz vreme.
 
@@ -66,17 +59,6 @@ U projektu su korišćene sledeće tehnologije:
 
 ---
 
-# Arhitektura sistema
-
-Aplikacija koristi **klijent-server arhitekturu**.
-
-* React aplikacija radi u browseru i šalje HTTP zahteve backendu koristeći Axios.
-* Laravel aplikacija predstavlja backend API, obrađuje zahteve, komunicira sa bazom podataka i vraća odgovore u JSON formatu.
-* Komunikacija se odvija putem HTTP REST zahteva.
-* Podaci se razmenjuju u JSON formatu.
-* MySQL se koristi za čuvanje svih podataka aplikacije.
-
----
 
 # DevOps i infrastruktura
 
@@ -86,8 +68,7 @@ U projektu se koriste sledeće DevOps tehnologije:
 - docker-compose za orkestraciju servisa
 - GitHub za verzionisanje koda
 - GitHub Actions za CI/CD pipeline
-- Cloud deployment (Azure / AWS / DigitalOcean)
-
+- Cloud deployment 
 ---
 
 # Eksterni API servisi
@@ -123,10 +104,11 @@ Aplikacija omogućava:
 - podešavanje parametara vežbi (serije, ponavljanja, trajanje, težina, BPM)
 - pregled trening programa
 - brisanje i izmena programa
+- biranje programa trenera
 
 ## Upravljanje ishranom
 - unos obroka po danima
-- unos namirnica i nutritivnih vrednosti
+- unos namirnica 
 - automatski obračun kalorija
 - pregled dnevnog kalorijskog unosa
 
@@ -171,12 +153,12 @@ Administrator ima mogućnost da:
 ## Trener
 Trener ima mogućnost da:
 - pregleda bazu vežbi
-- kreira trening programe
+- kreira trening programe vežbačima
 - omogući korisnicima da koriste pripremljene treninge
 
 ---
 
-# Pokretanje aplikacije
+# Pokretanje aplikacije bez Docker-a
 
 ## Kloniranje projekta
 
@@ -288,25 +270,6 @@ Ova komanda pokreće:
 
 ---
 
-## Funkcije, kontroleri i rute
-
-| Funkcija               | Kontroler             | Ruta                       | UI ekran                       |
-|------------------------|---------------------|----------------------------|--------------------------------|
-| Login                  | AuthController      | POST /api/login            | Login                          |
-| Registracija           | AuthController      | POST /api/register         | Register                       |
-| Logout                 | AuthController      | POST /api/logout           | -                              |
-| Pregled ciljeva        | CiljController      | GET /api/all-ciljevi      | Dashboard                      |
-| Dodavanje cilja        | CiljController      | POST /api/cilj             | UserSetup                      |
-| Pregled parametara     | ParametriController | GET /api/all-parametri     | Dashboard                      |
-| Dodavanje parametara   | ParametriController | POST /api/parametri        | UserSetup                      |
-| Pregled hidriranosti   | HidriranostController | GET /api/hidriranost-danas | Dashboard                      |
-| Dodavanje hidriranosti | HidriranostController | POST /api/hidriranost      | Dashboard                      |
-| Kreiranje programa     | ProgramController    | POST /api/program          | Dashboard                      |
-| Brisanje programa      | ProgramController    | DELETE /api/program/{id}   | Dashboard                      |
-| Pregled vežbi          | VezbeController      | GET /api/vezbe             | AdminDashboard, TrenerStranica |
-| Dodavanje vežbi        | VezbeController      | POST /api/vezbe            | AdminDashboard                 |
-
----
 
 # Bezbednost
 
@@ -355,13 +318,6 @@ Prikazani grafici:
 ---
 
 
-## Uloge i permisije
-
-- **Korisnik:** CRUD nad svojim planovima, ciljevima, hidriranošću  
-- **Admin:** Upravljanje vežbama i korisnicima  
-- **Gost:** Pregled vežbi i osnovnih funkcionalnosti, bez unosa podataka  
-
----
 
 
 # Screenshotovi aplikacije
@@ -382,13 +338,7 @@ Prikazani grafici:
 
 ![Vezbe](images/vezbe.png)
 
-# Buduća unapređenja
 
-* integracija sa Nutrition API servisima
-* napredna statistika napretka
-* mobilna optimizacija aplikacije
-
----
 
 # Licenca
 
