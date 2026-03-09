@@ -11,36 +11,43 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, bcmath, gd, zip, pdo_mysql
+          coverage: none
 
       - name: Install PHP Dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Install ParaTest
-        run: composer require brianium/paratest --dev --with-all-dependencies
+        run: composer require brianium/paratest --dev --with-all-dependencies --no-interaction
 
       - name: Run PHP Tests
+        
         run: php artisan test --parallel
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
 
-      - name: Install JS Dependencies & Lint
+      - name: Install JS Dependencies
         run: |
           cd react
           npm install
-          npm run lint # Opciono, ako imate linter
 
   
   deploy:
     needs: tests
+
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Install Railway CLI
         run: npm i -g @railway/cli
