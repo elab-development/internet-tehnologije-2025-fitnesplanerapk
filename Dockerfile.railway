@@ -1,44 +1,26 @@
 # --- STAGE 1: React Build ---
 FROM node:20-alpine AS react-build
 WORKDIR /app
-
-# Kopiramo konfiguraciju i zavisnosti
 COPY package*.json ./
 COPY vite.config.js ./
 COPY ./react ./react
-
-# Instaliramo zavisnosti
 RUN npm install --legacy-peer-deps
-
-# Buildujemo frontend
 RUN npm run build
 
 # --- STAGE 2: PHP + Nginx (Runtime) ---
 FROM php:8.2-fpm-alpine
 
-# Instalacija sistemskih paketa (uključujući one za kompajliranje)
-RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev libzip-dev \
-    autoconf g++ make
+RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev libzip-dev autoconf g++ make
 
-# Instalacija PHP ekstenzija (jednu po jednu za veću stabilnost na slabijim serverima)
-RUN docker-php-ext-install pdo_mysql && \
-    docker-php-ext-install mbstring && \
-    docker-php-ext-install bcmath && \
-    docker-php-ext-install gd && \
-    docker-php-ext-install zip
+RUN docker-php-ext-install pdo_mysql mbstring bcmath gd zip && \
+    apk del autoconf g++ make
 
-# Čišćenje alata za kompajliranje radi uštede prostora
-RUN apk del autoconf g++ make
-
-# Donosimo Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
-
-# Kopiramo Laravel aplikaciju
 COPY . .
 
-# Kopiramo build rezultat iz prve faze u public/build
+# Kopiramo build rezultat
 COPY --from=react-build /app/public/build ./public/build
 
 # Podešavanje permisija
@@ -46,16 +28,15 @@ RUN mkdir -p storage/framework/sessions storage/framework/views storage/framewor
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Konfiguracije
 COPY ./nginx/default.conf /etc/nginx/http.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Instalacija PHP zavisnosti
-RUN composer install --no-dev --optimize-autoloader
+# Instalacija bez skripti da ne pukne build
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Startna komanda
+# Runtime: OVO se izvršava kad kontejner krene, ovde su dostupne sve ENV varijable
 CMD sh -c "sed -i 's/PORT_NUMBER/'\"$PORT\"'/g' /etc/nginx/http.d/default.conf && \
-    php artisan config:clear && \
-    php artisan cache:clear && \
+    php artisan package:discover --ansi && \
+    php artisan config:cache && \
     php artisan migrate --force && \
     /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
