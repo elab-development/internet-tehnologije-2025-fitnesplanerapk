@@ -8,13 +8,15 @@ export default defineConfig({
         laravel({
             input: ['react/src/main.jsx'],
             refresh: true,
+            // Ovo osigurava da manifest bude u public/build
+            buildDirectory: 'build', 
         }),
         react(),
         tailwindcss(),
     ],
-    server: {
-        host: '127.0.0.1',
-        port: 3000, 
-    },
+    build: {
+        // Ovo će naterati Vite da izbaci fajlove tamo gde Laravel očekuje
+        outDir: '../public/build', 
+        emptyOutDir: true,
+    }
 })
-
