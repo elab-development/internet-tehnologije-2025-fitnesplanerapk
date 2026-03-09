@@ -1,13 +1,16 @@
 # --- STAGE 1: React Build ---
 FROM node:20-alpine AS react-build
 WORKDIR /app
-COPY ./react ./
+# Kopiramo package fajlove iz korena
+COPY package*.json ./
+# Kopiramo i react folder jer nam treba za build
+COPY ./react ./react
+COPY vite.config.js ./
 RUN npm install
 RUN npm run build
 
 # --- STAGE 2: PHP + Nginx ---
 FROM php:8.2-fpm-alpine
-
 RUN apk add --no-cache nginx supervisor git unzip libpng-dev libxml2-dev oniguruma-dev libzip-dev
 RUN docker-php-ext-install pdo_mysql mbstring bcmath gd zip
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -15,27 +18,19 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# Automatsko pronalaženje i kopiranje build fajlova gde god da ih je Vite sakrio
-RUN mkdir -p ./public/build && \
-    find /app -name "manifest.json" -exec dirname {} \; | head -n 1 | xargs -I {} cp -r {}/* ./public/build/
+# Kopiramo build iz prve faze
+COPY --from=react-build /app/public/build ./public/build
 
-# Kreiranje simboličkog linka za .vite podfolder ako postoji (za novije verzije Vite-a)
-RUN if [ -d "./public/build/.vite" ]; then \
-    cp -r ./public/build/.vite/* ./public/build/; \
-    fi
-
-# Permisije i folderi
+# Permisije
 RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache bootstrap/cache /run/nginx /var/log/supervisor
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Konfiguracije
 COPY ./nginx/default.conf /etc/nginx/http.d/default.conf
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN composer install --no-dev --optimize-autoloader
 
-# CMD izvršavanje
 CMD sh -c "sed -i 's/PORT_NUMBER/'\"$PORT\"'/g' /etc/nginx/http.d/default.conf && \
     php artisan config:clear && \
     php artisan migrate --force && \
