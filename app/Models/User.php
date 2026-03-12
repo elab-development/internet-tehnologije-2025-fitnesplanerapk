@@ -59,19 +59,19 @@ class User extends Authenticatable
         return $this->belongsTo(Hidriranost::class, 'hidriranost_id'); 
     }
 
-    // 🔹 RELACIJA SELF-REFERENCE: Vezbač -> Trener
+  
     public function trener()
     {
         return $this->belongsTo(User::class, 'trener_id');
     }
 
-    // 🔹 RELACIJA SELF-REFERENCE: Trener -> Vezbači
+   
     public function vezbaci()
     {
         return $this->hasMany(User::class, 'trener_id');
     }
 
-    // Helper funkcije za lakšu identifikaciju uloge
+   
     public function isTrener()
     {
         return $this->uloga->ime === 'trener';

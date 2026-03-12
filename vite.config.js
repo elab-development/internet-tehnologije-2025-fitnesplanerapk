@@ -16,7 +16,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            // Ovo eksplicitno govori Vite-u gde se nalazi tvoj izvorni kod
+            
             '@': resolve(__dirname, './react/src'),
         },
     },
