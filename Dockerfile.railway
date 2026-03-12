@@ -6,10 +6,6 @@ COPY vite.config.js ./
 COPY ./react ./react
 RUN npm install --legacy-peer-deps
 RUN npm run build
-# Nakon npm run build
-RUN cp -r react/public ./public/react_public
-
-COPY --from=react-build /app/public/react_public ./public
 
 FROM php:8.2-fpm-alpine
 
