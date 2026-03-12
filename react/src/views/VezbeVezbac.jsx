@@ -200,6 +200,34 @@ export default function VezbeVezbac() {
             {loadingTreneri ? "Učitavanje..." : "Treninzi trenera"}
           </Button>
         </div>
+        
+        {/* Prikaz treninga trenera */}
+        {showTreneri && trenerskiProgrami.length > 0 && (
+          <div className="mt-6 bg-white rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Treninzi trenera</h2>
+            <ul className="space-y-3">
+              {trenerskiProgrami.map((p) => (
+                <li
+                  key={p.id}
+                  className="border-b pb-2 last:border-none flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-semibold">{p.naziv}</p>
+                    <p className="text-sm text-gray-600">
+                      Trener: {p.korisnik.name} | Trajanje: {p.trajanje} min | Kalorije: {p.kalorije} | Intenzitet: {p.intenzitet}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => handleDodajTrening(p)}
+                    className="text-white px-3 py-1 rounded-lg"
+                  >
+                    Dodaj vežbe
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Grid vežbi */}
         {filtriraneVezbe.length > 0 ? (
@@ -296,33 +324,6 @@ export default function VezbeVezbac() {
           </div>
         )}
 
-        {/* Prikaz treninga trenera */}
-        {showTreneri && trenerskiProgrami.length > 0 && (
-          <div className="mt-6 bg-white rounded-2xl p-6 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Treninzi trenera</h2>
-            <ul className="space-y-3">
-              {trenerskiProgrami.map((p) => (
-                <li
-                  key={p.id}
-                  className="border-b pb-2 last:border-none flex justify-between items-center"
-                >
-                  <div>
-                    <p className="font-semibold">{p.naziv}</p>
-                    <p className="text-sm text-gray-600">
-                      Trener: {p.korisnik.name} | Trajanje: {p.trajanje} min | Kalorije: {p.kalorije} | Intenzitet: {p.intenzitet}
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => handleDodajTrening(p)}
-                    className="text-white px-3 py-1 rounded-lg"
-                  >
-                    Dodaj vežbe
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </main>
       <Footer />
     </div>
