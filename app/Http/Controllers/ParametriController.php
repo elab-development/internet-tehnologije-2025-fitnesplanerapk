@@ -87,11 +87,7 @@ class ParametriController extends Controller
                 'obim_struka' => 'required|numeric',
             ]);
 
-        $tezina = strip_tags($validated['tezina']);
-        $visina = strip_tags($validated['visina']);
-        $masti = strip_tags($validated['masti']);
-        $misici = strip_tags($validated['misici']);
-        $obim_struka = strip_tags($validated['obim_struka']);
+        
         
         $visinaUMetrima = $validated['visina'] / 100;
         $bmi = $validated['tezina'] / ($visinaUMetrima * $visinaUMetrima);

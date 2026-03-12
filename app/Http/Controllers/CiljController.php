@@ -50,9 +50,7 @@ class CiljController extends Controller
             'tezina' => 'required|numeric',
             'kalorije' => 'required|integer',
         ]);
-        $hidriranost = strip_tags($validated['hidriranost']);
-        $tezina = strip_tags($validated['tezina']);
-        $kalorije = strip_tags($validated['kalorije']);
+        
 
         
         $user_id = $userId ?? auth()->id();
