@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 class VezbaController extends Controller
 {
     #[OA\Post(
-        path: "/api/vezbe",
+        path: "/vezbe",
         summary: "Kreiranje nove vežbe",
         tags: ["Vežbe"],
         security: [["sanctum" => []]],
@@ -37,6 +37,8 @@ class VezbaController extends Controller
             'kategorija' => 'nullable|string',
         ]);
 
+        
+
         return Vezba::create([
             'ime' => $request->ime,
             'snimak' => $request->snimak,
@@ -45,7 +47,7 @@ class VezbaController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/vezbe",
+        path: "/vezbe",
         summary: "Prikaz svih vežbi",
         tags: ["Vežbe"],
         security: [["sanctum" => []]],
