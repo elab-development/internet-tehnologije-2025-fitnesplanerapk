@@ -13,7 +13,7 @@ use OpenApi\Attributes as OA;
 class UserController extends Controller
 {
     #[OA\Get(
-        path: "/api/vezbaci",
+        path: "/vezbaci",
         summary: "Prikazuje vežbače ulogovanog trenera",
         tags: ["Trener"],
         security: [["sanctum" => []]],
@@ -35,7 +35,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/users/{user}/parametri",
+        path: "/users/{user}/parametri",
         summary: "Prikazuje parametre određenog korisnika",
         tags: ["Korisnik"],
         parameters: [new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -46,7 +46,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/users/{user}/ciljevi",
+        path: "/users/{user}/ciljevi",
         summary: "Prikazuje ciljeve određenog korisnika",
         tags: ["Korisnik"],
         parameters: [new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -57,7 +57,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/trener/pretraga",
+        path: "/trener/pretraga",
         summary: "Pretraga trenera po imenu, prezimenu ili emailu",
         tags: ["Korisnik"],
         parameters: [new OA\Parameter(name: "query", in: "query", required: true, schema: new OA\Schema(type: "string"))],
@@ -79,7 +79,7 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/trener/postavi",
+        path: "/trener/postavi",
         summary: "Vežbač bira sebi trenera",
         tags: ["Korisnik"],
         security: [["sanctum" => []]],
@@ -105,7 +105,7 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/trener/profil",
+        path: "/trener/profil",
         summary: "Ažuriranje profila za trenere",
         tags: ["Trener"],
         security: [["sanctum" => []]],
@@ -139,7 +139,7 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/trener/ukloni",
+        path: "/trener/ukloni",
         summary: "Vežbač uklanja trenutnog trenera",
         tags: ["Korisnik"],
         security: [["sanctum" => []]],
@@ -154,7 +154,7 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/users/{user}/parametri",
+        path: "/users/{user}/parametri",
         summary: "Dodavanje novih parametara korisniku (samo trener)",
         tags: ["Trener"],
         security: [["sanctum" => []]],
@@ -192,7 +192,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/users/{user}",
+        path: "/users/{user}",
         summary: "Prikaz detalja korisnika sa parametrima i ciljevima",
         tags: ["Admin", "Trener"],
         parameters: [new OA\Parameter(name: "user", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -204,7 +204,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/admin/users",
+        path: "/admin/users",
         summary: "Lista svih vežbača i trenera (bez admina)",
         tags: ["Admin"],
         responses: [new OA\Response(response: 200, description: "Lista korisnika")]
@@ -219,7 +219,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/admin/complete-users",
+        path: "/admin/complete-users",
         summary: "Kompletna lista svih korisnika (Admin)",
         tags: ["Admin"],
         security: [["sanctum" => []]],
@@ -233,7 +233,7 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/assign-vezbac-trener",
+        path: "/assign-vezbac-trener",
         summary: "Admin povezuje vežbača i trenera",
         tags: ["Admin"],
         security: [["sanctum" => []]],
@@ -265,7 +265,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/trener/{trener_id}/vezbaci",
+        path: "/trener/{trener_id}/vezbaci",
         summary: "Prikaz svih vežbača određenog trenera",
         tags: ["Admin"],
         parameters: [new OA\Parameter(name: "trener_id", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -279,7 +279,7 @@ class UserController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/vezbac/{vezbac_id}/trener",
+        path: "/vezbac/{vezbac_id}/trener",
         summary: "Prikaz trenera određenog vežbača",
         tags: ["Admin", "Korisnik"],
         parameters: [new OA\Parameter(name: "vezbac_id", in: "path", required: true, schema: new OA\Schema(type: "integer"))],
@@ -293,7 +293,7 @@ class UserController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/korisnik/profil",
+        path: "/korisnik/profil",
         summary: "Ažuriranje profila za vežbače",
         tags: ["Korisnik"],
         security: [["sanctum" => []]],

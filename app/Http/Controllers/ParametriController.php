@@ -6,11 +6,12 @@ use App\Models\Parametri;
 use App\Http\Requests\StoreParametriRequest;
 use App\Http\Requests\UpdateParametriRequest;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Str;
 
 class ParametriController extends Controller
 {
     #[OA\Get(
-        path: "/api/parametri",
+        path: "/parametri",
         summary: "Prikaz liste parametara ulogovanog korisnika",
         tags: ["Parametri"],
         security: [["sanctum" => []]],
@@ -21,8 +22,7 @@ class ParametriController extends Controller
     )]
     public function index()
     {
-        // Napomena: U tvom originalnom kodu nedostaje Request $request u argumentima funkcije, 
-        // ali koristim auth() da bi radilo bezbedno ako se ne menja potpis.
+        
         $parametri = Parametri::where('user_id', auth()->id())
                         ->orderBy('date', 'desc')
                         ->get();
@@ -31,7 +31,7 @@ class ParametriController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/all-parametri",
+        path: "/all-parametri",
         summary: "Dobijanje svih parametara korisnika preko relacije",
         tags: ["Parametri"],
         security: [["sanctum" => []]],
@@ -52,7 +52,7 @@ class ParametriController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/parametri",
+        path: "/parametri",
         summary: "Snimanje novih telesnih parametara",
         description: "Kreira novi unos parametara i automatski računa BMI.",
         tags: ["Parametri"],
@@ -87,6 +87,12 @@ class ParametriController extends Controller
                 'obim_struka' => 'required|numeric',
             ]);
 
+        $tezina = strip_tags($validated['tezina']);
+        $visina = strip_tags($validated['visina']);
+        $masti = strip_tags($validated['masti']);
+        $misici = strip_tags($validated['misici']);
+        $obim_struka = strip_tags($validated['obim_struka']);
+        
         $visinaUMetrima = $validated['visina'] / 100;
         $bmi = $validated['tezina'] / ($visinaUMetrima * $visinaUMetrima);
 
@@ -132,7 +138,7 @@ class ParametriController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/parametar/{id}",
+        path: "/parametar/{id}",
         summary: "Brisanje određenog parametra",
         tags: ["Parametri"],
         security: [["sanctum" => []]],

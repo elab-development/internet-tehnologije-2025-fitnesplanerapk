@@ -56,11 +56,7 @@ class AdminAccessTest extends TestCase
     {
         
         Sanctum::actingAs($this->adminUser);
-
-        
         $response = $this->getJson('/api/admin/users');
-
-        
         $response->assertStatus(200);
     }
 
@@ -69,11 +65,7 @@ class AdminAccessTest extends TestCase
     {
         
         Sanctum::actingAs($this->regularUser);
-
-        
         $response = $this->getJson('/api/admin/users');
-
-        
         $response->assertStatus(403);
     }
 
@@ -82,8 +74,6 @@ class AdminAccessTest extends TestCase
     {
         
         $response = $this->getJson('/api/admin/users');
-
-       
         $response->assertStatus(401);
     }
 

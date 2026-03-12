@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 class ProgramController extends Controller
 {
     #[OA\Get(
-        path: "/api/programi",
+        path: "/programi",
         summary: "Prikaz dostupnih programa (javni + sopstveni)",
         tags: ["Programi"],
         security: [["sanctum" => []]],
@@ -32,7 +32,7 @@ class ProgramController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/programi",
+        path: "/programi",
         summary: "Kreiranje novog programa sa vežbama",
         tags: ["Programi"],
         security: [["sanctum" => []]],
@@ -119,7 +119,7 @@ class ProgramController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/programi/{id}",
+        path: "/programi/{id}",
         summary: "Ažuriranje programa",
         tags: ["Programi"],
         security: [["sanctum" => []]],
@@ -134,7 +134,7 @@ class ProgramController extends Controller
             'naziv' => 'required|string',
             'vezbe' => 'required|array',
             'vezbe.*.id' => 'required|integer|exists:vezbe,id',
-            'vezbe.*.dan' => 'nullable|integer|min:1', // više nije required
+            'vezbe.*.dan' => 'nullable|integer|min:1', 
             'vezbe.*.serija' => 'nullable|integer|min:0',
             'vezbe.*.ponavljanja' => 'nullable|integer|min:0',
             'vezbe.*.tezina' => 'nullable|numeric|min:0',
@@ -142,7 +142,8 @@ class ProgramController extends Controller
             'vezbe.*.bpm' => 'nullable|integer|min:0',
             'public' => 'required|boolean',
         ]);
-
+        $naziv = strip_tags($request->naziv);
+        
         $program->naziv = $request->naziv;
         $program->public = $request->public;
         $program->save();
@@ -188,7 +189,7 @@ class ProgramController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/programi/treneri",
+        path: "/programi/treneri",
         summary: "Programi trenera (zavisi da li korisnik ima trenera)",
         tags: ["Programi"],
         security: [["sanctum" => []]],
@@ -199,12 +200,12 @@ class ProgramController extends Controller
         $user = $request->user();
 
         if ($user->trener_id) {
-            // Korisnik ima svog trenera -> prikazujemo public + private treninzi tog trenera
+            // Korisnik ima svog trenera, prikazujemo public i private treninge tog trenera
             $programi = Program::where('korisnik_id', $user->trener_id)
                 ->with('vezbe', 'korisnik')
                 ->get();
         } else {
-            // Korisnik nema trenera -> prikazujemo samo public treninge svih trenera
+            // Korisnik nema trenera, prikazujemo samo public treninge svih trenera
             $programi = Program::where('public', true)
                 ->with('vezbe', 'korisnik')
                 ->get();
@@ -214,7 +215,7 @@ class ProgramController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/programi/{id}",
+        path: "/programi/{id}",
         summary: "Brisanje sopstvenog programa",
         tags: ["Programi"],
         security: [["sanctum" => []]],
@@ -240,7 +241,7 @@ class ProgramController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/programi/moji",
+        path: "/programi/moji",
         summary: "Prikaz svih programa koje je kreirao ulogovani korisnik",
         tags: ["Programi"],
         security: [["sanctum" => []]],
@@ -258,7 +259,7 @@ class ProgramController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/programi/dodaj-veze",
+        path: "/programi/dodaj-veze",
         summary: "Brzo kreiranje 'Trening trenera' programa",
         tags: ["Programi"],
         security: [["sanctum" => []]],

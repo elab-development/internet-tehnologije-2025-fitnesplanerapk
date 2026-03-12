@@ -8,11 +8,12 @@ use App\Http\Requests\UpdateCiljRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Str;
 
 class CiljController extends Controller
 {
     #[OA\Post(
-        path: "/api/cilj",
+        path: "/cilj",
         summary: "Kreiranje novog cilja",
         tags: ["Ciljevi"],
         security: [["sanctum" => []]],
@@ -33,7 +34,7 @@ class CiljController extends Controller
         ]
     )]
     #[OA\Post(
-        path: "/api/users/{user}/ciljevi",
+        path: "/users/{user}/ciljevi",
         summary: "Trener dodaje cilj za vežbača",
         tags: ["Ciljevi"],
         security: [["sanctum" => []]],
@@ -49,8 +50,11 @@ class CiljController extends Controller
             'tezina' => 'required|numeric',
             'kalorije' => 'required|integer',
         ]);
+        $hidriranost = strip_tags($validated['hidriranost']);
+        $tezina = strip_tags($validated['tezina']);
+        $kalorije = strip_tags($validated['kalorije']);
 
-        // Ako nema userId u ruti, koristi prijavljenog korisnika
+        
         $user_id = $userId ?? auth()->id();
 
         $cilj = Cilj::create([
@@ -64,7 +68,7 @@ class CiljController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/cilj",
+        path: "/cilj",
         summary: "Prikaz poslednjeg cilja (kalorije) ili liste ciljeva",
         tags: ["Ciljevi"],
         security: [["sanctum" => []]],
@@ -81,7 +85,7 @@ class CiljController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/all-ciljevi",
+        path: "/all-ciljevi",
         summary: "Dobijanje svih ciljeva korisnika",
         tags: ["Ciljevi"],
         security: [["sanctum" => []]],
@@ -94,7 +98,7 @@ class CiljController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/cilj/{id}",
+        path: "/cilj/{id}",
         summary: "Brisanje cilja",
         tags: ["Ciljevi"],
         security: [["sanctum" => []]],

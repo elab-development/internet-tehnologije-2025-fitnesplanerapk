@@ -8,7 +8,7 @@ use OpenApi\Attributes as OA;
 class HranaController extends Controller
 {
     #[OA\Get(
-        path: "/api/hrana",
+        path: "/hrana",
         summary: "Prikaz svih namirnica iz baze",
         description: "Vraća listu svih dostupnih namirnica sa njihovim kalorijskim vrednostima.",
         tags: ["Hrana"],

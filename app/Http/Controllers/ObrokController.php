@@ -12,7 +12,7 @@ use OpenApi\Attributes as OA;
 class ObrokController extends Controller
 {
     #[OA\Post(
-        path: "/api/obroci",
+        path: "/obroci",
         summary: "Kreiranje novog obroka",
         tags: ["Obroci"],
         security: [["sanctum" => []]],
@@ -93,7 +93,7 @@ class ObrokController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/obroci",
+        path: "/obroci",
         summary: "Lista obroka za datum",
         tags: ["Obroci"],
         security: [["sanctum" => []]],
@@ -129,7 +129,7 @@ class ObrokController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/obroci/pregled",
+        path: "/obroci/pregled",
         summary: "Grupisani pregled svih obroka po danima",
         tags: ["Obroci"],
         security: [["sanctum" => []]],
@@ -166,7 +166,7 @@ class ObrokController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/obrociPregled",
+        path: "/obrociPregled",
         summary: "Filtrirani pregled obroka po opsegu",
         tags: ["Obroci"],
         security: [["sanctum" => []]],
@@ -225,7 +225,7 @@ class ObrokController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/obroci/{obrok}",
+        path: "/obroci/{obrok}",
         summary: "Update obroka",
         tags: ["Obroci"],
         security: [["sanctum" => []]],
@@ -318,7 +318,7 @@ class ObrokController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/obroci/{id}",
+        path: "/obroci/{id}",
         summary: "Detalji obroka",
         tags: ["Obroci"],
         security: [["sanctum" => []]],
@@ -351,7 +351,7 @@ class ObrokController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/obroci/{obrok}",
+        path: "/obroci/{obrok}",
         summary: "Brisanje obroka",
         tags: ["Obroci"],
         security: [["sanctum" => []]],

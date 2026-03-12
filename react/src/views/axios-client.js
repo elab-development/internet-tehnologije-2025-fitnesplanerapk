@@ -45,7 +45,7 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: '/api',   // ← this is key! Vite proxy will forward /api → laravel-app:8000
+  baseURL: '/api',   
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -66,8 +66,7 @@ axiosClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem("ACCESS_TOKEN");
-      // Optional: redirect to login
-      // window.location.href = '/login';
+      
     }
     throw error;
   }

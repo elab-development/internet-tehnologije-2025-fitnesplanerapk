@@ -98,13 +98,13 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
+                                    "username",
                                     "password"
                                 ],
                                 "properties": {
-                                    "email": {
+                                    "username": {
                                         "type": "string",
-                                        "example": "jovan@example.com"
+                                        "example": "Jovan"
                                     },
                                     "password": {
                                         "type": "string",
@@ -148,13 +148,13 @@
                 ]
             }
         },
-        "/api/vezbaci": {
+        "/vezbaci": {
             "get": {
                 "tags": [
                     "Trener"
                 ],
                 "summary": "Prikazuje vežbače ulogovanog trenera",
-                "operationId": "393c911e482db6a70b8e6b77184d502d",
+                "operationId": "2ebfbba596dc33a0db25bcc8a332d6b0",
                 "responses": {
                     "200": {
                         "description": "Lista vežbača"
@@ -170,13 +170,13 @@
                 ]
             }
         },
-        "/api/users/{user}/parametri": {
+        "/users/{user}/parametri": {
             "get": {
                 "tags": [
                     "Korisnik"
                 ],
                 "summary": "Prikazuje parametre određenog korisnika",
-                "operationId": "0ab01f692b423cfeec073c622757db0c",
+                "operationId": "a8adc67c3929cf25e818beb0d5c9fff3",
                 "parameters": [
                     {
                         "name": "user",
@@ -198,7 +198,7 @@
                     "Trener"
                 ],
                 "summary": "Dodavanje novih parametara korisniku (samo trener)",
-                "operationId": "b16a002dcf04b932295b78afa918a56c",
+                "operationId": "53d7d9873e9555a5cad90025fca86826",
                 "parameters": [
                     {
                         "name": "user",
@@ -259,13 +259,13 @@
                 ]
             }
         },
-        "/api/users/{user}/ciljevi": {
+        "/users/{user}/ciljevi": {
             "get": {
                 "tags": [
                     "Korisnik"
                 ],
                 "summary": "Prikazuje ciljeve određenog korisnika",
-                "operationId": "eff15b992fb7d9e16920a5bc7549f08a",
+                "operationId": "afd6d804eed25b20545280c6a4d9c018",
                 "parameters": [
                     {
                         "name": "user",
@@ -287,7 +287,7 @@
                     "Ciljevi"
                 ],
                 "summary": "Trener dodaje cilj za vežbača",
-                "operationId": "47fc5cf14b9bf210aa109e4c6a1fac50",
+                "operationId": "48b40a7a329b9636e14e9228ed65965b",
                 "parameters": [
                     {
                         "name": "user",
@@ -310,13 +310,13 @@
                 ]
             }
         },
-        "/api/trener/pretraga": {
+        "/trener/pretraga": {
             "get": {
                 "tags": [
                     "Korisnik"
                 ],
                 "summary": "Pretraga trenera po imenu, prezimenu ili emailu",
-                "operationId": "a920da270bb8cce04a05d34f12bf11c1",
+                "operationId": "889d13f4c2cead786b87497098a382a5",
                 "parameters": [
                     {
                         "name": "query",
@@ -334,13 +334,13 @@
                 }
             }
         },
-        "/api/trener/postavi": {
+        "/trener/postavi": {
             "post": {
                 "tags": [
                     "Korisnik"
                 ],
                 "summary": "Vežbač bira sebi trenera",
-                "operationId": "ed8c86403d9b4b9039888fd699b0e278",
+                "operationId": "7fcb39dd4cc017fcdf8aca9669b186e5",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -367,13 +367,13 @@
                 ]
             }
         },
-        "/api/trener/profil": {
+        "/trener/profil": {
             "post": {
                 "tags": [
                     "Trener"
                 ],
                 "summary": "Ažuriranje profila za trenere",
-                "operationId": "bbf41c5c09b20934657b6e8350e318c3",
+                "operationId": "1f1871888dcb67faea9808db9f53dd85",
                 "responses": {
                     "200": {
                         "description": "Uspešno ažurirano"
@@ -386,13 +386,13 @@
                 ]
             }
         },
-        "/api/trener/ukloni": {
+        "/trener/ukloni": {
             "post": {
                 "tags": [
                     "Korisnik"
                 ],
                 "summary": "Vežbač uklanja trenutnog trenera",
-                "operationId": "a2363680f6ad6000050c92c1cc62a366",
+                "operationId": "69ca3f75eecfd255cb4ff0d3b67c186a",
                 "responses": {
                     "200": {
                         "description": "Trener uklonjen"
@@ -405,14 +405,14 @@
                 ]
             }
         },
-        "/api/users/{user}": {
+        "/users/{user}": {
             "get": {
                 "tags": [
                     "Admin",
                     "Trener"
                 ],
                 "summary": "Prikaz detalja korisnika sa parametrima i ciljevima",
-                "operationId": "f310aa35b9243239c65dbc8b8f4b135e",
+                "operationId": "a8a7a1f979a2abb839b4b320238106fc",
                 "parameters": [
                     {
                         "name": "user",
@@ -430,13 +430,13 @@
                 }
             }
         },
-        "/api/admin/users": {
+        "/admin/users": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Lista svih vežbača i trenera (bez admina)",
-                "operationId": "62de38e4360e33c01d5e407345cbdad5",
+                "operationId": "62f8346090f48d580cf03b1ea217c752",
                 "responses": {
                     "200": {
                         "description": "Lista korisnika"
@@ -444,13 +444,13 @@
                 }
             }
         },
-        "/api/admin/complete-users": {
+        "/admin/complete-users": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Kompletna lista svih korisnika (Admin)",
-                "operationId": "ebc8ddd07b80c30c1300a448f8595104",
+                "operationId": "bbe1cf2b5f615558da4bca66b67ec29f",
                 "responses": {
                     "200": {
                         "description": "Svi podaci"
@@ -463,13 +463,13 @@
                 ]
             }
         },
-        "/api/assign-vezbac-trener": {
+        "/assign-vezbac-trener": {
             "post": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Admin povezuje vežbača i trenera",
-                "operationId": "9d2c897705165184c027bc27ad5d4602",
+                "operationId": "d05b128d158a98aebf7f914836df9682",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -499,13 +499,13 @@
                 ]
             }
         },
-        "/api/trener/{trener_id}/vezbaci": {
+        "/trener/{trener_id}/vezbaci": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Prikaz svih vežbača određenog trenera",
-                "operationId": "e37092c347ae231314feed87661f1ec0",
+                "operationId": "3afd37d7a4812bf2260fcae47147515e",
                 "parameters": [
                     {
                         "name": "trener_id",
@@ -523,14 +523,14 @@
                 }
             }
         },
-        "/api/vezbac/{vezbac_id}/trener": {
+        "/vezbac/{vezbac_id}/trener": {
             "get": {
                 "tags": [
                     "Admin",
                     "Korisnik"
                 ],
                 "summary": "Prikaz trenera određenog vežbača",
-                "operationId": "392d728987f2b4acd116aab1f7de8284",
+                "operationId": "1e083e2b92e34f14deb0390e98b9b2e2",
                 "parameters": [
                     {
                         "name": "vezbac_id",
@@ -548,13 +548,13 @@
                 }
             }
         },
-        "/api/korisnik/profil": {
+        "/korisnik/profil": {
             "post": {
                 "tags": [
                     "Korisnik"
                 ],
                 "summary": "Ažuriranje profila za vežbače",
-                "operationId": "5c68d254652d3831a460869a76549d5d",
+                "operationId": "8003a3da41d28932b9b42dcc94236959",
                 "responses": {
                     "200": {
                         "description": "Uspešno"
@@ -567,13 +567,13 @@
                 ]
             }
         },
-        "/api/cilj": {
+        "/cilj": {
             "get": {
                 "tags": [
                     "Ciljevi"
                 ],
                 "summary": "Prikaz poslednjeg cilja (kalorije) ili liste ciljeva",
-                "operationId": "fd2dfccd9cdf0a531326853ee4b5bbab",
+                "operationId": "68a72f467446511e3051fab06ecd0869",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -590,7 +590,7 @@
                     "Ciljevi"
                 ],
                 "summary": "Kreiranje novog cilja",
-                "operationId": "8526d7924fbade42da65922d26b92ffd",
+                "operationId": "f50847a800edbe1cabf932b59bd06a5b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -635,13 +635,13 @@
                 ]
             }
         },
-        "/api/all-ciljevi": {
+        "/all-ciljevi": {
             "get": {
                 "tags": [
                     "Ciljevi"
                 ],
                 "summary": "Dobijanje svih ciljeva korisnika",
-                "operationId": "4f0ea8f931f42f4091b39e48076bb538",
+                "operationId": "8de3ce333dd475bf2f10e96a4abc8f9f",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -654,13 +654,13 @@
                 ]
             }
         },
-        "/api/cilj/{id}": {
+        "/cilj/{id}": {
             "delete": {
                 "tags": [
                     "Ciljevi"
                 ],
                 "summary": "Brisanje cilja",
-                "operationId": "4b559550f33ef1868e4b910c2874d041",
+                "operationId": "fc7c069414f86b8ebb2e9bf6377fbc89",
                 "parameters": [
                     {
                         "name": "id",
@@ -694,13 +694,13 @@
                 }
             }
         },
-        "/api/posalji-izvestaj": {
+        "/posalji-izvestaj": {
             "post": {
                 "tags": [
                     "Izveštaji"
                 ],
                 "summary": "Slanje personalizovanog PDF izveštaja",
-                "operationId": "f4899fece09cc0d70960b3fa7bae0469",
+                "operationId": "2b69906e09959a88d3303b932924d17e",
                 "responses": {
                     "200": {
                         "description": "Izveštaj uspešno poslat"
@@ -716,13 +716,13 @@
                 ]
             }
         },
-        "/api/hidriranost": {
+        "/hidriranost": {
             "get": {
                 "tags": [
                     "Hidriranost"
                 ],
                 "summary": "Prikaz svih zapisa o hidriranosti",
-                "operationId": "bf6df820b711f8a428ad9746ee551668",
+                "operationId": "2a28dab337ba57f340d06d5db0ac9299",
                 "responses": {
                     "200": {
                         "description": "Lista svih zapisa"
@@ -739,7 +739,7 @@
                     "Hidriranost"
                 ],
                 "summary": "Kreiranje novog zapisa o hidriranosti za danas",
-                "operationId": "d77e4db157d1cdcb2d1a94721e2c44c4",
+                "operationId": "c0a61a16c17b815ba82e794c876cde8d",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -771,13 +771,13 @@
                 ]
             }
         },
-        "/api/hidriranost-danas": {
+        "/hidriranost-danas": {
             "get": {
                 "tags": [
                     "Hidriranost"
                 ],
                 "summary": "Provera da li postoji zapis o hidriranosti za današnji dan",
-                "operationId": "c9ae59d21399d1350f1da1d5f03e0587",
+                "operationId": "119c6066fb9b8d5111a3317051cd6519",
                 "responses": {
                     "200": {
                         "description": "Informacija o postojanju zapisa"
@@ -790,13 +790,13 @@
                 ]
             }
         },
-        "/api/hidriranost/{hidriranost}": {
+        "/hidriranost/{hidriranost}": {
             "put": {
                 "tags": [
                     "Hidriranost"
                 ],
                 "summary": "Dodavanje količine vode na današnji zapis",
-                "operationId": "09b98a5dc51c0f6033df585bb48562d0",
+                "operationId": "8ba006af85d8b55a66e0273f4468f597",
                 "parameters": [
                     {
                         "name": "id",
@@ -838,14 +838,14 @@
                 ]
             }
         },
-        "/api/hrana": {
+        "/hrana": {
             "get": {
                 "tags": [
                     "Hrana"
                 ],
                 "summary": "Prikaz svih namirnica iz baze",
                 "description": "Vraća listu svih dostupnih namirnica sa njihovim kalorijskim vrednostima.",
-                "operationId": "79d4eccfa5ec7bfa6bbb0f82fe9df1bf",
+                "operationId": "1bbf3a520e54d92cda07363963679ebe",
                 "responses": {
                     "200": {
                         "description": "Uspešno vraćena lista hrane",
@@ -893,13 +893,13 @@
                 ]
             }
         },
-        "/api/obroci": {
+        "/obroci": {
             "get": {
                 "tags": [
                     "Obroci"
                 ],
                 "summary": "Lista obroka za datum",
-                "operationId": "d6f2aea1dd9c0e21914eb0bda8807af1",
+                "operationId": "6a5ebd9d3003d6a0fbc65f7e12a81476",
                 "parameters": [
                     {
                         "name": "datum",
@@ -926,7 +926,7 @@
                     "Obroci"
                 ],
                 "summary": "Kreiranje novog obroka",
-                "operationId": "18201e23f7f9e0debee72768721ebede",
+                "operationId": "a43c69614d22e4dad21ebbceabf36cde",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -969,13 +969,13 @@
                 ]
             }
         },
-        "/api/obroci/pregled": {
+        "/obroci/pregled": {
             "get": {
                 "tags": [
                     "Obroci"
                 ],
                 "summary": "Grupisani pregled svih obroka po danima",
-                "operationId": "ec078b354ff6697e0ea0f424689a3d4f",
+                "operationId": "9be99b46fcf7e32c8d9d1bfe608775e9",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -988,13 +988,13 @@
                 ]
             }
         },
-        "/api/obrociPregled": {
+        "/obrociPregled": {
             "get": {
                 "tags": [
                     "Obroci"
                 ],
                 "summary": "Filtrirani pregled obroka po opsegu",
-                "operationId": "22e18a13b475d410a249c5aab6641cee",
+                "operationId": "eae7cd623ec3880b29403ee128583cc5",
                 "parameters": [
                     {
                         "name": "od",
@@ -1023,13 +1023,13 @@
                 ]
             }
         },
-        "/api/obroci/{obrok}": {
+        "/obroci/{obrok}": {
             "put": {
                 "tags": [
                     "Obroci"
                 ],
                 "summary": "Update obroka",
-                "operationId": "e71fbf2f3e7d12bcd36e36bece090bb4",
+                "operationId": "29d4bdc629a6f9b29a000cb6f83d7252",
                 "parameters": [
                     {
                         "name": "obrok",
@@ -1056,7 +1056,7 @@
                     "Obroci"
                 ],
                 "summary": "Brisanje obroka",
-                "operationId": "d5689170aa01a3e1cd016602b6ec3ffb",
+                "operationId": "ea975d8bedba64cf2d09dbf5b24df02f",
                 "parameters": [
                     {
                         "name": "obrok",
@@ -1079,13 +1079,13 @@
                 ]
             }
         },
-        "/api/obroci/{id}": {
+        "/obroci/{id}": {
             "get": {
                 "tags": [
                     "Obroci"
                 ],
                 "summary": "Detalji obroka",
-                "operationId": "fbc84ac6c3afc7847b07665e161d0cc8",
+                "operationId": "5375a0dd0d96cd61ad00313122a7225c",
                 "parameters": [
                     {
                         "name": "id",
@@ -1108,13 +1108,13 @@
                 ]
             }
         },
-        "/api/parametri": {
+        "/parametri": {
             "get": {
                 "tags": [
                     "Parametri"
                 ],
                 "summary": "Prikaz liste parametara ulogovanog korisnika",
-                "operationId": "aa2c02decb26e48cda39f4ed8c847255",
+                "operationId": "d40a55ec21e1213fc6808845fae6f004",
                 "responses": {
                     "200": {
                         "description": "Uspešno vraćeni parametri"
@@ -1135,7 +1135,7 @@
                 ],
                 "summary": "Snimanje novih telesnih parametara",
                 "description": "Kreira novi unos parametara i automatski računa BMI.",
-                "operationId": "fe1d120d24d2de94b3e87d7f1321305a",
+                "operationId": "17a4343dd8cef4624ecb524ae2c5128c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1196,13 +1196,13 @@
                 ]
             }
         },
-        "/api/all-parametri": {
+        "/all-parametri": {
             "get": {
                 "tags": [
                     "Parametri"
                 ],
                 "summary": "Dobijanje svih parametara korisnika preko relacije",
-                "operationId": "7f06a113d492e44cacd8acbe8640b6ab",
+                "operationId": "f4eccf8e6777c92f0d64dfafefa5f9f0",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -1215,13 +1215,13 @@
                 ]
             }
         },
-        "/api/parametar/{id}": {
+        "/parametar/{id}": {
             "delete": {
                 "tags": [
                     "Parametri"
                 ],
                 "summary": "Brisanje određenog parametra",
-                "operationId": "5b8def93813367383b12d7399f635616",
+                "operationId": "63829becc8f495590e895edd4bcc09fc",
                 "parameters": [
                     {
                         "name": "id",
@@ -1247,14 +1247,14 @@
                 ]
             }
         },
-        "/api/podaci": {
+        "/podaci": {
             "post": {
                 "tags": [
                     "Podaci o vežbanju"
                 ],
                 "summary": "Unos podataka za određenu vežbu",
                 "description": "Beleži rezultate izvedene vežbe poput serija, ponavljanja, težine i pulsa (BPM).",
-                "operationId": "8278483a0361610b8638aa0182403e19",
+                "operationId": "87788e981c9d62eb7151442732df7639",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1316,13 +1316,13 @@
                 ]
             }
         },
-        "/api/podaci/{id}": {
+        "/podaci/{id}": {
             "put": {
                 "tags": [
                     "Podaci o vežbanju"
                 ],
                 "summary": "Ažuriranje postojećih podataka o vežbi",
-                "operationId": "2771a727e4680c473d2288416ddf508d",
+                "operationId": "a01380cc780e2b876183e19645d71f68",
                 "parameters": [
                     {
                         "name": "id",
@@ -1374,13 +1374,13 @@
                 ]
             }
         },
-        "/api/programi": {
+        "/programi": {
             "get": {
                 "tags": [
                     "Programi"
                 ],
                 "summary": "Prikaz dostupnih programa (javni + sopstveni)",
-                "operationId": "f09bbf69c2ccd1b54ab42936d5f229db",
+                "operationId": "6e1452c63cc0c5af4a11eba39ccac6ca",
                 "responses": {
                     "200": {
                         "description": "Lista programa"
@@ -1397,7 +1397,7 @@
                     "Programi"
                 ],
                 "summary": "Kreiranje novog programa sa vežbama",
-                "operationId": "89d76987b3c272235f9a26f93aa7f9da",
+                "operationId": "f13ae3fe1ab50a6f3dd39f866f0b1261",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1462,13 +1462,13 @@
                 ]
             }
         },
-        "/api/programi/{id}": {
+        "/programi/{id}": {
             "put": {
                 "tags": [
                     "Programi"
                 ],
                 "summary": "Ažuriranje programa",
-                "operationId": "6a041802eb0e1ad9baec7a6f29f0785e",
+                "operationId": "870bae7a628f827a545398072c5cc9c0",
                 "parameters": [
                     {
                         "name": "id",
@@ -1495,7 +1495,7 @@
                     "Programi"
                 ],
                 "summary": "Brisanje sopstvenog programa",
-                "operationId": "d6d93e303eeb70c03ba2526494fce5ab",
+                "operationId": "4af69d47b4cf465d566e2500083a77f7",
                 "parameters": [
                     {
                         "name": "id",
@@ -1518,13 +1518,13 @@
                 ]
             }
         },
-        "/api/programi/treneri": {
+        "/programi/treneri": {
             "get": {
                 "tags": [
                     "Programi"
                 ],
                 "summary": "Programi trenera (zavisi da li korisnik ima trenera)",
-                "operationId": "5bd9c061aeb2abbc25b16096ddc91638",
+                "operationId": "16f4424ad2f5b18d528458137cbf95da",
                 "responses": {
                     "200": {
                         "description": "Lista programa"
@@ -1537,13 +1537,13 @@
                 ]
             }
         },
-        "/api/programi/moji": {
+        "/programi/moji": {
             "get": {
                 "tags": [
                     "Programi"
                 ],
                 "summary": "Prikaz svih programa koje je kreirao ulogovani korisnik",
-                "operationId": "1d1440e08bfa0ddb7a9108138ceced7e",
+                "operationId": "e9647c5141e655c508cf7a275ca0d3fe",
                 "responses": {
                     "200": {
                         "description": "Lista mojih programa"
@@ -1556,13 +1556,13 @@
                 ]
             }
         },
-        "/api/programi/dodaj-veze": {
+        "/programi/dodaj-veze": {
             "post": {
                 "tags": [
                     "Programi"
                 ],
                 "summary": "Brzo kreiranje 'Trening trenera' programa",
-                "operationId": "ff9f880f455ea5197e4b1d38cab0239d",
+                "operationId": "0a5b69773517f39dca40a8a09165f3a6",
                 "responses": {
                     "201": {
                         "description": "Program dodat"
@@ -1575,13 +1575,13 @@
                 ]
             }
         },
-        "/api/vezbe": {
+        "/vezbe": {
             "get": {
                 "tags": [
                     "Vežbe"
                 ],
                 "summary": "Prikaz svih vežbi",
-                "operationId": "c68b10ed06660710c304f5651cfd54ca",
+                "operationId": "bf4f3d119475906497d2be5b6d47972b",
                 "responses": {
                     "200": {
                         "description": "Lista svih vežbi"
@@ -1598,7 +1598,7 @@
                     "Vežbe"
                 ],
                 "summary": "Kreiranje nove vežbe",
-                "operationId": "72365369e04d339c75da721b14e7cea6",
+                "operationId": "0fda4b0ac5589c72071254dcc2968b63",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1698,5 +1698,15 @@
             "name": "Vežbe",
             "description": "Vežbe"
         }
-    ]
+    ],
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    }
 }

@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
 class EmailController extends Controller
 {
     #[OA\Post(
-        path: "/api/posalji-izvestaj",
+        path: "/posalji-izvestaj",
         summary: "Slanje personalizovanog PDF izveštaja",
         tags: ["Izveštaji"],
         security: [["sanctum" => []]],

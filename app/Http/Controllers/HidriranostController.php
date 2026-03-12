@@ -10,7 +10,7 @@ use OpenApi\Attributes as OA;
 class HidriranostController extends Controller
 {
     #[OA\Get(
-        path: "/api/hidriranost",
+        path: "/hidriranost",
         summary: "Prikaz svih zapisa o hidriranosti",
         tags: ["Hidriranost"],
         security: [["sanctum" => []]],
@@ -25,7 +25,7 @@ class HidriranostController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/hidriranost-danas",
+        path: "/hidriranost-danas",
         summary: "Provera da li postoji zapis o hidriranosti za današnji dan",
         tags: ["Hidriranost"],
         security: [["sanctum" => []]],
@@ -53,7 +53,7 @@ class HidriranostController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/hidriranost",
+        path: "/hidriranost",
         summary: "Kreiranje novog zapisa o hidriranosti za danas",
         tags: ["Hidriranost"],
         security: [["sanctum" => []]],
@@ -99,7 +99,7 @@ class HidriranostController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/hidriranost/{hidriranost}",
+        path: "/hidriranost/{hidriranost}",
         summary: "Dodavanje količine vode na današnji zapis",
         tags: ["Hidriranost"],
         security: [["sanctum" => []]],

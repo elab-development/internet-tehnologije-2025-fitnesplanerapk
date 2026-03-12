@@ -9,7 +9,7 @@ use OpenApi\Attributes as OA;
 class PodaciController extends Controller
 {
     #[OA\Post(
-        path: "/api/podaci",
+        path: "/podaci",
         summary: "Unos podataka za određenu vežbu",
         description: "Beleži rezultate izvedene vežbe poput serija, ponavljanja, težine i pulsa (BPM).",
         tags: ["Podaci o vežbanju"],
@@ -57,7 +57,7 @@ class PodaciController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/podaci/{id}",
+        path: "/podaci/{id}",
         summary: "Ažuriranje postojećih podataka o vežbi",
         tags: ["Podaci o vežbanju"],
         security: [["sanctum" => []]],
