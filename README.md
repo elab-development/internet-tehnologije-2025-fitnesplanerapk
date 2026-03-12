@@ -258,4 +258,3 @@ http://127.0.0.1:3000
 # Licenca
 
 Ovaj projekat je razvijen u edukativne svrhe u okviru kursa **Internet tehnologije** na Fakultetu organizacionih nauka.
-
